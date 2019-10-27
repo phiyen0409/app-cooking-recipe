@@ -15,8 +15,8 @@ const UserSchema=new Schema({
     password: {type: String, required: [true, "Không được bỏ trống"], index: true},
     listPostsCreated: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
     listLikesPost:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
-    listNote:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
-    listSaved: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}]
+    listNotes:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
+    listPostsSaved: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}]
 });
 const User = mongoose.model('Users',UserSchema);
 
