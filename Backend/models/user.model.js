@@ -12,10 +12,18 @@ const UserSchema=new Schema({
         required: [true, "Không được bỏ trống"],
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
         index: true},
-    password: {type: String, required: [true, "Không được bỏ trống"], index: true},
+    // password: {type: String, required: [true, "Không được bỏ trống"], index: true},
     listPostsCreated: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
     listLikesPost:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
-    listNotes:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
+    listNotes:[{
+        post: {type: mongoose.Schema.Types.ObjectId, ref: 'Posts'},
+        title: String,
+        listIngre: [{
+            ingreName: String,
+            ingreWeight: String,
+            ingreCheck: Boolean
+        }]
+    }],
     listPostsSaved: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}]
 });
 const User = mongoose.model('Users',UserSchema);

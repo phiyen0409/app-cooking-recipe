@@ -6,6 +6,7 @@ const PostSchema=new Schema({
     description: String,
     image: String,
     author:{type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
+    // author: String,
     totalLike: Number,
     totalComment: Number,
     totalSaved: Number,

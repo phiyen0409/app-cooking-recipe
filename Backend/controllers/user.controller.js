@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const Post=require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
 
@@ -53,14 +54,14 @@ module.exports = {
     let avatar = req.body.avatar;
     let phone = req.body.phone;
     let email = req.body.email;
-    let password = req.body.password;
+    // let password = req.body.password;
     let user = new User({
       name: name,
       birthday: birthday,
       avatar: avatar,
       phone: phone,
       email: email,
-      password: password
+      // password: password
     });
     user
       .save()
@@ -124,6 +125,71 @@ module.exports = {
     }catch(err) {
         res.json(err);
       };
+  },
+  login:async(req,res)=>{
+    try{
+      let{email}=req.body;
+      user = await User.findOne({email: email});
+
+
+    } catch(err){
+      console.log(err);
+    }
+  },
+  savePost: async(req,res)=>{
+    try{
+      let user = await User.findById(req.params.userId);
+      let post=await Post.findById(req.body.postId);
+      if (user.listPostsSaved.includes(post._id)) {
+        user.listPostsSaved.remove(post);
+        await user.save();
+        res.status(201).json({
+          message: "Updated unsaved"
+        });
+      } else {
+        user.listPostsSaved.push(post);
+        await user.save();
+        res.status(201).json({
+          message: "Updated saved"
+        });
+      }
+    }catch(err){
+      console.log(err);
+    }
+  },
+  saveNote: async(req,res)=>{
+    try{
+      let user = await User.findById(req.params.userId);
+      let post=await Post.findById(req.body.postId);
+      let ingrePost= post.ingredients;
+      let ingreNote=[];
+      var i;
+      for(i = 0; i < ingrePost.length; i++){
+        ingreItem={"ingreName":ingrePost[i].name,"ingreWeight":ingrePost[i].weight,"ingreCheck":0};
+        ingreNote.push(ingreItem);
+      }
+      let note={"post": post._id, "title": post.title, "listIngre": ingreNote};
+      user.listNotes.push(note);
+      await user.save();
+      res.status(201).json({
+        message: "Added note"
+      });
+    }catch(err){
+      console.log(err);
+    }
+  },
+  deleteNote: async(req,res)=>{
+    try{
+      let user = await User.findById(req.params.userId);
+      let {noteId}=req.body;
+      user.listNotes.remove({"_id":noteId});
+      await user.save();
+      res.status(201).json({
+        message: "Deleted note"
+      });
+    }catch(err){
+      console.log(err);
+    }
   }
-  
+
 };
