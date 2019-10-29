@@ -13,10 +13,10 @@ class LoginScreen extends React.Component {
         </View>
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Sign in with Google  <Image style={styles.socialLogo} source={googleImage}/></Text>
+                <Text style={styles.buttonText}>Đăng nhập bằng Google  <Image style={styles.socialLogo} source={googleImage}/></Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Sign in with Facebook  <Image style={styles.socialLogo} source={fbImage}/></Text>
+                <Text style={styles.buttonText}>Đăng nhập bằng Facebook  <Image style={styles.socialLogo} source={fbImage}/></Text>
             </TouchableOpacity>
         </View>
       </View>
