@@ -1,7 +1,8 @@
 const User = require("../models/user.model");
-const Post=require("../models/post.model");
+const Post = require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const upload = require('./upload');
 
 module.exports = {
   index: async (req, res) => {
@@ -60,7 +61,7 @@ module.exports = {
       birthday: birthday,
       avatar: avatar,
       phone: phone,
-      email: email,
+      email: email
       // password: password
     });
     user
@@ -117,29 +118,27 @@ module.exports = {
         message: "No user"
       });
     }
-    try{
-        let userDelete = await User.deleteOne({_id: id});
-            res.json({
-                message:"User deleted"
-            });  
-    }catch(err) {
-        res.json(err);
-      };
+    try {
+      let userDelete = await User.deleteOne({ _id: id });
+      res.json({
+        message: "User deleted"
+      });
+    } catch (err) {
+      res.json(err);
+    }
   },
-  login:async(req,res)=>{
-    try{
-      let{email}=req.body;
-      user = await User.findOne({email: email});
-
-
-    } catch(err){
+  login: async (req, res) => {
+    try {
+      let { email } = req.body;
+      user = await User.findOne({ email: email });
+    } catch (err) {
       console.log(err);
     }
   },
-  savePost: async(req,res)=>{
-    try{
+  savePost: async (req, res) => {
+    try {
       let user = await User.findById(req.params.userId);
-      let post=await Post.findById(req.body.postId);
+      let post = await Post.findById(req.body.postId);
       if (user.listPostsSaved.includes(post._id)) {
         user.listPostsSaved.remove(post);
         await user.save();
@@ -153,43 +152,70 @@ module.exports = {
           message: "Updated saved"
         });
       }
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   },
-  saveNote: async(req,res)=>{
-    try{
+  saveNote: async (req, res) => {
+    try {
       let user = await User.findById(req.params.userId);
-      let post=await Post.findById(req.body.postId);
-      let ingrePost= post.ingredients;
-      let ingreNote=[];
+      let post = await Post.findById(req.body.postId);
+      let ingrePost = post.ingredients;
+      let ingreNote = [];
       var i;
-      for(i = 0; i < ingrePost.length; i++){
-        ingreItem={"ingreName":ingrePost[i].name,"ingreWeight":ingrePost[i].weight,"ingreCheck":0};
+      for (i = 0; i < ingrePost.length; i++) {
+        ingreItem = {
+          ingreName: ingrePost[i].name,
+          ingreWeight: ingrePost[i].weight,
+          ingreCheck: 0
+        };
         ingreNote.push(ingreItem);
       }
-      let note={"post": post._id, "title": post.title, "listIngre": ingreNote};
+      let note = { post: post._id, title: post.title, listIngre: ingreNote };
       user.listNotes.push(note);
       await user.save();
       res.status(201).json({
         message: "Added note"
       });
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   },
-  deleteNote: async(req,res)=>{
-    try{
+  deleteNote: async (req, res) => {
+    try {
       let user = await User.findById(req.params.userId);
-      let {noteId}=req.body;
-      user.listNotes.remove({"_id":noteId});
+      let { noteId } = req.body;
+      user.listNotes.remove({ _id: noteId });
       await user.save();
       res.status(201).json({
         message: "Deleted note"
       });
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
+  },
+  updateAvatar: async (req, res) => {
+    try {
+      if (req.file === undefined) {
+        return res.status(400).json({ message: "No file received" });
+      } else {
+        let savImage = upload.single('avatar');
+        savImage(req,res,function(err) {  
+          if(err) {  
+              return  res.status(400).json({
+                message : "Error uploading file."
+              });
+          }  
+          return res.json({
+            message : "File is uploaded successfully!"
+          });  
+      });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status.json({
+        error: err
+      });
+    }
   }
-
 };

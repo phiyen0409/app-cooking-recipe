@@ -4,8 +4,11 @@ const bodyParser = require('body-parser');
 const router = express.Router;
 const dotenv = require('dotenv');
 dotenv.config();
-const multer = require('multer');
-const upload = multer({dest:'./Image/'})
+
+const upload = require('./upload');
+app.use('/uploads', express.static('uploads'));
+app.use(upload);
+app.use(express.static('uploads'));
 
 const app=express();
 const port=3000;

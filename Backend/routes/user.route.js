@@ -11,5 +11,6 @@ router.route('/savepost/:userId').put(UserController.savePost);
 router.route('/savenote/:userId').post(UserController.saveNote);
 router.route('/deletenote/:userId').delete(UserController.deleteNote);
 router.route('/delete/:id').delete(UserController.delete);
+router.route('/upload/avatar/:id').post(UserController.updateAvatar);
 
 module.exports = router;
