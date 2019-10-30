@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController=require('../controllers/user.controller');
+const upload=require('../utils/upload');
 
 router.route('/').get(UserController.index);
 router.route('/:id').get(UserController.find);
@@ -11,6 +12,6 @@ router.route('/savepost/:userId').put(UserController.savePost);
 router.route('/savenote/:userId').post(UserController.saveNote);
 router.route('/deletenote/:userId').delete(UserController.deleteNote);
 router.route('/delete/:id').delete(UserController.delete);
-router.route('/upload/avatar/:id').post(UserController.updateAvatar);
+router.route('/upload/avatar/:userId').post(upload.single('avatar'),UserController.updateAvatar);
 
 module.exports = router;
