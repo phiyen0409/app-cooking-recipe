@@ -2,7 +2,7 @@ const User = require("../models/user.model");
 const Post = require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
-const upload = require('./upload');
+const upload = require("../utils/upload");
 
 module.exports = {
   index: async (req, res) => {
@@ -196,20 +196,27 @@ module.exports = {
   },
   updateAvatar: async (req, res) => {
     try {
+      // let savImage = upload.single('avatar');
+      //   savImage(req,res,function(err) {
+      //     if(err) {
+      //         return  res.status(400).json({
+      //           message : "Error uploading file."
+      //         });
+      //     }
+      // });
+      // console.log(req.file);
       if (req.file === undefined) {
         return res.status(400).json({ message: "No file received" });
       } else {
-        let savImage = upload.single('avatar');
-        savImage(req,res,function(err) {  
-          if(err) {  
-              return  res.status(400).json({
-                message : "Error uploading file."
-              });
-          }  
-          return res.json({
-            message : "File is uploaded successfully!"
-          });  
-      });
+        let user = await User.findById(req.params.userId);
+        user.avatar = req.file.path;
+        user.save()
+          .then(result=>{
+            return res.json({
+              message: "File is uploaded successfully!",
+              data: result
+          });
+        });
       }
     } catch (err) {
       console.log(err);

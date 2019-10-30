@@ -4,15 +4,16 @@ const bodyParser = require('body-parser');
 const router = express.Router;
 const dotenv = require('dotenv');
 dotenv.config();
-
-const upload = require('./upload');
-app.use('/uploads', express.static('uploads'));
-app.use(upload);
-app.use(express.static('uploads'));
-
 const app=express();
 const port=3000;
 
+
+
+
+const upload = require('./utils/upload');
+//app.use('./uploads', express.static('uploads'));
+// app.use(upload);
+app.use('/public',express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
