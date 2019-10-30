@@ -15,8 +15,7 @@ import SaveImage from "../../assets/Image/Interact/save.png";
 
 export default function ListItem(props){
 return(
-        <View style={styles.container}>
-        {/* <scroll View         */}
+    <View style={styles.container}>
         <View style = {{flex: 4, flexDirection: "row", paddingBottom: 0, borderBottomColor:'#830707', borderBottomWidth:1}}>
             
             <Image style={styles.image} source = {Im} />
