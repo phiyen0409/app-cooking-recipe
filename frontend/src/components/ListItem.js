@@ -24,7 +24,7 @@ return(
                 <View style = {styles.viewTitle}>
                     <Text style = {styles.title}>Sườn xào chua ngọt</Text>
                 </View>
-                <Text style = {styles.description}>ffbhgfdyjnehf gfnwkvbnvm ffgfggh bfh fgb dvfhgj</Text>
+                <Text style = {styles.description}>ffbhgfdy jn ehf gfn wkvbnvm ffgfggh bfh fgb dvfhgj</Text>
             </View> 
 
         </View>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         alignItems: "center",
-        height: 180,
+        height: 172,
         padding: 15,
         // borderTopLeftRadius: 40,
         // borderBottomRightRadius: 40,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         fontWeight: "700",
         marginLeft: 15,
-        marginRight: 15,
+        // marginRight: 15,
         alignContent: "center",
         color: "#7f0000",
     },
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         paddingBottom: 0,
         fontWeight: "300",
         marginLeft: 15,
-        marginRight: 15,
+        // marginRight: 15,
     },
 
     button:{

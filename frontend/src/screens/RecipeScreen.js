@@ -1,49 +1,51 @@
 import React from "react";
 import {
-  Image,
-  Platform,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View
 } from "react-native";
 import IntroItem from "../components/IntroItem";
-import AvatarImage from "../../assets/Image/avatar.png";
+import IngredientItem from '../components/IngredientItem';
 import theme from "../../constant/theme";
 import { Block, Icon } from "galio-framework";
-import uploadImage from "../../assets/Image/blog.png";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
+import Process from "../components/Process";
 
-export default function HomeScreen() {
+export default class RecipeScreen extends React.Component {
+    
+render(){
     return (
         <View style = {styles.container}>
-          <ScrollView>
-            <View style = {{margin: 2, padding: 5}}>
-                <IntroItem/>
-            </View>
-            <View style = {{margin: 5}}>
-                <IntroItem/>
-            </View>
-            {/*<View style = {{margin: 5}}>
-                <IntroItem/>
-            </View> */}
-        </ScrollView></View>
-    );}
+            {/* <View> */}
+                <ScrollView>
+                    <View>
+                        <IntroItem/>
+                    </View>
+                    <View>
+                        <ScrollView >
+                            <IngredientItem/>
+                        </ScrollView>
+                    </View>
+                    <View style = {{margin: 5}}>
+                        <Process/>
+                    </View>
+                </ScrollView>
+            {/* </View> */}
+        </View>
+    );
+};
+}
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: "column",
-        // paddingTop: 40,
-        // paddingBottom: 70,
         flex: 1,
-        alignItems: "center",
-        width: wp('100%'),
+        alignItems: "stretch",
+        // width: wp('100%'),
+        justifyContent: "center"
     },
-    // contentView:{
-        
-    // }
 });
+
