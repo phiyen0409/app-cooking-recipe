@@ -19,7 +19,7 @@ export default class IngredientItem extends Component{
         this.state = {
             tableHead: ['Tên nguyên liệu', 'Đơn vị', 'Số lượng'],
             tableData: [
-                ['Thịt lợn 123 vchg xgjhbkj jgh nb jg vjhbkj 4567890', 'g', 500],
+                ['Thịt\n lợn 123\n vchg\n xgjhbkj\n jgh nb \njg vjhbkj \n4567890', 'g', 500],
                 ['Đường', 'g', 70],
                 ['Muối', 'g', 10],
                 ['Nước', 'ml', 100],
@@ -57,14 +57,16 @@ export default class IngredientItem extends Component{
                     marginLeft: 15,
                     marginRight: 15,
                     alignContent: "center",
-                    color: "#7f0000",}}>
+                    color: "#7f0000",
+                    marginBottom: 30,}}>
                         Thành phần nguyên liệu
-                        </Text>
+                    </Text>
                 </View>
-                <View style = {{alignContent: 'center', width: wp('100%'), flex: 4}}>
-                    <Table borderStyle={{borderWidth: 1, borderColor: '#e57373'}}>
+                <View style = {styles.content}>
+                    <Table borderStyle={{borderWidth: 1, borderColor: '#e57373'}} style = {{marginLeft: 5, marginRight: 5,}}>
                         <Row data = {state.tableHead} flexArr = {[3, 1, 1]} style = {styles.head} textStyle = {{fontWeight: '400', margin: 5, color: 'white', fontSize: 16, textAlign: 'center'}} />
                     </Table>  
+
                     <ScrollView style={styles.dataWrapper} >
                     <TableWrapper style = {styles.wrapper} borderStyle={{borderWidth: 1, borderColor: '#e57373'}}> 
                     {
@@ -88,21 +90,49 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         backgroundColor: '#fff',
-        height: theme.SIZES.BASE *15,
-        margin: 5,
-        paddingBottom: 15,
+        // height: theme.SIZES.BASE *15,
+        padding: 15,
+        // margin: 5,
+        // paddingLeft: 40,
+        // paddingRight: 40,
+        // paddingBottom: 70,
     },
 
-    wrapper: { flexDirection: 'column' },
+    content:{
+        alignContent: 'center',
+        width: wp('90%'),
+        flex: 4,
+        flexDirection: 'column',
+        // alignItems: 'stretch',
+        marginBottom: 10,
+        // paddingLeft: 5,
+        // paddingRight: 5,
+    },
 
-     head: {
+    wrapper: { 
+        flexDirection: 'column',
+        marginTop: -1,
+        marginLeft: 5,
+        marginRight: 5,
+        paddingBottom: 5,
+    },
+
+    head: {
         height: theme.SIZES.BASE * 5,
         alignContent: 'center',
         backgroundColor: '#830707',
-
+        borderBottomWidth: 1,
+        borderBottomColor: '#e57373',
     },
 
     dataWrapper: { marginTop: -1 },
-    row: { height: 40, backgroundColor: 'white' },
+    row: { 
+        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e57373',
+        borderLeftWidth: 1,
+        borderLeftColor: '#e57373',
+        marginTop: -1,
+    },
 
 });

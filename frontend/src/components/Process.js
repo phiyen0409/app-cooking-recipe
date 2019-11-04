@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: '#fff',
         height: theme.SIZES.BASE *15,
-        margin: 5,
+        // margin: 5,
         padding: 15,
     },
     title: {

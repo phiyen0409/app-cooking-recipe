@@ -21,15 +21,15 @@ render(){
         <View style = {styles.container}>
             {/* <View> */}
                 <ScrollView>
-                    <View>
+                    <View style = {styles.postContainer}>
                         <IntroItem/>
                     </View>
-                    <View>
-                        <ScrollView >
+                    <View style = {styles.postContainer}>
+                        {/* <ScrollView > */}
                             <IngredientItem/>
-                        </ScrollView>
+                        {/* </ScrollView> */}
                     </View>
-                    <View style = {{margin: 5}}>
+                    <View style = {styles.postContainer}>
                         <Process/>
                     </View>
                 </ScrollView>
@@ -45,7 +45,14 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "stretch",
         // width: wp('100%'),
-        justifyContent: "center"
+        justifyContent: "center",
+        // paddingTop: 20,
+        // paddingBottom: 70,
+    },
+
+    postContainer: {
+        paddingLeft: 5,
+        paddingRight: 5,
     },
 });
 
