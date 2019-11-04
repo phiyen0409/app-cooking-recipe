@@ -14,7 +14,8 @@ import theme from "../../constant/theme";
 import { Block, Icon } from "galio-framework";
 import uploadImage from "../../assets/Image/blog.png";
 
-export default function HomeScreen() {
+export default class HomeScreen extends React.Component {
+  render() {  
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -42,6 +43,7 @@ export default function HomeScreen() {
       </View>
     </View>
   );
+}
 }
 
 const styles = StyleSheet.create({
