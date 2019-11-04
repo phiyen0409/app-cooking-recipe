@@ -129,8 +129,26 @@ module.exports = {
   },
   login: async (req, res) => {
     try {
-      let { email } = req.body;
+      let { email } = req.body.user;
+      console.log(email);
       user = await User.findOne({ email: email });
+      if(!user){
+        let newUser= new User({
+          name: req.body.user.name,
+          email: req.body.user.email,
+          avatar: req.body.user.photoUrl
+        });
+        newUser.save()
+        .then(result=>{
+          return res.json({
+            message: "New user created!",
+            data: result
+        });
+      });
+      }
+      else {
+        res.json(user);
+      }
     } catch (err) {
       console.log(err);
     }

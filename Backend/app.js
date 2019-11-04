@@ -5,7 +5,7 @@ const router = express.Router;
 const dotenv = require('dotenv');
 dotenv.config();
 const app=express();
-const port=3000;
+const port=80;
 
 
 
@@ -31,7 +31,8 @@ mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useCreate
 const user=require('./models/user.model');
 const post=require('./models/post.model');
 
-app.listen(port,function(){
+const hostname = '0.0.0.0';
+app.listen(port,hostname, function(){
     console.log('Server listening on port '+port);
 });
 app.use('/user', userRoutes);
