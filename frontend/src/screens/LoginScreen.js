@@ -1,10 +1,17 @@
 import React from "react";
-import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Button
+} from "react-native";
 import LogoImage from "../../assets/Image/logo2.png";
 import googleImage from "../../assets/Image/google.png";
 import fbImage from "../../assets/Image/facebook.png";
-import * as Google from 'expo-google-app-auth';
-import axios from 'axios';
+import * as Google from "expo-google-app-auth";
+import axios from "axios";
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -12,25 +19,26 @@ class LoginScreen extends React.Component {
     console.log(this.props);
 
     this.state = {
-      isSignedIn: false,
-      name: '',
-      email: '',
-      photoUrl: '',
-      accessToken: ''
+      idUser: '',
+      signedIn: false,
+      name: "",
+      photoUrl: "",
+      accessToken: ""
     };
-    axios.defaults.baseURL = 'https://localhost:3000';
+
+    axios.defaults.baseURL = "http://192.168.137.1:80";
   }
 
   signInWithGoogleAsync = async () => {
     try {
       const result = await Google.logInAsync({
-        androidClientId: '571499657697-49c2itiusn5n0k4g41svfckd80d3p78s.apps.googleusercontent.com',
-        scopes: ['profile', 'email'],
+        androidClientId:
+          "571499657697-49c2itiusn5n0k4g41svfckd80d3p78s.apps.googleusercontent.com",
+        scopes: ["profile", "email"]
       });
-  
-      if (result.type === 'success') {
-        
-        console.log(result);
+
+      if (result.type === "success") {
+        alert(result.user.email);
         axios({
           method: 'post',
           url: '/user/login',
@@ -39,25 +47,26 @@ class LoginScreen extends React.Component {
             accessToken: result.accessToken
           }
         }).then((res) => {
-          let user = res.data.user;
+          let user = res.data;
           this.setState({
-            isSignedIn: true,
+            idUser: user._id,
+            signedIn: true,
             name: user.name,
             email: user.email,
             avatar: user.avatar,
-            accessToken: user.accessToken,
+            //accessToken: user.accessToken,
           });
           console.log(res);
         }).catch((error) =>{
           console.log(error);
         });
       } else {
-        console.log('failed');
+        console.log("cancelled");
       }
     } catch (e) {
       console.log(e);
     }
-  }
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -117,4 +126,25 @@ const styles = StyleSheet.create({
       width:20
   }
 });
+
+const LoginPage = props => {
+  return (
+    <View>
+      <Text style={styles.header}>Sign In With Google</Text>
+      <Button
+        title="Sign in with Google"
+        onPress={() => props.signInWithGoogle()}
+      />
+    </View>
+  );
+};
+
+const LoggedInPage = props => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Welcome:{props.name}</Text>
+      <Image style={styles.image} source={{ uri: props.photoUrl }} />
+    </View>
+  );
+};
 export default LoginScreen;

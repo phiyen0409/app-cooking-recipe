@@ -20,8 +20,8 @@ export default class App extends React.Component {
   return (
     <View style={styles.container}>
       {/* <LoginScreen/> */}
-      {/* <HomeScreen/> */}
-      <RecipeScreen/>
+      <HomeScreen/>
+      {/* <RecipeScreen/> */}
       {/* <IngredientItem/> */}
       {/* <IntroItem/> */}
     </View>
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'center',
     // alignItems: 'center',
-    paddingLeft: 3,
-    paddingRight: 3,
+    // paddingLeft: 3,
+    // paddingRight: 3,
     paddingTop: 20,
-    paddingBottom: 15,
+    // paddingBottom: 15,
   },
 });
