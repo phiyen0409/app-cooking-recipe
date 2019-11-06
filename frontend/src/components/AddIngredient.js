@@ -13,13 +13,13 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
 
-export default class IngredientItem extends Component{
+export default class AddIngredient extends Component{
     constructor (props){
         super(props);
         this.state = {
             tableHead: ['Tên nguyên liệu', 'Khối lượng'],
             tableData: [
-                ['Thịt\n lợn 123\n vchg\n xgjhbkj\n jgh nb \njg vjhbkj \n4567890', '500 g'],
+                ['Thịt\n lợn 123\n vchg\n xgjhbkj\n jgh nbjg vjhbkj 4567890', '500 g'],
                 ['Đường', '70 g'],
                 ['Muối', '10 g'],
                 ['Nước', '100 ml'],

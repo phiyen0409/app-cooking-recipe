@@ -20,7 +20,7 @@ import {
   } from 'react-native-responsive-screen';
 
 
-export default function IntroItem(props){
+export default function AddIntro(props){
 return(
     <View style={styles.container}>
         {/* <ScrollView> */}
