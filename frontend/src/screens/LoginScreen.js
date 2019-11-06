@@ -14,6 +14,9 @@ import * as Google from "expo-google-app-auth";
 import axios from "axios";
 
 class LoginScreen extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
   constructor(props) {
     super(props);
     console.log(this.props);
@@ -26,7 +29,7 @@ class LoginScreen extends React.Component {
       accessToken: ""
     };
 
-    axios.defaults.baseURL = "http://192.168.137.1:80";
+
   }
 
   signInWithGoogleAsync = async () => {

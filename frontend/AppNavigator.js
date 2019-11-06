@@ -8,7 +8,6 @@ const AppNavigator = createStackNavigator({
     RecipeScreen:{
         screen: RecipeScreen
     },
-
     Home:{
         screen: HomeScreen
     },

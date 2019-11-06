@@ -8,15 +8,18 @@ import  IngredientItem from './src/components/IngredientItem';
 import AppNavigator from './AppNavigator';
 import {createAppContainer} from 'react-navigation';
 import  IntroItem from './src/components/IntroItem';
+import axios from "axios";
 
 const AppContainer = createAppContainer(AppNavigator);
 
 
 export default class App extends React.Component {
+  constructor(props){
+    super(props);
+    axios.defaults.baseURL = "http://192.168.137.1:80";
+  }
   render()
     {
-  
-  // return <AppContainer/>;
   return (
     <View style={styles.container}>
       {/* <LoginScreen/> */}
