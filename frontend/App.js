@@ -4,7 +4,7 @@ import ListItem from './src/components/ListItem';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import RecipeScreen from './src/screens/RecipeScreen';
-import  IngredientItem from './src/components/IngredientItem';
+import  IngredientItem from './src/components/IngredientListItem';
 import AppNavigator from './AppNavigator';
 import {createAppContainer} from 'react-navigation';
 import  IntroItem from './src/components/IntroItem';
@@ -23,8 +23,8 @@ export default class App extends React.Component {
   return (
     <View style={styles.container}>
       {/* <LoginScreen/> */}
-      <HomeScreen/>
-      {/* <RecipeScreen/> */}
+      {/* <HomeScreen/> */}
+      <RecipeScreen/>
       {/* <IngredientItem/> */}
       {/* <IntroItem/> */}
     </View>
@@ -35,7 +35,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffebee',
+    backgroundColor: '#7f0000',
     alignItems: 'stretch',
     justifyContent: 'center',
     // alignItems: 'center',
