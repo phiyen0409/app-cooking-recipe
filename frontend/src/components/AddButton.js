@@ -157,7 +157,7 @@ class AddButton extends Component {
 }
 const styles=StyleSheet.create({
     uploadButton: {
-        height: hp('4%'),
+        height: hp('5%'),
         width: wp('9%')
       }
 })

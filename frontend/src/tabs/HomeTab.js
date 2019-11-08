@@ -59,8 +59,9 @@ export default class HomeTab extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    paddingTop: 20,
-    paddingBottom: 0,
+    //paddingTop: 20,
+    paddingBottom: 20,
+
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
