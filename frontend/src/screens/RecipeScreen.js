@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import IntroItem from "../components/IntroItem";
-import IngredientItem from "../components/IngredientItem";
+import IngredientListItem from "../components/IngredientListItem";
 import theme from "../../constant/theme";
 import { Block, Icon } from "galio-framework";
 import {
@@ -24,7 +24,7 @@ export default class RecipeScreen extends React.Component {
           </View>
           <View style={styles.postContainer}>
             {/* <ScrollView > */}
-            <IngredientItem />
+            <IngredientListItem />
             {/* </ScrollView> */}
           </View>
           <View style={styles.postContainer}>
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
 
   postContainer: {
     paddingLeft: 5,
-    paddingRight: 5
+    paddingRight: 5,
+    margin: 1,
   }
 });

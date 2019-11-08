@@ -32,7 +32,7 @@ export default function ListItem(props) {
 
             <View style={styles.viewContent}>
               <View style={styles.viewTitle}>
-                <Text style={styles.title}>Sườn xào chua ngọt</Text>
+                <Text style={styles.title}>Sườn xào chua ngọtfghjkleefvfgtggsr</Text>
               </View>
               <View style={styles.author}>
               <FontAwesome name="user" size={12} color='#6E6E6E' />
@@ -48,20 +48,23 @@ export default function ListItem(props) {
         </TouchableOpacity>
       </View>
 
-      <View style={{ flex: 1, flexDirection: "row" }}>
+      <View style={{ flex: 1, flexDirection: "row"}}>
         <TouchableOpacity style={styles.button}>
           <Block style={styles.buttonBlock}>
             <Image style={styles.logoButton} source={LikeImage} />
+            <Text style = {{fontSize: 6}}>345678</Text>
           </Block>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Block style={styles.buttonBlock}>
             <Image style={styles.logoButton} source={CommentImage} />
+            <Text style = {{fontSize: 6}}>345678</Text>
           </Block>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Block style={styles.buttonBlock}>
             <Image style={styles.logoButton} source={SaveImage} />
+            <Text style = {{fontSize: 6}}>345678</Text>
           </Block>
         </TouchableOpacity>
       </View>
@@ -92,14 +95,15 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: "column",
     alignItems: "baseline",
+    justifyContent: "space-around",
     padding: 5,
-    height: '100%'
+    height: '100%',
   },
 
   viewTitle: {
     flex: 2,
     // maxHeight: 30,
-    paddingTop: 0
+    paddingTop: 0,
   },
 
   imageContainer: {
@@ -107,19 +111,21 @@ const styles = StyleSheet.create({
     height: "100%",
     // paddingLeft: 64,
     alignItems: "center",
-    justifyContent: "center"
+    flexDirection: "row",
+    justifyContent: "center",
   },
   image: {
     width: '100%',
     height: 64,
     borderRadius:12
+
   },
   title: {
     flex: 1,
     textTransform: "uppercase",
     marginBottom: 5,
     fontWeight: "700",
-    marginLeft: 15,
+    marginLeft: 10,
     // marginRight: 15,
     alignContent: "center",
     color: "#7f0000"
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     paddingBottom: 2,
     fontWeight: "300",
-    marginLeft: 15
+    marginLeft: 10,
     // marginRight: 15,
   },
 
@@ -148,18 +154,19 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: "#b71c1c",
     margin: 5,
-    paddingTop: 10
+    // paddingTop: 10
     //borderRadius: 4,
     // borderLeftWidth: 0.5,
     // borderLeftColor: 'red'
   },
   buttonBlock: {
-    justifyContent: "center",
+    flexDirection: "column",
+    justifyContent: "space-around",
     alignContent: "center",
-    alignItems: "center"
+    alignItems: "center", 
   },
   logoButton: {
     width: 25,
-    height: 25
+    height: 25, 
   }
 });

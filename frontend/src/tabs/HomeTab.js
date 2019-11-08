@@ -61,17 +61,19 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     //paddingTop: 20,
     paddingBottom: 20,
+
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
-    backgroundColor: "#ffebee",
+    backgroundColor: "#b71c1c",
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 5,
 
     // backgroundColor: '#fff',
   },
   postContainer: {
-    paddingTop: 5
+    paddingTop: 5,
+    paddingRight: 5,
   },
   headerContainer: {
     // paddingTop: 5,
