@@ -110,8 +110,9 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   image: {
-    width: 128,
-    height: 64
+    width: '100%',
+    height: 64,
+    borderRadius:12
   },
   title: {
     flex: 1,
