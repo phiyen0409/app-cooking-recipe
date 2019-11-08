@@ -88,11 +88,12 @@ const styles = StyleSheet.create({
         margin: 5,
         flex: 1,
         flexDirection: 'column',
-        maxHeight: 50,
+        // maxHeight: 50,
+        height: '100%',
         width: ('100%'),
         marginTop: 0,
         alignSelf: 'center',
-        backgroundColor: '#cdb7b5',
+        // backgroundColor: '#cdb7b5',
     },
 
     imageView:{

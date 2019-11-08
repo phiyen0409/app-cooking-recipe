@@ -13,6 +13,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function AddProcess(){
     return(
@@ -23,8 +24,12 @@ export default function AddProcess(){
                 </Text>
 
             </View>
-            <View>
-
+            <View style = {styles.content}>
+                <ScrollView style={styles.dataWrapper} >
+                    <TouchableOpacity>
+                        <Text>Add step</Text>
+                    </TouchableOpacity>
+                </ScrollView>
             </View>
         </View>
           
@@ -50,6 +55,17 @@ const styles = StyleSheet.create({
         marginRight: 15,
         alignContent: "center",
         color: "#7f0000",
+    },
+
+    content:{
+        alignContent: 'center',
+        width: wp('90%'),
+        flex: 4,
+        flexDirection: 'column',
+        // alignItems: 'stretch',
+        marginBottom: 10,
+        // paddingLeft: 5,
+        // paddingRight: 5,
     },
 
 });

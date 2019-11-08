@@ -14,33 +14,33 @@ import {
   } from 'react-native-responsive-screen';
 import Process from "../components/Process";
 import Comment from "../components/Comment";
+import AddIntro from "../components/AddIntro";
+import AddIngredient from "../components/AddIngredient";
+import AddProcess from "../components/AddProcess";
 
-export default class RecipeScreen extends React.Component {
+export default class AddRecipeScreen extends React.Component {
     
-render(){
-    return (
-        <View style = {styles.container}>
+    render() {
+        return (
+          <View style={styles.container}>
             {/* <View> */}
-                <ScrollView>
-                    <View style = {styles.postContainer}>
-                        <IntroItem/>
-                    </View>
-                    <View style = {styles.postContainer}>
-                        {/* <ScrollView > */}
-                            <IngredientItem/>
-                        {/* </ScrollView> */}
-                    </View>
-                    <View style = {styles.postContainer}>
-                        <Process/>
-                    </View>
-                    <View style = {styles.postContainer}>
-                        <Button></Button>
-                    </View>
-                </ScrollView>
+            <ScrollView>
+              <View style={styles.postContainer}>
+                <AddIntro/>
+              </View>
+              <View style={styles.postContainer}>
+                {/* <ScrollView > */}
+                <AddIngredient/>
+                {/* </ScrollView> */}
+              </View>
+              <View style={styles.postContainer}>
+                <AddProcess/>
+              </View>
+            </ScrollView>
             {/* </View> */}
-        </View>
-    );
-};
+          </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({

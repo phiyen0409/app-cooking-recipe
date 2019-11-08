@@ -9,6 +9,9 @@ import AppNavigator from './AppNavigator';
 import {createAppContainer} from 'react-navigation';
 import  IntroItem from './src/components/IntroItem';
 import axios from "axios";
+import AddIntro from './src/components/AddIntro';
+import AddIngredient from './src/components/AddIngredient';
+import AddRecipeScreen from './src/screens/AddRecipeScreen';
 
 const AppContainer = createAppContainer(AppNavigator);
 
@@ -27,6 +30,9 @@ export default class App extends React.Component {
       <RecipeScreen/>
       {/* <IngredientItem/> */}
       {/* <IntroItem/> */}
+      {/* <AddIntro/> */}
+      {/* <AddIngredient/> */}
+      {/* <AddRecipeScreen/> */}
     </View>
   )
   }

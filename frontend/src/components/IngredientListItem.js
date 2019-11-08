@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     },
 
     title:{
-        // textAlign: 'center',
+        textAlign: 'center',
         textTransform: "uppercase",
         marginBottom: 5,
         fontWeight: "700",
