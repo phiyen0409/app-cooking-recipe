@@ -38,7 +38,7 @@ return(
         <View style = {styles.imageView}>
             <Image style={styles.image} source = {Im} />
                     
-            <View style = {{flex: 1, flexDirection: "row", borderTopWidth: 1, borderTopColor: '#830707'}}>
+            {/* <View style = {{flex: 1, flexDirection: "row", borderTopWidth: 1, borderTopColor: '#830707'}}>
                 <TouchableOpacity style = {styles.button}>
                     <Block style={styles.buttonBlock}>
                         <Image style={styles.logoButton} source={LikeImage} />
@@ -57,7 +57,7 @@ return(
                         <Text style = {{fontSize: 6}}>345678</Text>
                     </Block>
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </View>
 
         <View style = {styles.viewContent}>
@@ -136,8 +136,9 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderTopWidth: 0,
         borderColor: '#ffebee',
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
+        borderRadius: 10,
+        // borderBottomLeftRadius: 10,
+        // borderBottomRightRadius: 10,
         shadowColor: '#cdb7b5',
     },
 
@@ -189,6 +190,6 @@ const styles = StyleSheet.create({
         marginTop: 8,
         paddingBottom: 8,
         fontWeight: "300",
-        
+        marginTop: -1
     },
 });

@@ -5,7 +5,7 @@ import TrendingTab from "./src/tabs/TrendingTab";
 import HomeTab from "./src/tabs/HomeTab";
 import SavedTab from "./src/tabs/SavedTab";
 import PersonalTab from "./src/tabs/PersonalTab";
-import AddRecipeTab from "./src/screens/AddRecipeScreen"
+import AddRecipeTab from "./src/tabs/AddRecipeTab"
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { AddButton } from "./src/components/AddButton";
 import RecipeNavigation from "./RecipeNavigation";
@@ -40,7 +40,7 @@ const HomeScreenTabNavigator = createBottomTabNavigator(
     },
     Add: {
       header: null,
-      screen: () => null, // Empty screen
+      screen: AddRecipeTabStack,
       navigationOptions: () => ({
         tabBarIcon: <AddButton />, // Plus button component
         tabBarLabel: ({ focused, tintColor }) => {

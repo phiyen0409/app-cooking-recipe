@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import {Block,Icon} from 'galio-framework';
-import Im from "../../assets/Image/suonxaochuangot.jpg"
+import Im from "../../assets/Image/suonxaochuangot.jpg";
+import Avatar from "../../assets/Image/avatar.png";
 import { red } from 'ansi-colors';
 import LikeImage from "../../assets/Image/Interact/like.png";
 import CommentImage from "../../assets/Image/Interact/comment.png";
@@ -28,17 +29,17 @@ return(
             
         </View>
         <View style = {styles.content}>
-            <View>
-                <image>
+            <View style = {{flexDirection: 'row'}}>
+                <Image style = {{}} source = {Avatar}>
 
-                </image>
+                </Image>
                 <Text>
-
+                    Ly
                 </Text>
             </View>
-            <View>
+            <View> style = {styles.description}
                 <Text>
-
+                     bfbfbvkvskjsb
                 </Text>
             </View>
         </View>
@@ -77,10 +78,10 @@ const styles = StyleSheet.create({
     image:{
         flex: 1,
         flexDirection: "row",
-        width: 64,
-        height: 64,
-        alignItems: "center",
-        alignSelf: "center",
+        width: 25,
+        height: 25,
+        borderRadius: 62,
+        borderWidth: 0
     },
 
     title:{

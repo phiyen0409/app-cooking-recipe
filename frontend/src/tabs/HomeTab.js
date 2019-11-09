@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
-    backgroundColor: "#b71c1c",
+    backgroundColor: "#ffcdd2",
     paddingLeft: 10,
     paddingRight: 5,
 
@@ -75,44 +75,44 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingRight: 5,
   },
-  headerContainer: {
-    // paddingTop: 5,
-    marginTop: 40
-    // marginBottom: 5,
-  },
-  imgContainer: {
-    flex: 2,
-    alignSelf: "stretch",
-    borderRadius: 50,
-    paddingBottom: 5
-  },
-  avtImage: {
-    height: hp("8%"),
-    width: hp("8%"),
-    borderRadius: 50
-  },
-  button: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: wp("55%"),
-    backgroundColor: "#830707",
-    borderRadius: 25,
-    marginBottom: 10,
-    height: hp("5%")
-  },
-  updatebtnContainer: {
-    flex: 4,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  buttonText: {
-    fontSize: theme.SIZES.BASE,
-    fontWeight: "500",
-    textAlign: "center",
-    color: "#FFF"
-  },
-  uploadImg: {
-    height: hp("3%"),
-    width: wp("5%")
-  }
+  // headerContainer: {
+  //   // paddingTop: 5,
+  //   marginTop: 40
+  //   // marginBottom: 5,
+  // },
+  // imgContainer: {
+  //   flex: 2,
+  //   alignSelf: "stretch",
+  //   borderRadius: 50,
+  //   paddingBottom: 5
+  // },
+  // avtImage: {
+  //   height: hp("8%"),
+  //   width: hp("8%"),
+  //   borderRadius: 50
+  // },
+  // button: {
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   width: wp("55%"),
+  //   backgroundColor: "#830707",
+  //   borderRadius: 25,
+  //   marginBottom: 10,
+  //   height: hp("5%")
+  // },
+  // updatebtnContainer: {
+  //   flex: 4,
+  //   alignItems: "center",
+  //   justifyContent: "center"
+  // },
+  // buttonText: {
+  //   fontSize: theme.SIZES.BASE,
+  //   fontWeight: "500",
+  //   textAlign: "center",
+  //   color: "#FFF"
+  // },
+  // uploadImg: {
+  //   height: hp("3%"),
+  //   width: wp("5%")
+  // }
 });

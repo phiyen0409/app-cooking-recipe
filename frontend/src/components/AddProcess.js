@@ -5,17 +5,21 @@ import {
     View,
     StyleSheet,
     ScrollView,
-//     TouchableOpacity,
+    TouchableOpacity,
 } from 'react-native';
 import  {Table, TableWrapper, Row, Cell, Rows} from 'react-native-table-component';
 import theme from "../../constant/theme";
+import AddStep from '../components/AddStep';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function AddProcess(){
+export default class AddProcess extends Component{
+    // static navigationOptions = {
+    //     title: 'AddProcess',
+    // };
+    render(){
     return(
         <View style = {styles.container}>
             <View>
@@ -26,6 +30,9 @@ export default function AddProcess(){
             </View>
             <View style = {styles.content}>
                 <ScrollView style={styles.dataWrapper} >
+                    <View style = {{height: '100%'}}>
+                        <AddStep/>
+                    </View>
                     <TouchableOpacity>
                         <Text>Add step</Text>
                     </TouchableOpacity>
@@ -34,6 +41,7 @@ export default function AddProcess(){
         </View>
           
     );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -60,6 +68,7 @@ const styles = StyleSheet.create({
     content:{
         alignContent: 'center',
         width: wp('90%'),
+        height: '100%',
         flex: 4,
         flexDirection: 'column',
         // alignItems: 'stretch',

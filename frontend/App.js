@@ -11,7 +11,7 @@ import  IntroItem from './src/components/IntroItem';
 import axios from "axios";
 import AddIntro from './src/components/AddIntro';
 import AddIngredient from './src/components/AddIngredient';
-import AddRecipeScreen from './src/screens/AddRecipeScreen';
+import AddRecipeScreen from './src/tabs/AddRecipeTab';
 
 const AppContainer = createAppContainer(AppNavigator);
 
@@ -26,8 +26,8 @@ export default class App extends React.Component {
   return (
     <View style={styles.container}>
       {/* <LoginScreen/> */}
-      {/* <HomeScreen/> */}
-      <RecipeScreen/>
+      <HomeScreen/>
+      {/* <RecipeScreen/> */}
       {/* <IngredientItem/> */}
       {/* <IntroItem/> */}
       {/* <AddIntro/> */}
