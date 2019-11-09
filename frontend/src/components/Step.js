@@ -70,6 +70,7 @@ import {
         width: '40%',
         height: 75,
         margin:5,
+        borderRadius:10
       },
 
 });

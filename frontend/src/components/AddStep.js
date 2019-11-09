@@ -17,22 +17,22 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 
 export default class AddStep extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      key: props.key,
+      id: props.id,
       step: props.step,
       title: props.title,
       image: props.image,
       description: props.description
     };
-  };
-  removeItem = ()=>{
-    this.props.removeItem(this.state.id);
   }
+  removeItem = () => {
+    this.props.removeItem(this.state.id);
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -69,6 +69,9 @@ export default class AddStep extends Component {
             source={require("../../assets/Image/placeholder.png")}
             style={{ height: 150, width: 200, resizeMode: "center" }}
           />
+          <TouchableOpacity style={styles.updateImage}>
+            <Entypo name="camera" size={30} color={"#000"} />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     alignContent: "stretch",
-    marginVertical: 5,
+    marginVertical: 5
   },
   viewHeader: {
     flex: 1,
@@ -108,13 +111,21 @@ const styles = StyleSheet.create({
   viewDescription: {
     borderRadius: 5,
     borderWidth: 2,
-    borderColor: '#ffebee',
+    borderColor: "#ffebee",
+    padding: 3
   },
   viewImage: {
     marginTop: 5,
-    justifyContent:"center",
-    alignContent:"center",
-    alignItems:"center",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center"
+  },
+  updateImage: {
+    position: "absolute",
+    left: "50%",
+    bottom: 0,
+    marginLeft: -10,
+    marginBottom: 3
   },
   textInputTitle: {
     paddingLeft: 5,
@@ -130,6 +141,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
     alignContent: "center",
     fontWeight: "400",
-    color: "#8e1e20",
+    color: "#8e1e20"
   }
 });
