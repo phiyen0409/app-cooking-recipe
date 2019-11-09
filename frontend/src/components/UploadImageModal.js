@@ -1,8 +1,17 @@
 import React, { Component } from "react";
-import { Modal, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert
+} from "react-native";
 
 import LibraryImage from "../../assets/Image/library.png";
 import CameraImage from "../../assets/Image/camera.png";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 export default class UploadImageModel extends Component {
   constructor(props) {
     super(props);
@@ -17,21 +26,40 @@ export default class UploadImageModel extends Component {
     return (
       <Modal
         animationType="slide"
-        transparent={false}
+        transparent={true}
         visible={this.state.modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          this.setModalVisible(!this.state.modalVisible);
         }}
       >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+          style={{
+            flex: 1,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "transparent"
+          }}
+        ></TouchableWithoutFeedback>
         <View style={styles.container}>
           <View style={styles.body}>
-            <TouchableOpacity>
-              <Image style={styles.iconButton} source={CameraImage} />
-              <Text style={styles.textButton}>Máy ảnh</Text>
+            <TouchableOpacity style={styles.viewButton}>
+              <View style={styles.viewIconButton}>
+                <Image style={styles.iconButton} source={CameraImage} />
+              </View>
+              <View style={styles.viewTextButton}>
+                <Text style={styles.textButton}>Máy ảnh</Text>
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Image style={styles.iconButton} source={LibraryImage} />
-              <Text style={styles.textButton}>Chọn ảnh từ bộ nhớ</Text>
+            <TouchableOpacity style={styles.viewButton}>
+              <View style={styles.viewIconButton}>
+                <Image style={styles.iconButton} source={LibraryImage} />
+              </View>
+              <View style={styles.viewTextButton}>
+                <Text style={styles.textButton}>Chọn ảnh từ bộ nhớ</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -42,33 +70,45 @@ export default class UploadImageModel extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: "100%",
-    borderRadius: 5
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    bottom: 0,
+    backgroundColor: "red"
   },
   body: {
     flex: 1,
     width: "100%",
-    flexDirection: "column",
     alignContent: "stretch",
     justifyContent: "center"
   },
   viewButton: {
     width: "100%",
-    height: 50,
+    height: 35,
     flex: 1,
     flexDirection: "row",
-    paddingVertical: 5,
+    paddingVertical: 5
+  },
+  viewIconButton: {
+    flex: 1,
+    height: 20,
+    paddingLeft: 5,
+    justifyContent: "center",
+    alignContent: "center"
   },
   iconButton: {
-    flex: 1,
     width: 30,
-    height: 30,
-    paddingLeft: 5,
+    height: 30
+  },
+  viewTextButton: {
+    flex: 10,
+    alignContent: "stretch",
+    alignItems: "flex-start"
   },
   textButton: {
-    flex: 9,
     height: "100%",
-    textAlign: 'left',
+    textAlign: "left"
   }
 });
