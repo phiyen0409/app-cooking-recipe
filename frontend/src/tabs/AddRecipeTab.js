@@ -6,10 +6,10 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  Image
+  TouchableWithoutFeedback,
+  Image,
+  Modal
 } from "react-native";
-import theme from "../../constant/theme";
-import { Block, Icon, Button } from "galio-framework";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -22,14 +22,24 @@ import AddStep from "../components/AddStep";
 import { Entypo } from "@expo/vector-icons";
 import UploadImageModal from "../components/UploadImageModal";
 
+import LibraryImage from "../../assets/Image/library.png";
+import CameraImage from "../../assets/Image/camera.png";
+
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+import { Camera } from "expo-camera";
+
 export default class AddRecipeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      visibleImageModal: true,
+      hasCameraPermission: null,
+      type: Camera.Constants.Type.back,
+      modalVisible: false,
       name: "",
       description: "",
-      image: "",
+      image: null,
       processes: [
         {
           id: new Date().getMilliseconds(),
@@ -47,12 +57,9 @@ export default class AddRecipeScreen extends React.Component {
       ]
     };
   }
-  openUploadImageModal = () => {
-    this.setState({ visibleImageModal: true });
-    console.log('====================================');
-    console.log("Click");
-    console.log('====================================');
-  };
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
   addIngredient = () => {
     let { ingredients } = this.state;
     ingredients.push({
@@ -82,9 +89,70 @@ export default class AddRecipeScreen extends React.Component {
     processes.splice(id, 1);
     this.setState({ processes: processes });
   };
+
+  componentDidMount() {
+    this.getPermissionAsync();
+  }
+
+  getPermissionAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+    Permissions.askAsync(Permissions.CAMERA)
+      .then(data => {
+        let result = data.status;
+        this.setState({ hasCameraPermission: result === "granted" });
+        if (result !== "granted") {
+          alert("Sorry, No access to camera!");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  choosePhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true
+    });
+
+    console.log(result.base64);
+    let data = "data:image/" + result.type + ";base64," + result.base64;
+
+    if (!result.cancelled) {
+      this.setState({ image: data, modalVisible: false });
+    }
+  };
+  takePhoto = async () => {
+    if (
+      this.state.hasCameraPermission === null ||
+      this.state.hasCameraPermission === false
+    ) {
+      alert("Sorry, No access to camera!");
+    } else {
+      let result = await ImagePicker.launchCameraAsync({
+        exif: true,
+        allowsEditing: true,
+        quality: 0.7,
+        //base64: true,
+        aspect: [4, 3]
+      });
+      console.log(result.base64);
+      let data = "data:image/" + result.type + ";base64," + result.base64;
+
+      if (!result.cancelled) {
+        this.setState({ image: data, modalVisible: false });
+      }
+    }
+  };
   render() {
-    const { ingredients } = this.state;
-    const { processes } = this.state;
+    let { ingredients } = this.state;
+    let { processes } = this.state;
+    let { image } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -103,9 +171,18 @@ export default class AddRecipeScreen extends React.Component {
             <View style={styles.viewImage}>
               <Image
                 style={{ height: 150, width: 200, resizeMode: "center" }}
-                source={require("../../assets/Image/placeholder.png")}
+                source={
+                  image
+                    ? { uri: image }
+                    : require("../../assets/Image/placeholder.png")
+                }
               />
-              <TouchableOpacity onPress={this.openUploadImageModal} style={styles.updateImage}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(true);
+                }}
+                style={styles.updateImage}
+              >
                 <Entypo name="camera" size={30} color={"#000"} />
               </TouchableOpacity>
             </View>
@@ -121,10 +198,60 @@ export default class AddRecipeScreen extends React.Component {
                 placeholder="Mô tả"
               />
             </View>
-            <UploadImageModal
-              modalVisible={this.state.visibleImageModal}
-              // callback={""}
-            />
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.modalVisible}
+              onRequestClose={() => {
+                this.setModalVisible(!this.state.modalVisible);
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(false);
+                }}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(15,0,0,0.52)"
+                }}
+              ></TouchableOpacity>
+              <View style={styles.containerModal}>
+                <View style={styles.bodyModal}>
+                  <TouchableOpacity
+                    style={styles.viewButtonModal}
+                    onPress={this.takePhoto}
+                  >
+                    <View style={styles.viewIconButtonModal}>
+                      <Image
+                        style={styles.iconButtonModal}
+                        source={CameraImage}
+                      />
+                    </View>
+                    <View style={styles.viewTextButtonModal}>
+                      <Text style={styles.textButtonModal}>Máy ảnh</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.viewButtonModal}
+                    onPress={this.choosePhoto}
+                  >
+                    <View style={styles.viewIconButtonModal}>
+                      <Image
+                        style={styles.iconButtonModal}
+                        source={LibraryImage}
+                      />
+                    </View>
+                    <View style={styles.viewTextButtonModal}>
+                      <Text style={styles.textButtonModal}>
+                        Chọn ảnh từ bộ nhớ
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
           </View>
           <View style={styles.listContainer}>
             <View style={styles.viewTitle}>
@@ -284,5 +411,47 @@ const styles = StyleSheet.create({
   logoAddIngredient: {
     width: 30,
     height: 25
+  },
+  containerModal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    bottom: 0,
+    backgroundColor: "#FFF"
+  },
+  bodyModal: {
+    flex: 1,
+    width: "100%",
+    alignContent: "stretch",
+    justifyContent: "center"
+  },
+  viewButtonModal: {
+    width: "100%",
+    height: 35,
+    flex: 1,
+    flexDirection: "row",
+    paddingVertical: 5
+  },
+  viewIconButtonModal: {
+    flex: 1,
+    height: 20,
+    paddingLeft: 5,
+    justifyContent: "center",
+    alignContent: "center"
+  },
+  iconButtonModal: {
+    width: 30,
+    height: 30
+  },
+  viewTextButtonModal: {
+    flex: 10,
+    alignContent: "stretch",
+    alignItems: "flex-start"
+  },
+  textButtonModal: {
+    height: "100%",
+    textAlign: "left"
   }
 });
