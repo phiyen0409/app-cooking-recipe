@@ -3,6 +3,7 @@ const Post = require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const upload = require("../utils/upload");
+const ImageHelper = require("../utils/ImageHelper");
 
 module.exports = {
   index: async (req, res) => {
@@ -213,21 +214,45 @@ module.exports = {
     }
   },
   updateAvatar: async (req, res) => {
+    // try {
+    //   // let savImage = upload.single('avatar');
+    //   //   savImage(req,res,function(err) {
+    //   //     if(err) {
+    //   //         return  res.status(400).json({
+    //   //           message : "Error uploading file."
+    //   //         });
+    //   //     }
+    //   // });
+    //   // console.log(req.file);
+    //   if (req.file === undefined) {
+    //     return res.status(400).json({ message: "No file received" });
+    //   } else {
+    //     let user = await User.findById(req.params.userId);
+    //     user.avatar = req.file.path;
+    //     user.save()
+    //       .then(result=>{
+    //         return res.json({
+    //           message: "File is uploaded successfully!",
+    //           data: result
+    //       });
+    //     });
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    //   return res.status.json({
+    //     error: err
+    //   });
+    // }
+
     try {
-      // let savImage = upload.single('avatar');
-      //   savImage(req,res,function(err) {
-      //     if(err) {
-      //         return  res.status(400).json({
-      //           message : "Error uploading file."
-      //         });
-      //     }
-      // });
-      // console.log(req.file);
-      if (req.file === undefined) {
+      if (req.body.avatar === undefined) {
         return res.status(400).json({ message: "No file received" });
       } else {
+        let callBack;
+        let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.avatar);
         let user = await User.findById(req.params.userId);
-        user.avatar = req.file.path;
+        console.log(fileName);
+        user.avatar = fileName;
         user.save()
           .then(result=>{
             return res.json({

@@ -5,7 +5,7 @@ const router = express.Router;
 const dotenv = require('dotenv');
 dotenv.config();
 const app=express();
-const port=80;
+const port=8081;
 
 
 
@@ -14,9 +14,9 @@ const upload = require('./utils/upload');
 //app.use('./uploads', express.static('uploads'));
 // app.use(upload);
 app.use('/public',express.static('public'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:50000}));
 
 
 const userRoutes=require('./routes/user.route');
@@ -31,7 +31,7 @@ mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useCreate
 const user=require('./models/user.model');
 const post=require('./models/post.model');
 
-const hostname = '0.0.0.0';
+const hostname = '127.0.0.1';
 app.listen(port,hostname, function(){
     console.log('Server listening on port '+port);
 });

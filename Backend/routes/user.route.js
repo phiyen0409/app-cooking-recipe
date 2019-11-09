@@ -13,6 +13,7 @@ router.route('/savenote/:userId').post(UserController.saveNote);
 router.route('/deletenote/:userId').delete(UserController.deleteNote);
 router.route('/delete/:id').delete(UserController.delete);
 router.route('/upload/avatar/:userId').post(upload.single('avatar'),UserController.updateAvatar);
+//router.route('/upload/avatar/:userId').post(UserController.updateAvatar);
 router.route('/login').post(UserController.login);
 
 module.exports = router;
