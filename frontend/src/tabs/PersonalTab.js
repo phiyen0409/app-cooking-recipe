@@ -11,10 +11,18 @@ import {
   Modal,
   Alert,
   TouchableHighlight,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from "react-native-responsive-screen";
 import { Block, Text} from "galio-framework";
 import { FontAwesome, AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+import { Camera } from "expo-camera";
 import backgroundImg from "../../assets/Image/background.jpg";
 import avatarImg from "../../assets/Image/avatar.png";
 import recipeButton from '../../assets/Image/blog.png'
@@ -23,19 +31,89 @@ import noteButton from '../../assets/Image/Personal/note.png'
 import editProButton from '../../assets/Image/Personal/editpro.png'
 import ListItem from "../components/ListItem";
 import { TextInput } from "react-native-gesture-handler";
+import CameraImage from "../../assets/Image/camera.png";
+import LibraryImage from "../../assets/Image/library.png";
 //import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 const { width, height } = Dimensions.get("screen");
 export default class PersonalTab extends React.Component {
-  state = {
-    updateProfileVisible: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      image: null,
+      description: props.description,
+      hasCameraPermission: null,
+      type: Camera.Constants.Type.back,
+      modalVisible: false,
+      updateProfileVisible: false,
+    };
+  }
   setUpdateProfileVisible(visible) {
     this.setState({updateProfileVisible: visible});
   }
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  };
+  componentDidMount() {
+    this.getPermissionAsync();
+  }
+
+  getPermissionAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+    Permissions.askAsync(Permissions.CAMERA)
+      .then(data => {
+        let result = data.status;
+        this.setState({ hasCameraPermission: result === "granted" });
+        if (result !== "granted") {
+          alert("Sorry, No access to camera!");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  choosePhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      base64: true
+    });
+    let data = "data:image/" + result.type + ";base64," + result.base64;
+
+    if (!result.cancelled) {
+      this.setState({ image: data, modalVisible: false });
+    }
+  };
+  takePhoto = async () => {
+    if (
+      this.state.hasCameraPermission === null ||
+      this.state.hasCameraPermission === false
+    ) {
+      alert("Sorry, No access to camera!");
+    } else {
+      let result = await ImagePicker.launchCameraAsync({
+        exif: true,
+        allowsEditing: true,
+        quality: 0.7,
+        base64: true,
+        aspect: [1, 1]
+      });
+      let data = "data:image/" + result.type + ";base64," + result.base64;
+
+      if (!result.cancelled) {
+        this.setState({ image: data, modalVisible: false });
+      }
+    }
+  };
   static navigationOptions = {
     header: null
   };
   render() {
+    let { image } = this.state;
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -47,7 +125,23 @@ export default class PersonalTab extends React.Component {
               style={{ width, marginTop: '15%' }}>
           <View style={styles.cardView}>
             <Block middle style={styles.avatarContainer}>
-              <Image source={avatarImg} style={styles.avatar} />
+              <View style={styles.avatar}>
+              <Image
+            source={
+              image
+                ? { uri: image }
+                : require("../../assets/Image/placeholder.png")
+            }
+            resizeMode='cover' style={{height: '100%',
+            width: 124,
+            borderRadius: 62}}
+          />
+              </View>
+          <TouchableOpacity style={styles.updateImage} onPress={() => {
+                  this.setModalVisible(true);
+                }}>
+            <Entypo name="camera" size={30} color={"#000"} />
+          </TouchableOpacity>
             </Block>
             <Block style={styles.info}>
               <Block middle style={styles.nameInfo}>
@@ -218,6 +312,61 @@ export default class PersonalTab extends React.Component {
           </View>
         </Modal>
         
+
+        <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.modalVisible}
+              onRequestClose={() => {
+                this.setModalVisible(!this.state.modalVisible);
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(false);
+                }}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(15,0,0,0.52)"
+                }}
+              ></TouchableOpacity>
+              <View style={styles.containerModal}>
+                <View style={styles.bodyModal}>
+                  <TouchableOpacity
+                    style={styles.viewButtonModal}
+                    onPress={this.takePhoto}
+                  >
+                    <View style={styles.viewIconButtonModal}>
+                      <Image
+                        style={styles.iconButtonModal}
+                        source={CameraImage}
+                      />
+                    </View>
+                    <View style={styles.viewTextButtonModal}>
+                      <Text style={styles.textButtonModal}>Máy ảnh</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.viewButtonModal}
+                    onPress={this.choosePhoto}
+                  >
+                    <View style={styles.viewIconButtonModal}>
+                      <Image
+                        style={styles.iconButtonModal}
+                        source={LibraryImage}
+                      />
+                    </View>
+                    <View style={styles.viewTextButtonModal}>
+                      <Text style={styles.textButtonModal}>
+                        Chọn ảnh từ bộ nhớ
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
       </View>
     );
   }
@@ -266,10 +415,18 @@ const styles = StyleSheet.create({
     marginTop: -80,
   },
   avatar: {
-    width: 124,
-    height: 124,
-    borderRadius: 62,
-    borderWidth: 0
+    alignSelf: "stretch",
+    borderRadius: 50,
+    height:124,
+    width:'100%',
+    alignItems:'center',
+  },
+  updateImage: {
+    position: "absolute",
+    left: "50%",
+    bottom: 0,
+    marginLeft: -10,
+    marginBottom: 3,
   },
   nameInfo: {
     height: 50,
@@ -400,4 +557,50 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: "#fff"
   },
+  containerModal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    bottom: 0,
+    backgroundColor: "#FFF"
+  },
+  bodyModal: {
+    flex: 1,
+    width: "100%",
+    alignContent: "stretch",
+    justifyContent: "center"
+  },
+  viewButtonModal: {
+    width: "100%",
+    height: 45,
+    flex: 1,
+    flexDirection: "row",
+    //paddingVertical: 5,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  viewIconButtonModal: {
+    flex: 1,
+    //height: 20,
+    paddingLeft: 5,
+    justifyContent: "center",
+    alignContent: "center"
+  },
+  iconButtonModal: {
+    width: 35,
+    height: 35
+  },
+  viewTextButtonModal: {
+    flex: 10,
+    flexDirection:"row",
+    marginLeft: 10,
+  },
+  textButtonModal: {
+    alignSelf:"flex-start",
+    height: "100%",
+    textAlign: "left",
+    fontSize:15
+  }
 });

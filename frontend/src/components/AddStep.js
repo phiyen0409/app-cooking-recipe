@@ -6,7 +6,8 @@ import {
   ScrollView,
   Image,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from "react-native";
 import { Block } from "galio-framework";
 import theme from "../../constant/theme";
@@ -18,6 +19,10 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+import { Camera } from "expo-camera";
 
 export default class AddStep extends Component {
   constructor(props) {
@@ -27,13 +32,76 @@ export default class AddStep extends Component {
       step: props.step,
       title: props.title,
       image: props.image,
-      description: props.description
+      description: props.description,
+      hasCameraPermission: null,
+      type: Camera.Constants.Type.back,
+      modalVisible: false,
     };
   }
   removeItem = () => {
     this.props.removeItem(this.state.id);
   };
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  };
+  componentDidMount() {
+    this.getPermissionAsync();
+  }
+
+  getPermissionAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+    Permissions.askAsync(Permissions.CAMERA)
+      .then(data => {
+        let result = data.status;
+        this.setState({ hasCameraPermission: result === "granted" });
+        if (result !== "granted") {
+          alert("Sorry, No access to camera!");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  choosePhoto = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true
+    });
+    let data = "data:image/" + result.type + ";base64," + result.base64;
+
+    if (!result.cancelled) {
+      this.setState({ image: data, modalVisible: false });
+    }
+  };
+  takePhoto = async () => {
+    if (
+      this.state.hasCameraPermission === null ||
+      this.state.hasCameraPermission === false
+    ) {
+      alert("Sorry, No access to camera!");
+    } else {
+      let result = await ImagePicker.launchCameraAsync({
+        exif: true,
+        allowsEditing: true,
+        quality: 0.7,
+        base64: true,
+        aspect: [4, 3]
+      });
+      let data = "data:image/" + result.type + ";base64," + result.base64;
+
+      if (!result.cancelled) {
+        this.setState({ image: data, modalVisible: false });
+      }
+    }
+  };
   render() {
+    let { image } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.btnDel}>
@@ -66,13 +134,74 @@ export default class AddStep extends Component {
         </View>
         <View style={styles.viewImage}>
           <Image
-            source={require("../../assets/Image/placeholder.png")}
+            source={
+              image
+                ? { uri: image }
+                : require("../../assets/Image/placeholder.png")
+            }
             style={{ height: 150, width: 200, resizeMode: "center" }}
           />
-          <TouchableOpacity style={styles.updateImage}>
+          <TouchableOpacity style={styles.updateImage} onPress={() => {
+                  this.setModalVisible(true);
+                }}>
             <Entypo name="camera" size={30} color={"#000"} />
           </TouchableOpacity>
         </View>
+
+        <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.modalVisible}
+              onRequestClose={() => {
+                this.setModalVisible(!this.state.modalVisible);
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(false);
+                }}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(15,0,0,0.52)"
+                }}
+              ></TouchableOpacity>
+              <View style={styles.containerModal}>
+                <View style={styles.bodyModal}>
+                  <TouchableOpacity
+                    style={styles.viewButtonModal}
+                    onPress={this.takePhoto}
+                  >
+                    <View style={styles.viewIconButtonModal}>
+                      <Image
+                        style={styles.iconButtonModal}
+                        source={CameraImage}
+                      />
+                    </View>
+                    <View style={styles.viewTextButtonModal}>
+                      <Text style={styles.textButtonModal}>Máy ảnh</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.viewButtonModal}
+                    onPress={this.choosePhoto}
+                  >
+                    <View style={styles.viewIconButtonModal}>
+                      <Image
+                        style={styles.iconButtonModal}
+                        source={LibraryImage}
+                      />
+                    </View>
+                    <View style={styles.viewTextButtonModal}>
+                      <Text style={styles.textButtonModal}>
+                        Chọn ảnh từ bộ nhớ
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
       </View>
     );
   }
@@ -142,5 +271,51 @@ const styles = StyleSheet.create({
     alignContent: "center",
     fontWeight: "400",
     color: "#8e1e20"
+  },
+  containerModal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    bottom: 0,
+    backgroundColor: "#FFF"
+  },
+  bodyModal: {
+    flex: 1,
+    width: "100%",
+    alignContent: "stretch",
+    justifyContent: "center"
+  },
+  viewButtonModal: {
+    width: "100%",
+    height: 45,
+    flex: 1,
+    flexDirection: "row",
+    //paddingVertical: 5,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  viewIconButtonModal: {
+    flex: 1,
+    //height: 20,
+    paddingLeft: 5,
+    justifyContent: "center",
+    alignContent: "center"
+  },
+  iconButtonModal: {
+    width: 35,
+    height: 35
+  },
+  viewTextButtonModal: {
+    flex: 10,
+    flexDirection:"row",
+    marginLeft: 10,
+  },
+  textButtonModal: {
+    alignSelf:"flex-start",
+    height: "100%",
+    textAlign: "left",
+    fontSize:15
   }
 });

@@ -119,8 +119,6 @@ export default class AddRecipeScreen extends React.Component {
       aspect: [4, 3],
       base64: true
     });
-
-    console.log(result.base64);
     let data = "data:image/" + result.type + ";base64," + result.base64;
 
     if (!result.cancelled) {
@@ -138,10 +136,9 @@ export default class AddRecipeScreen extends React.Component {
         exif: true,
         allowsEditing: true,
         quality: 0.7,
-        //base64: true,
+        base64: true,
         aspect: [4, 3]
       });
-      console.log(result.base64);
       let data = "data:image/" + result.type + ";base64," + result.base64;
 
       if (!result.cancelled) {
@@ -429,29 +426,33 @@ const styles = StyleSheet.create({
   },
   viewButtonModal: {
     width: "100%",
-    height: 35,
+    height: 45,
     flex: 1,
     flexDirection: "row",
-    paddingVertical: 5
+    //paddingVertical: 5,
+    justifyContent:'center',
+    alignItems:'center'
   },
   viewIconButtonModal: {
     flex: 1,
-    height: 20,
+    //height: 20,
     paddingLeft: 5,
     justifyContent: "center",
     alignContent: "center"
   },
   iconButtonModal: {
-    width: 30,
-    height: 30
+    width: 35,
+    height: 35
   },
   viewTextButtonModal: {
     flex: 10,
-    alignContent: "stretch",
-    alignItems: "flex-start"
+    flexDirection:"row",
+    marginLeft: 10,
   },
   textButtonModal: {
+    alignSelf:"flex-start",
     height: "100%",
-    textAlign: "left"
+    textAlign: "left",
+    fontSize:15
   }
 });

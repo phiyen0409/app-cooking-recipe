@@ -9,6 +9,8 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import Process from "../components/Process";
+import Comment from "../components/Comment";
+import { TextInput } from "react-native-gesture-handler";
 
 export default class RecipeScreen extends React.Component {
 //   static navigationOptions = {
@@ -48,6 +50,22 @@ export default class RecipeScreen extends React.Component {
         </View>
         <View style={styles.postContainer}>
           <Process />
+        </View>
+        <View style={styles.postContainer}>
+          <View style = {styles.viewTitle}>
+            <Text style = {styles.title}>Bình luận</Text>
+          </View>
+          <ScrollView>
+            <Comment/>
+            <Comment/>
+          </ScrollView>
+          <View style = {styles.viewComment}>
+            {/* <TouchableOpacity
+              // onPress={this.addComment}
+            > */}
+              <TextInput placeholder = "Viết bình luận" />
+            {/* </TouchableOpacity> */}
+          </View>
         </View>
         </ScrollView>
       </View>
@@ -156,5 +174,19 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     fontWeight: "300",
     marginTop: -1
+  },
+
+  viewComment: {
+    flexDirection: "row",
+    alignItems: "stretch",
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 5,
+    borderWidth: 2,
+    borderColor: "#ffebee",
+    borderRadius: 10,
+    shadowColor: "#cdb7b5",
+    padding: 3
   },
 });
