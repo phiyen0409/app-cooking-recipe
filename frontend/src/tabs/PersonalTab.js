@@ -205,14 +205,14 @@ const styles = StyleSheet.create({
     justifyContent:'center'
   },
   textInfoDetail:{
-    size: 10,
+    fontSize: 10,
     color:'#585858'
   },
   iconProfile:{
     color:'#585858',
     // height: 10,
     // width: 10,
-    size:10,
+    fontSize:10,
     marginRight: 5
   },
   divider: {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   recipesTitle:{
     textTransform:'uppercase',
     fontWeight: 'bold',
-    size: 18,
+    fontSize: 18,
     marginLeft: 15,
     color: '#830707',
     
