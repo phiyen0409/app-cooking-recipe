@@ -7,7 +7,11 @@ import {
   TouchableOpacity,
   View,
   ImageBackground,
-  Dimensions
+  Dimensions,
+  Modal,
+  Alert,
+  TouchableHighlight,
+  TouchableWithoutFeedback
 } from "react-native";
 import { Block, Text} from "galio-framework";
 import { FontAwesome, AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
@@ -18,8 +22,16 @@ import savedButton from '../../assets/Image/Personal/bookmark.png'
 import noteButton from '../../assets/Image/Personal/note.png'
 import editProButton from '../../assets/Image/Personal/editpro.png'
 import ListItem from "../components/ListItem";
+import { TextInput } from "react-native-gesture-handler";
+//import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 const { width, height } = Dimensions.get("screen");
 export default class PersonalTab extends React.Component {
+  state = {
+    updateProfileVisible: false,
+  };
+  setUpdateProfileVisible(visible) {
+    this.setState({updateProfileVisible: visible});
+  }
   static navigationOptions = {
     header: null
   };
@@ -108,7 +120,9 @@ export default class PersonalTab extends React.Component {
               </Block>
             </Block>
                 <View style={styles.buttonGroup}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => {
+            this.setUpdateProfileVisible(true);
+          }}>
                     <View style={styles.buttonBlock}>
                     <Image source={editProButton} style={styles.imgButton}/>
                   </View>
@@ -142,6 +156,67 @@ export default class PersonalTab extends React.Component {
           </View>
           </ScrollView>
         </ImageBackground>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.updateProfileVisible}
+          onRequestClose={() => {
+            // Alert.alert('Modal has been closed.');
+            this.setUpdateProfileVisible(!this.state.updateProfileVisible);
+          }}>
+            <View style={{flex:1, width: '100%', height:'100%',backgroundColor:'rgba(15, 0, 0, 0.52)',zIndex: 0}}></View>
+          <View style={styles.updateProfilePopup}>
+            <View style={{justifyContent:'center', marginVertical: 20, alignItems: 'center'}}><Text style={styles.recipesTitle}>Thông tin cá nhân</Text></View>
+            <View style={styles.updateProfileComponent}>
+              <Text style={styles.textUpdateProfile}>
+                Tên: 
+              </Text>
+              <TextInput style={styles.textInputUpdateProfile}></TextInput>
+            </View>
+            <View style={styles.updateProfileComponent}>
+              <Text style={styles.textUpdateProfile}>
+                Ngày sinh: 
+              </Text>
+              <TextInput style={styles.textInputUpdateProfile}></TextInput>
+            </View>
+            <View style={styles.updateProfileComponent}>
+              <Text style={styles.textUpdateProfile}>
+                Số điện thoại: 
+              </Text>
+              <TextInput style={styles.textInputUpdateProfile}></TextInput>
+            </View>
+            <View style={styles.buttonUpdateProContainer}>
+            <TouchableOpacity style={styles.buttonUpdatePro}>
+                <Text style={styles.buttonUpdateProText}>Lưu lại</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonUpdatePro} onPress={() => {
+            Alert.alert('Thông báo',
+            'Bạn có muốn hủy bỏ?',
+            [
+              {text: 'OK', onPress: () => {this.setUpdateProfileVisible(!this.state.updateProfileVisible);}},
+              {
+                text: 'Hủy',
+                //onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+            ],
+            {cancelable: false},);}}>
+                <Text style={styles.buttonUpdateProText}>Hủy bỏ</Text>
+            </TouchableOpacity>
+        </View>
+            {/* <View>
+              <Text>Hello World!</Text>
+
+              <TouchableHighlight
+                onPress={() => {
+                  this.setUpdateProfileVisible(!this.state.updateProfileVisible);
+                }}>
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+            </View> */}
+          </View>
+        </Modal>
         
       </View>
     );
@@ -267,5 +342,62 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     color: '#830707',
     
+  },
+  updateProfilePopup:{
+    backgroundColor: 'white',
+    position:'absolute',
+    top:'50%',
+    marginTop:-300/2,
+    left:10,
+    right:10,
+    height: 300,
+    borderRadius: 10,
+    zIndex:1,
+    paddingRight: 20
+  },
+  updateProfileComponent:{
+    width:'100%',
+    flexDirection: 'row',
+    marginHorizontal:20,
+    marginTop:20,
+  },
+  textUpdateProfile:{
+    flex: 3,
+    color: '#830707',
+    textTransform:'uppercase',
+    fontWeight: 'bold',
+    fontSize: 13
+  },
+  textInputUpdateProfile:{
+    flex:5,
+    borderRadius: 10,
+    backgroundColor: "#E6E6E6",
+    marginHorizontal:10,
+    color:'#830707',
+    paddingLeft: 10
+  },
+  buttonUpdateProContainer: {
+    flex:1,
+    justifyContent: "flex-start",
+    flexDirection:'row',
+    justifyContent: 'center',
+    alignItems:'center'
+  },
+  buttonUpdatePro:{
+    width: 70,
+    backgroundColor: "#830707",
+    borderRadius: 15,
+    marginHorizontal: 20,
+    // paddingVertical:12,
+    marginBottom: 10,
+    height: 40,
+    justifyContent: 'center',
+    alignItems:'center'
+  },
+  buttonUpdateProText: {
+    fontSize: 16,
+    fontWeight: "500",
+    textAlign: 'center',
+    color: "#fff"
   },
 });
