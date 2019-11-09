@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   viewInput:{
-    flex: 10,
+    flex: 12,
     height:"100%",
     flexDirection: "row",
     backgroundColor: "#ffcdd2",
@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
   input: {
     height: "100%",
     width: "100%",
-    borderRadius: 10,
-    backgroundColor: "#FFF"
+    borderRadius: 7,
+    backgroundColor: "#FFF",
+    padding: 3
   }
 });

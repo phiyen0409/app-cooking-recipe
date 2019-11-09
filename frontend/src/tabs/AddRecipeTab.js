@@ -19,16 +19,20 @@ import AddIntro from "../components/AddIntro";
 import AddIngredient from "../components/AddIngredient";
 import PlusImage from "../../assets/Image/plus.png";
 import AddStep from "../components/AddStep";
+import { Entypo } from "@expo/vector-icons";
+import UploadImageModal from "../components/UploadImageModal";
 
 export default class AddRecipeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      visibleImageModal: true,
       name: "",
       description: "",
       image: "",
       processes: [
         {
+          id: new Date().getMilliseconds(),
           step: 1,
           description: "",
           image: ""
@@ -36,16 +40,23 @@ export default class AddRecipeScreen extends React.Component {
       ],
       ingredients: [
         {
+          id: new Date().getMilliseconds(),
           name: "",
           weight: ""
         }
       ]
     };
   }
+  openUploadImageModal = () => {
+    this.setState({ visibleImageModal: true });
+    console.log('====================================');
+    console.log("Click");
+    console.log('====================================');
+  };
   addIngredient = () => {
     let { ingredients } = this.state;
     ingredients.push({
-      id: 1,
+      id: new Date().getMilliseconds(),
       name: "",
       weight: ""
     });
@@ -54,7 +65,8 @@ export default class AddRecipeScreen extends React.Component {
   addStep = () => {
     let { processes } = this.state;
     processes.push({
-      id: 1,
+      id: new Date().getMilliseconds(),
+      step: 2,
       name: "",
       weight: ""
     });
@@ -79,27 +91,40 @@ export default class AddRecipeScreen extends React.Component {
           <View style={styles.postContainer}>
             <View style={styles.viewName}>
               <TextInput
+                multiline={false}
                 style={styles.title}
                 placeholder="Tên món ăn"
+                value={this.state.name}
+                onChangeText={text => {
+                  this.setState({ name: text });
+                }}
               ></TextInput>
             </View>
             <View style={styles.viewImage}>
-              <View
-                style={{
-                  flexDirection: "column",
-                  height: "100%",
-                  width: "100%"
-                }}
-              >
-                <Image
-                  style={{ height: 150, width: 200, resizeMode: "center" }}
-                  source={require("../../assets/Image/placeholder.png")}
-                />
-              </View>
+              <Image
+                style={{ height: 150, width: 200, resizeMode: "center" }}
+                source={require("../../assets/Image/placeholder.png")}
+              />
+              <TouchableOpacity onPress={this.openUploadImageModal} style={styles.updateImage}>
+                <Entypo name="camera" size={30} color={"#000"} />
+              </TouchableOpacity>
             </View>
             <View style={styles.viewDescription}>
-              <TextInput style={styles.description} placeholder="Mô tả" />
+              <TextInput
+                multiline
+                numberOfLines={4}
+                value={this.state.description}
+                onChangeText={text => {
+                  this.setState({ description: text });
+                }}
+                //style={styles.description}
+                placeholder="Mô tả"
+              />
             </View>
+            <UploadImageModal
+              modalVisible={this.state.visibleImageModal}
+              // callback={""}
+            />
           </View>
           <View style={styles.listContainer}>
             <View style={styles.viewTitle}>
@@ -109,6 +134,7 @@ export default class AddRecipeScreen extends React.Component {
               {ingredients.map((item, key) => {
                 return (
                   <AddIngredient
+                    key={key}
                     id={key}
                     name={item.name}
                     weight={item.weight}
@@ -134,6 +160,7 @@ export default class AddRecipeScreen extends React.Component {
               {processes.map((item, key) => {
                 return (
                   <AddStep
+                    key={key}
                     id={key}
                     step={item.step}
                     title={item.title}
@@ -169,50 +196,55 @@ const styles = StyleSheet.create({
   postContainer: {
     marginLeft: 5,
     marginRight: 5,
-    marginBottom: 5
+    marginBottom: 5,
+    alignItems: "stretch",
+    justifyContent: "center",
+    paddingHorizontal: 20
   },
-  viewName:{
-    padding: 5,
+  viewName: {
     margin: 5,
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     maxHeight: 50,
-    width: ('100%'),
-    marginTop: 0,
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
     borderWidth: 2,
-    borderColor: '#ffebee',
+    borderColor: "#ffebee",
     borderRadius: 10,
+    padding: 3
   },
-  viewImage:{
+  viewImage: {
     flex: 1,
+    width: "100%",
     flexDirection: "column",
     justifyContent: "center",
-    height: hp('30%'),
-    width: '100%',
-    padding: 5,
-    paddingBottom:0,
     alignItems: "center",
     alignSelf: "center",
-    margin: 0,
     borderWidth: 2,
-    borderColor: '#ffebee',
+    borderColor: "#ffebee",
     borderRadius: 10,
-    shadowColor: '#cdb7b5',
+    shadowColor: "#cdb7b5",
+    padding: 3
   },
-  viewDescription:{
+  updateImage: {
+    position: "absolute",
+    left: "50%",
+    bottom: 0,
+    marginLeft: -10,
+    marginBottom: 3
+  },
+  viewDescription: {
     flexDirection: "row",
     alignItems: "stretch",
     marginBottom: 10,
     marginLeft: 0,
     marginRight: 0,
     marginTop: 5,
-    paddingLeft: 5,
-    paddingRight: 5,
     borderWidth: 2,
-    borderColor: '#ffebee',
+    borderColor: "#ffebee",
     borderRadius: 10,
-    shadowColor: '#cdb7b5',
+    shadowColor: "#cdb7b5",
+    padding: 3
   },
   listContainer: {
     flexDirection: "column",
