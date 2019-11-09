@@ -21,48 +21,85 @@ import {
 
 export default function Comment(props){
 return(
-    <View style={styles.container}>
-        <View style = {styles.viewTitle}>
-            <Text style = {styles.title}>
-                Bình luận
-            </Text>
+    // <View style={styles.container}>
+    //     <View style = {styles.viewTitle}>
+    //         <Text style = {styles.title}>
+    //             Bình luận
+    //         </Text>
             
-        </View>
-        <View style = {styles.content}>
-            <View style = {{flexDirection: 'row'}}>
-                <Image style = {{}} source = {Avatar}>
+    //     </View>
+    //     <View style = {styles.content}>
+    //         <View style = {{flexDirection: 'row'}}>
+    //             <Image style = {{}} source = {Avatar}>
 
-                </Image>
-                <Text>
-                    Ly
-                </Text>
+    //             </Image>
+    //             <Text>
+    //                 Ly
+    //             </Text>
+    //         </View>
+    //         <View> style = {styles.description}
+    //             <Text>
+    //                  bfbfbvkvskjsb
+    //             </Text>
+    //         </View>
+    //     </View>
+    // </View>
+
+    <View style={styles.viewContent}>
+            <View style = {{flex: 1, flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: "#830707", height: '100%', marginTop: 15}}>
+                <Image style = {styles.avatar} source = {Avatar}/>
+                <Text style = {{marginLeft: 5, fontWeight: "400", color: "#8e1e20"}}>Lynk Huyền</Text>
+                {/* <Text style = {{paddingLeft: 5, paddingRight: 5, fontWeight: "400", color: "#8e1e20"}}>{step.title}</Text> */}
+
             </View>
-            <View> style = {styles.description}
-                <Text>
-                     bfbfbvkvskjsb
-                </Text>
+            <View style = {styles.discription, {margin:5, paddingRight: 5, height : '100%'}}>
+                {/* <View style = {styles.imageContainer}> */}
+                    {/* <Image style={styles.image} source={Im}/> */}
+                {/* </View> */}
+                <Text>asdfghjkl  hgvvb bjf jr jfn ghj bnh nkjiuibb uh huy gvgcff hgcfgcggbh</Text>
+                {/* <View style = {{height: '100%', margin: 5,padding: 5,}}>
+                    <Text>{step.data}</Text>
+                </View> */}
             </View>
         </View>
-    </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-        height: 172,
-        padding: 0,
-        backgroundColor: '#fff',
-        marginBottom: 10,
-    },
+    // container:{
+    //     flex: 1,
+    //     flexDirection: "column",
+    //     alignItems: "center",
+    //     height: 172,
+    //     padding: 0,
+    //     backgroundColor: '#fff',
+    //     marginBottom: 10,
+    // },
 
     viewContent:{
         flex: 2,
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "baseline",
         padding: 5,
+        borderWidth: 1,
+        borderColor: "#ffebee",
+        backgroundColor: "#ffebee",
+        borderRadius: 4,
+        // borderBottomRightRadius:4,
+        // borderBottomLeftRadius:4,
+        // borderTopWidth: 0,
+        marginTop: 0,
+        margin: 10
+    },
+
+    avatar: {
+        // flex: 1,
+        // flexDirection: "row",
+        width: 25,
+        height: 25,
+        borderRadius: 62,
+        borderWidth: 0
+
     },
 
     viewTitle:{
@@ -105,23 +142,23 @@ const styles = StyleSheet.create({
         marginLeft: 15,
     },
 
-    button:{
-        flex: 1,
-        // backgroundColor: "#b71c1c",
-        margin: 5,
-        paddingTop: 10
-        //borderRadius: 4,
-        // borderLeftWidth: 0.5,
-        // borderLeftColor: 'red'
+    // button:{
+    //     flex: 1,
+    //     // backgroundColor: "#b71c1c",
+    //     margin: 5,
+    //     paddingTop: 10
+    //     //borderRadius: 4,
+    //     // borderLeftWidth: 0.5,
+    //     // borderLeftColor: 'red'
         
-    },
-    buttonBlock:{
-        justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'center'
-    },
-    logoButton: {
-        width: 25,
-        height:25
-    },
+    // },
+    // buttonBlock:{
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     alignItems: 'center'
+    // },
+    // logoButton: {
+    //     width: 25,
+    //     height:25
+    // },
 });
