@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  AsyncStorage
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -18,6 +19,23 @@ import theme from "../../constant/theme";
 import uploadImage from "../../assets/Image/blog.png";
 
 export default class HomeTab extends React.Component {
+  _getUserLogin = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@auth');
+      if (value !== null) {
+        // We have data!!
+        return JSON.parse(value);
+      }
+      return null;
+    } catch (error) {
+      // Error retrieving data
+      console.log(error);
+    }
+    return null;
+  };
+  constructor(props) {
+    super(props);
+  }
   static navigationOptions = {
     header: null
   };

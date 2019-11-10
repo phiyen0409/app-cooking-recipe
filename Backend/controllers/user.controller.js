@@ -90,11 +90,10 @@ module.exports = {
     }
     let { name } = req.body;
     let birthday = moment(req.body.birthday, "DD/MM/YYYY").format("DD/MM/YYYY");
-    let { avatar } = req.body;
     let { phone } = req.body;
+    
     user.name = name;
     user.birthday = birthday;
-    user.avatar = avatar;
     user.phone = phone;
     user
       .save()

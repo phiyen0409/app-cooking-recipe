@@ -5,7 +5,8 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Button
+  Button,
+  AsyncStorage
 } from "react-native";
 import LogoImage from "../../assets/Image/logo2.png";
 import googleImage from "../../assets/Image/google.png";
@@ -15,21 +16,19 @@ import axios from "axios";
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
   constructor(props) {
     super(props);
     console.log(this.props);
 
     this.state = {
-      idUser: '',
+      idUser: "",
       signedIn: false,
       name: "",
       photoUrl: "",
       accessToken: ""
     };
-
-
   }
 
   signInWithGoogleAsync = async () => {
@@ -43,26 +42,34 @@ class LoginScreen extends React.Component {
       if (result.type === "success") {
         alert(result.user.email);
         axios({
-          method: 'post',
-          url: '/user/login',
+          method: "post",
+          url: "/user/login",
           data: {
             user: result.user,
             accessToken: result.accessToken
           }
-        }).then((res) => {
-          let user = res.data;
-          this.setState({
-            idUser: user._id,
-            signedIn: true,
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar,
-            //accessToken: user.accessToken,
+        })
+          .then(res => {
+            let user = res.data;
+            this.setState({
+              idUser: user._id,
+              signedIn: true,
+              name: user.name,
+              email: user.email,
+              avatar: user.avatar
+              //accessToken: user.accessToken,
+            });
+
+            AsyncStorage.setItem("@auth", JSON.stringify(this.state)).then(
+              result => {
+                const { navigation } = this.props;
+                navigation.navigate("Home");
+              }
+            );
+          })
+          .catch(error => {
+            console.log(error);
           });
-          console.log(res);
-        }).catch((error) =>{
-          console.log(error);
-        });
       } else {
         console.log("cancelled");
       }
@@ -70,6 +77,22 @@ class LoginScreen extends React.Component {
       console.log(e);
     }
   };
+  _getUserLogin = async () => {
+    try {
+      const value = await AsyncStorage.getItem("@auth");
+      if (value !== null) {
+        // We have data!!
+        const { navigation } = this.props;
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      // Error retrieving data
+      console.log(error);
+    }
+  };
+  componentDidMount() {
+    this._getUserLogin();
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -77,12 +100,21 @@ class LoginScreen extends React.Component {
           <Image style={styles.logo} source={LogoImage} />
         </View>
         <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={this.signInWithGoogleAsync}>
-                <Text style={styles.buttonText}>Đăng nhập bằng Google  <Image style={styles.socialLogo} source={googleImage}/></Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Đăng nhập bằng Facebook  <Image style={styles.socialLogo} source={fbImage}/></Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.signInWithGoogleAsync}
+          >
+            <Text style={styles.buttonText}>
+              Đăng nhập bằng Google{" "}
+              <Image style={styles.socialLogo} source={googleImage} />
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>
+              Đăng nhập bằng Facebook{" "}
+              <Image style={styles.socialLogo} source={fbImage} />
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -92,41 +124,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#830707",
-    width: '100%',
-    justifyContent: 'center',
-    alignItems:"center"
-  },
-  logoContainer:{
-    flex:2,
+    width: "100%",
     justifyContent: "center",
-    alignItems:"center"
+    alignItems: "center"
+  },
+  logoContainer: {
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center"
   },
   logo: {
     height: 400,
     width: 400
   },
   buttonContainer: {
-    flex:1,
-    justifyContent: "flex-start",
+    flex: 1,
+    justifyContent: "flex-start"
   },
-  button:{
+  button: {
     width: 300,
     backgroundColor: "#fff",
     borderRadius: 25,
     marginVertical: 10,
-    paddingVertical:12,
+    paddingVertical: 12,
     marginBottom: 10,
     height: 50
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "500",
-    textAlign: 'center',
+    textAlign: "center",
     color: "#830707"
   },
   socialLogo: {
-      height: 20,
-      width:20
+    height: 20,
+    width: 20
   }
 });
 

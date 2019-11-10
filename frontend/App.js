@@ -19,21 +19,24 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends React.Component {
   constructor(props){
     super(props);
-    axios.defaults.baseURL = "http://192.168.137.1:80";
+    let host = '192.168.137.229';
+    let port = '8081'
+    axios.defaults.baseURL = `http://${host}:${port}`;
   }
   render()
     {
   return (
-    <View style={styles.container}>
-      {/* <LoginScreen/> */}
-      <HomeScreen/>
-      {/* <RecipeScreen/> */}
-      {/* <IngredientItem/> */}
-      {/* <IntroItem/> */}
-      {/* <AddIntro/> */}
-      {/* <AddIngredient/> */}
-      {/* <AddRecipeScreen/> */}
-    </View>
+    // <View style={styles.container}>
+    //   {/* <LoginScreen/> */}
+    //   <HomeScreen/>
+    //   {/* <RecipeScreen/> */}
+    //   {/* <IngredientItem/> */}
+    //   {/* <IntroItem/> */}
+    //   {/* <AddIntro/> */}
+    //   {/* <AddIngredient/> */}
+    //   {/* <AddRecipeScreen/> */}
+    // </View>
+    <AppContainer/>
   )
   }
 }

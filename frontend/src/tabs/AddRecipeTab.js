@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  Modal
+  Modal,
+  AsyncStorage
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -31,6 +32,20 @@ import * as Permissions from "expo-permissions";
 import { Camera } from "expo-camera";
 
 export default class AddRecipeScreen extends React.Component {
+  _getUserLogin = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@auth');
+      if (value !== null) {
+        // We have data!!
+        return JSON.parse(value);
+      }
+      return null;
+    } catch (error) {
+      // Error retrieving data
+      console.log(error);
+    }
+    return null;
+  };
   constructor(props) {
     super(props);
     this.state = {
