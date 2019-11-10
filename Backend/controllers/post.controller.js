@@ -21,9 +21,23 @@ module.exports = {
   listPostSorted:async (req, res) => {
     try {
       let posts = await Post.find().populate('author').sort({ createdDate: 'desc' });
+      let {userId}=req.params;
+      let user=await User.findById(userId);
       let listResult=[];
       for (let i=0; i<posts.length;i++){
         let date=moment(posts[i].createdDate).format("DD/MM/YYYY hh:mm A").toString();
+        let isLiked;
+        let isSaved;
+        if (posts[i].userLiked.includes(userId)) {
+          isLiked=true;
+        } else {
+          isLiked=false;
+        }
+        if (user.listPostsSaved.includes(posts[i]._id)) {
+          isSaved=true;
+        } else {
+          isSaved=false;
+        }
         listResult.push({
           _id:posts[i]._id,
           title: posts[i].title,
@@ -38,8 +52,11 @@ module.exports = {
           userLiked:posts[i].userLiked,
           comments:posts[i].comments,
           ingredients:posts[i].ingredients,
-          detail:posts[i].detail
+          detail:posts[i].detail,
+          isLiked: isLiked,
+          isSaved: isSaved
         });
+        console.log(listResult);
       }
       if (posts < 1) {
         return res.json({
