@@ -11,6 +11,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
+import axios from "axios";
 
 export default class ListItem extends React.Component {
   springValueLike = new Animated.Value(1);
@@ -20,10 +21,27 @@ export default class ListItem extends React.Component {
     super(props);
     this.state = {
       liked: false,
-      saved: false
+      saved: false,
     };
   }
   springLike() {
+    axios({
+      method: "put",
+      url: "post/updatelike/"+this.props.post._id,
+      data: {
+        userId: this.props.userId,
+      }
+    })
+    .then(result => {
+    })
+    .catch(error => {
+      Alert.alert(error);
+      this.setState(state => {
+        return {
+          liked: !this.state.liked,
+        };
+      });
+    });
     this.setState(state => {
       return {
         liked: !this.state.liked,
@@ -42,9 +60,30 @@ export default class ListItem extends React.Component {
         friction: 2,
       }).start();
     }
-    
   }
   springSave() {
+    axios({
+      method: "put",
+      url: "user/savepost/"+this.props.userId,
+      data: {
+        postId: this.props.post._id,
+      }
+    })
+    .then(result => {
+    })
+    .catch(error => {
+      Alert.alert(error);
+      this.setState(state => {
+        return {
+          liked: !this.state.liked,
+        };
+      });
+    });
+    this.setState(state => {
+      return {
+        liked: !this.state.liked,
+      };
+    });
     this.setState(state => {
       return {
         saved: !this.state.saved,
@@ -69,6 +108,7 @@ export default class ListItem extends React.Component {
   const {onPress} = this.props;
   const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
   const AnimatedFontaws = Animated.createAnimatedComponent(FontAwesome);
+  const post = this.props.post;
     return (
       <View style={styles.container}>
         <View
@@ -82,21 +122,21 @@ export default class ListItem extends React.Component {
           <TouchableOpacity style={{width: '100%', height:'100%'}} onPress={onPress}>
             <View style={{flexDirection:'row'}}>
               <View style={styles.imageContainer}>
-                <Image style={styles.image} source={Im} />
+                <Image style={styles.image} source={post.image ? {uri: post.image} : Im} />
               </View>
   
               <View style={styles.viewContent}>
                 <View style={styles.viewTitle}>
-                  <Text style={styles.title}>Sườn xào chua ngọtfghjkleefvfgtggsr</Text>
+                  <Text style={styles.title}>{post.title}</Text>
                 </View>
                 <View style={styles.author}>
                 <FontAwesome name="user" size={12} color='#6E6E6E' />
                   <Text style={styles.authorText}>
-                    Yến cute
+                    {post.author}
                   </Text>
                 </View>
                 <Text style={styles.description}>
-                  ffbhgfdy jn ehf gfn wkvbnvm ffgfggh bfh fgb dvfhgj
+                  {post.description}
                 </Text>
               </View>
             </View>
@@ -112,13 +152,13 @@ export default class ListItem extends React.Component {
                         style={{transform: [{scale: this.springValueLike}]}}
                         color={this.state.liked ? '#830707' : '#A4A4A4'}
                       />
-              <Text style = {{fontSize: 6}}>345678</Text>
+              <Text style = {{fontSize: 6}}>{post.totalLike>0 ? post.totalLike: ''}</Text>
             </Block>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
             <Block style={styles.buttonBlock}>
               <MaterialIcons name='comment' size={30} color='#A4A4A4'/>
-              <Text style = {{fontSize: 6}}>345678</Text>
+              <Text style = {{fontSize: 6}}>{post.totalComment>0 ? post.totalComment: ''}</Text>
             </Block>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={this.springSave.bind(this)}> 
@@ -127,7 +167,7 @@ export default class ListItem extends React.Component {
                         size={30}
                         style={{transform: [{scale: this.springValueSave}]}}
                         color={this.state.saved ? '#830707' : '#A4A4A4'} />
-              <Text style = {{fontSize: 6}}>345678</Text>
+              <Text style = {{fontSize: 6}}>{post.totalSaved>0 ? post.totalSaved: ''}</Text>
             </Block>
           </TouchableOpacity>
         </View>

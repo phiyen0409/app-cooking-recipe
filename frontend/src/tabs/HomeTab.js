@@ -7,37 +7,72 @@ import {
   Text,
   TouchableOpacity,
   View,
-  AsyncStorage
+  AsyncStorage,
+  FlatList
 } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
+import axios from "axios";
 import ListItem from "../components/ListItem";
 import AvatarImage from "../../assets/Image/avatar.png";
 import theme from "../../constant/theme";
 import uploadImage from "../../assets/Image/blog.png";
 
 export default class HomeTab extends React.Component {
+  static navigationOptions = {
+    header: null
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {},
+      posts: []
+    };
+  }
   _getUserLogin = async () => {
     try {
-      const value = await AsyncStorage.getItem('@auth');
+      const value = await AsyncStorage.getItem("@auth");
       if (value !== null) {
         // We have data!!
-        return JSON.parse(value);
+        let user = JSON.parse(value);
+        this.setState({ user: user });
+        console.log(user);
       }
-      return null;
     } catch (error) {
       // Error retrieving data
       console.log(error);
     }
-    return null;
   };
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    this._getUserLogin();
+    this.getDataAsync();
   }
-  static navigationOptions = {
-    header: null
+  getDataAsync = async () => {
+    axios({
+      method: "get",
+      url: "/post/postsorted",
+      data: {
+        userId: this.state.user.idUser
+      }
+    })
+      .then(result => {
+        this.setState({
+          posts: result.data
+        });
+        //console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  handleScroll= function(event: Object) {
+    console.log(event.nativeEvent.contentOffset.y);
+    if(event.nativeEvent.contentOffset.y == 0)
+    {
+      
+    }
   };
   render() {
     const { navigation } = this.props;
@@ -60,14 +95,18 @@ export default class HomeTab extends React.Component {
         </View>
       </View> */}
         <View>
-          <ScrollView contentContainerStyle={styles.postContainer}>
-            <ListItem onPress={() => navigation.navigate("Recipe")} />
-            <ListItem onPress={() => navigation.navigate("Recipe")} />
-            <ListItem onPress={() => navigation.navigate("Recipe")} />
-            <ListItem onPress={() => navigation.navigate("Recipe")} />
-            <ListItem onPress={() => navigation.navigate("Recipe")} />
-            <ListItem onPress={() => navigation.navigate("Recipe")} />
-          </ScrollView>
+          <FlatList
+            onScroll={this.handleScroll} scrollEventThrottle={16}
+            data={this.state.posts}
+            renderItem={({ item }) => (
+              <ListItem
+                userId={this.state.user.idUser}
+                post={item}
+                onPress={() => navigation.navigate("Recipe")}
+              />
+            )}
+            keyExtractor={item => item._id}
+          />
         </View>
       </View>
     );
@@ -85,14 +124,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#ffcdd2",
     paddingLeft: 10,
-    paddingRight: 5,
+    paddingRight: 5
 
     // backgroundColor: '#fff',
   },
   postContainer: {
     paddingTop: 5,
-    paddingRight: 5,
-  },
+    paddingRight: 5
+  }
   // headerContainer: {
   //   // paddingTop: 5,
   //   marginTop: 40

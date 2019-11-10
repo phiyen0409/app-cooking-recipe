@@ -11,7 +11,7 @@ router.route('/deletecomment/:postId').delete(PostController.deleteComment);
 router.route('/findtitle/:title').get(PostController.findByTitle);
 router.route('/findauthor/:userid').get(PostController.findByAuthor);
 
-router.route('/update/:postId').put(PostController.updateLike);
+router.route('/updatelike/:postId').put(PostController.updateLike);
 // router.route('/delete/:id').delete(PostController.delete);
 
 module.exports = router;

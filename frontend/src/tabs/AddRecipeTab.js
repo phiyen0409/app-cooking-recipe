@@ -134,9 +134,13 @@ export default class AddRecipeScreen extends React.Component {
       aspect: [4, 3],
       base64: true
     });
-    let data = "data:image/" + result.type + ";base64," + result.base64;
 
     if (!result.cancelled) {
+      let data =
+          "data:image/" +
+          result.uri.split(result.uri.lastIndexOf(".")).pop() +
+          ";base64," +
+          result.base64;
       this.setState({ image: data, modalVisible: false });
     }
   };
@@ -154,9 +158,13 @@ export default class AddRecipeScreen extends React.Component {
         base64: true,
         aspect: [4, 3]
       });
-      let data = "data:image/" + result.type + ";base64," + result.base64;
 
       if (!result.cancelled) {
+        let data =
+          "data:image/" +
+          result.uri.split(result.uri.lastIndexOf(".")).pop() +
+          ";base64," +
+          result.base64;
         this.setState({ image: data, modalVisible: false });
       }
     }

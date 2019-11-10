@@ -1,4 +1,7 @@
 const fs = require("fs");
+const dotenv = require('dotenv');
+dotenv.config();
+const APP_URL = process.env.APP_URL;
 
 const ImageHelper = {
   saveImageBase64: async (path, base64String) => {
@@ -15,13 +18,21 @@ const ImageHelper = {
       lowerCase.indexOf("jpeg") !== -1
     )
       extension = "jpg";
+    else {
+      extension = "jpg";
+    }
 
     if (extension !== undefined) {
       name += "." + extension;
-      const file = await fs.writeFile(name, base64Image, { encoding: "base64" }, () => {
-        console.log("File created");
-      });
-      name = name.substring(1, name.length);
+      const file = await fs.writeFile(
+        name,
+        base64Image,
+        { encoding: "base64" },
+        () => {
+          console.log("File created");
+        }
+      );
+      name = APP_URL + name.substring(1, name.length);
       return name;
     }
   }

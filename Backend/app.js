@@ -10,6 +10,7 @@ const port=process.env.PORT||3000;
 
 
 
+
 const upload = require('./utils/upload');
 //app.use('./uploads', express.static('uploads'));
 // app.use(upload);
@@ -22,8 +23,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:500
 const userRoutes=require('./routes/user.route');
 const postRoutes=require('./routes/post.route');
 //mongoose.Promise = global.Promise;
-const uri='mongodb+srv://cookingapp:04091998@cluster0-rgicw.mongodb.net/test?retryWrites=true&w=majority';
-mongoose.connect(uri);
+mongoose.connect(process.env.DB_CONNECTION);
 mongoose.connection.once(`open`,()=>{
     console.log('MONGODB Database is connected');
     app.listen(port,()=>console.log('Server started at PORT '+port));
@@ -37,9 +37,15 @@ mongoose.connection.once(`open`,()=>{
 const user=require('./models/user.model');
 const post=require('./models/post.model');
 
-// const hostname = 'cookingapp1.herokuapp.com';
+// const hostname = process.env.host;
 // app.listen(port,hostname, function(){
 //     console.log('Server listening on port '+port);
 // });
+// const host = process.env.HOST;
+// const port = process.env.PORT;
+// app.listen(port,host ,function(){
+//     console.log('Server listening on port '+host+":"+port);
+// });
+
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);
