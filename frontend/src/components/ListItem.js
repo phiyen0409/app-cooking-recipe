@@ -1,75 +1,139 @@
 import React from "react";
-import { Image, Text, View, StyleSheet, TouchableOpacity, Alert} from "react-native";
+import { Image, Text, View, StyleSheet, TouchableOpacity, Alert,Animated,} from "react-native";
 import { Block, Icon } from "galio-framework";
 import Im from "../../assets/Image/suonxaochuangot.jpg";
 import { red } from "ansi-colors";
 import LikeImage from "../../assets/Image/Interact/like.png";
 import CommentImage from "../../assets/Image/Interact/comment.png";
 import SaveImage from "../../assets/Image/Interact/save.png";
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 
-export default function ListItem(props) {
-  const {onPress} = props;
-  return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flex: 4,
-          width:'100%',
-          borderBottomColor: "#830707",
-          borderBottomWidth: 1
-        }}
-      >
-        <TouchableOpacity style={{width: '100%', height:'100%'}} onPress={onPress}>
-          <View style={{flexDirection:'row'}}>
-            <View style={styles.imageContainer}>
-              <Image style={styles.image} source={Im} />
-            </View>
+export default class ListItem extends React.Component {
+  springValueLike = new Animated.Value(1);
+  springValueSave=new Animated.Value(1);
 
-            <View style={styles.viewContent}>
-              <View style={styles.viewTitle}>
-                <Text style={styles.title}>Sườn xào chua ngọtfghjkleefvfgtggsr</Text>
+  constructor(props) {
+    super(props);
+    this.state = {
+      liked: false,
+      saved: false
+    };
+  }
+  springLike() {
+    this.setState(state => {
+      return {
+        liked: !this.state.liked,
+      };
+    });
+    if (!this.state.liked) {
+      this.springValueLike.setValue(0);
+      Animated.spring(this.springValueLike, {
+        toValue: 1,
+        friction: 0.5,
+      }).start();
+    } else {
+      this.springValueLike.setValue(0.5);
+      Animated.spring(this.springValueLike, {
+        toValue: 1,
+        friction: 2,
+      }).start();
+    }
+    
+  }
+  springSave() {
+    this.setState(state => {
+      return {
+        saved: !this.state.saved,
+      };
+    });
+    if (!this.state.saved) {
+      this.springValueSave.setValue(0);
+      Animated.spring(this.springValueSave, {
+        toValue: 1,
+        friction: 0.5,
+      }).start();
+    } else {
+      this.springValueSave.setValue(0.5);
+      Animated.spring(this.springValueSave, {
+        toValue: 1,
+        friction: 2,
+      }).start();
+    }
+    
+  }
+  render(){
+  const {onPress} = this.props;
+  const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
+  const AnimatedFontaws = Animated.createAnimatedComponent(FontAwesome);
+    return (
+      <View style={styles.container}>
+        <View
+          style={{
+            flex: 4,
+            width:'100%',
+            borderBottomColor: "#830707",
+            borderBottomWidth: 1
+          }}
+        >
+          <TouchableOpacity style={{width: '100%', height:'100%'}} onPress={onPress}>
+            <View style={{flexDirection:'row'}}>
+              <View style={styles.imageContainer}>
+                <Image style={styles.image} source={Im} />
               </View>
-              <View style={styles.author}>
-              <FontAwesome name="user" size={12} color='#6E6E6E' />
-                <Text style={styles.authorText}>
-                  Yến cute
+  
+              <View style={styles.viewContent}>
+                <View style={styles.viewTitle}>
+                  <Text style={styles.title}>Sườn xào chua ngọtfghjkleefvfgtggsr</Text>
+                </View>
+                <View style={styles.author}>
+                <FontAwesome name="user" size={12} color='#6E6E6E' />
+                  <Text style={styles.authorText}>
+                    Yến cute
+                  </Text>
+                </View>
+                <Text style={styles.description}>
+                  ffbhgfdy jn ehf gfn wkvbnvm ffgfggh bfh fgb dvfhgj
                 </Text>
               </View>
-              <Text style={styles.description}>
-                ffbhgfdy jn ehf gfn wkvbnvm ffgfggh bfh fgb dvfhgj
-              </Text>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+  
+        <View style={{ flex: 1, flexDirection: "row"}}>
+          <TouchableOpacity style={styles.button} onPress={this.springLike.bind(this)}>
+            <Block style={styles.buttonBlock}>
+            <AnimatedIcon
+                        name="heart"
+                        size={30}
+                        style={{transform: [{scale: this.springValueLike}]}}
+                        color={this.state.liked ? '#830707' : '#A4A4A4'}
+                      />
+              <Text style = {{fontSize: 6}}>345678</Text>
+            </Block>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Block style={styles.buttonBlock}>
+              <MaterialIcons name='comment' size={30} color='#A4A4A4'/>
+              <Text style = {{fontSize: 6}}>345678</Text>
+            </Block>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={this.springSave.bind(this)}> 
+            <Block style={styles.buttonBlock}>
+              <AnimatedFontaws name="bookmark"
+                        size={30}
+                        style={{transform: [{scale: this.springValueSave}]}}
+                        color={this.state.saved ? '#830707' : '#A4A4A4'} />
+              <Text style = {{fontSize: 6}}>345678</Text>
+            </Block>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={{ flex: 1, flexDirection: "row"}}>
-        <TouchableOpacity style={styles.button}>
-          <Block style={styles.buttonBlock}>
-            <Image style={styles.logoButton} source={LikeImage} />
-            <Text style = {{fontSize: 6}}>345678</Text>
-          </Block>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Block style={styles.buttonBlock}>
-            <Image style={styles.logoButton} source={CommentImage} />
-            <Text style = {{fontSize: 6}}>345678</Text>
-          </Block>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Block style={styles.buttonBlock}>
-            <Image style={styles.logoButton} source={SaveImage} />
-            <Text style = {{fontSize: 6}}>345678</Text>
-          </Block>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({

@@ -10,7 +10,7 @@ const PostSchema=new Schema({
     totalLike: Number,
     totalComment: Number,
     totalSaved: Number,
-    createdDate: String,
+    createdDate: Date,
     userLiked:[{type: mongoose.Schema.Types.ObjectId, ref: 'Users'}],
     comments:[{
         user : {type: mongoose.Schema.Types.ObjectId, ref: 'Users'},

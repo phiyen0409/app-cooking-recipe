@@ -10,7 +10,7 @@ import {
 } from "react-native-responsive-screen";
 import Process from "../components/Process";
 import Comment from "../components/Comment";
-import { TextInput } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 
 export default class RecipeScreen extends React.Component {
 //   static navigationOptions = {
@@ -60,11 +60,12 @@ export default class RecipeScreen extends React.Component {
             <Comment/>
           </ScrollView>
           <View style = {styles.viewComment}>
-            {/* <TouchableOpacity
-              // onPress={this.addComment}
-            > */}
-              <TextInput placeholder = "Viết bình luận" />
-            {/* </TouchableOpacity> */}
+              <TextInput style={styles.textInputCmt} placeholder = "Viết bình luận" />
+              <TouchableOpacity style={{width:'100%', height:'60%'}}>
+                <View style={styles.buttonCmt}>
+                  <Text style={styles.textButtonCmt}>Gửi</Text>
+                </View>
+              </TouchableOpacity>
           </View>
         </View>
         </ScrollView>
@@ -178,15 +179,43 @@ const styles = StyleSheet.create({
 
   viewComment: {
     flexDirection: "row",
-    alignItems: "stretch",
+    alignItems: 'center',
     marginBottom: 20,
+    paddingBottom:10,
     marginLeft: 10,
     marginRight: 10,
     marginTop: 5,
+    shadowColor: "#cdb7b5",
+    height: 100
+  },
+  textInputCmt:{
+    flex:6,
+    height:'80%',
+    width:'100%',
+    marginRight: 10,
+    padding:10,
     borderWidth: 2,
     borderColor: "#ffebee",
     borderRadius: 10,
-    shadowColor: "#cdb7b5",
-    padding: 3
+    multiline : true
+
+  },
+  buttonCmt:{
+    flex:1,
+    width: 60,
+    backgroundColor: "#830707",
+    borderRadius: 15,
+    marginHorizontal: 20,
+    // paddingVertical:12,
+    marginBottom: 10,
+    height: '80%',
+    justifyContent: 'center',
+    alignItems:'center'
+  },
+  textButtonCmt: {
+    fontSize: 12,
+    fontWeight: "bold",
+    textAlign: 'center',
+    color: "#fff"
   },
 });

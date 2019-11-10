@@ -5,6 +5,7 @@ const upload=require('../utils/upload');
 
 router.route('/').get(UserController.index);
 router.route('/:id').get(UserController.find);
+router.route('/profile/:id').get(UserController.userProfile);
 router.route('/create').post(UserController.create);
 router.route('/findname/:name').get(UserController.findByName);
 router.route('/update/:id').put(UserController.update);
