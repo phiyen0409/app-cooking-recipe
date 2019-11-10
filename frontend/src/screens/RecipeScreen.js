@@ -60,7 +60,7 @@ export default class RecipeScreen extends React.Component {
             <Comment/>
           </ScrollView>
           <View style = {styles.viewComment}>
-              <TextInput style={styles.textInputCmt} placeholder = "Viết bình luận" />
+              <TextInput style={styles.textInputCmt} multiline placeholder = "Viết bình luận" />
               <TouchableOpacity style={{width:'100%', height:'60%'}}>
                 <View style={styles.buttonCmt}>
                   <Text style={styles.textButtonCmt}>Gửi</Text>
@@ -197,8 +197,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#ffebee",
     borderRadius: 10,
-    multiline : true
-
   },
   buttonCmt:{
     flex:1,

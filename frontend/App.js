@@ -19,8 +19,8 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends React.Component {
   constructor(props){
     super(props);
-    let host = '192.168.137.229';
-    let port = '8081'
+    let host = '192.168.0.105';
+    let port = '8081';
     axios.defaults.baseURL = `http://${host}:${port}`;
   }
   render()

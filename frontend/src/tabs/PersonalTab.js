@@ -40,11 +40,11 @@ const { width, height } = Dimensions.get("screen");
 export default class PersonalTab extends React.Component {
   _getUserLogin = async () => {
     try {
-      const value = await AsyncStorage.getItem('@auth');
+      const value = await AsyncStorage.getItem("@auth");
       if (value !== null) {
         // We have data!!
         let user = JSON.parse(value);
-        this.setState({user: user});
+        this.setState({ user: user });
         console.log(user);
       }
     } catch (error) {
@@ -52,56 +52,121 @@ export default class PersonalTab extends React.Component {
       console.log(error);
     }
   };
+  _storeUserlogin = async () => {
+    AsyncStorage.setItem("@auth", JSON.stringify(this.state.user))
+      .then(() => {
+        console.log("====================================");
+        console.log("store user successful!!!");
+        console.log("====================================");
+      })
+      .catch(error => {
+        console.log("====================================");
+        console.log(error);
+        console.log("====================================");
+      });
+  };
   constructor(props) {
     super(props);
     this.state = {
       user: {},
+      posts: [{}],
       description: props.description,
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       modalVisible: false,
-      updateProfileVisible: false
+      updateProfileVisible: false,
+      name: "",
+      birthday: "",
+      phone: "",
+      image: ""
     };
   }
   getDataAsync = async () => {
-    axios.get("/user/" + this.state.user.userId)
+    axios
+      .get("/user/profile/" + this.state.user.idUser)
       .then(result => {
+        console.log("====================================");
+        console.log(result.data);
+        console.log("====================================");
         this.setState({
-          user : result.data,
-        })
+          posts: result.data.listPostsCreated
+        });
+      })
+      .catch(error => {
+        console.log("====================================");
+        console.log(error);
+        console.log("====================================");
+      });
+  };
+  updateInfoUserAsync = async () => {
+    axios({
+      method: "put",
+      url: "/user/update/" + this.state.user.idUser,
+      data: {
+        name: this.state.name,
+        birthday: this.state.birthday,
+        phone: this.state.phone
+      }
+    })
+      .then(result => {
+        Alert.alert(result.data.message);
+        let user = this.state.user;
+        user.name = this.state.name;
+        user.birthday = this.state.birthday;
+        user.phone = this.state.phone;
+        this.setState({
+          user: user
+        });
+        this.setUpdateProfileVisible(!this.state.updateProfileVisible);
+        this._storeUserlogin();
       })
       .catch(error => {
         console.log(error);
       });
   };
-  updateInfoUserAsync = async () =>{
+  updateAvatarAsync = async image => {
     axios({
-      method: 'put',
-      url: "/user/update/" + this.state.user.userId,
+      method: "put",
+      url: "/user/upload/avatar/" + this.state.user.idUser,
       data: {
-        name: this.state.user.name,
-        birthday: this.state.user.birthday,
-        phone: this.state.user.phone
+        avatar: image
       }
     })
       .then(result => {
         Alert.alert(result.data.message);
+        let user = this.state.user;
+        user.avatar = result.data.data.avatar;
+        this.setState({
+          user: user
+        });
+        this._storeUserlogin();
+        console.log("====================================");
+        console.log(result.data.data);
+        console.log("====================================");
       })
       .catch(error => {
+        console.log("====================================");
         console.log(error);
+        console.log("====================================");
       });
-  }
-
+  };
   setUpdateProfileVisible(visible) {
-    this.setState({ updateProfileVisible: visible });
+    this.setState({
+      updateProfileVisible: visible,
+      name: this.state.user.name,
+      birthday: this.state.user.birthday,
+      phone: this.state.user.phone
+    });
   }
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
   componentDidMount() {
-    this._getUserLogin();
     this.getPermissionAsync();
-    //this.getDataAsync();
+    (async () => {
+      await this._getUserLogin();
+      await this.getDataAsync();
+    })();
   }
   getPermissionAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -127,10 +192,18 @@ export default class PersonalTab extends React.Component {
       aspect: [1, 1],
       base64: true
     });
-    let data = "data:image/" + result.type + ";base64," + result.base64;
 
     if (!result.cancelled) {
-      this.setState({ image: data, modalVisible: false });
+      let data =
+        "data:image/" +
+        result.uri.split(result.uri.lastIndexOf(".")).pop() +
+        ";base64," +
+        result.base64;
+      this.setState({ modalVisible: false });
+      await this.updateAvatarAsync(data);
+      console.log("====================================");
+      console.log(result.uri);
+      console.log("====================================");
     }
   };
   takePhoto = async () => {
@@ -147,10 +220,15 @@ export default class PersonalTab extends React.Component {
         base64: true,
         aspect: [1, 1]
       });
-      let data = "data:image/" + result.type + ";base64," + result.base64;
 
       if (!result.cancelled) {
-        this.setState({ image: data, modalVisible: false });
+        let data =
+          "data:image/" +
+          result.uri.split(result.uri.lastIndexOf(".")).pop() +
+          ";base64," +
+          result.base64;
+        this.setState({ modalVisible: false });
+        await this.updateAvatarAsync(data);
       }
     }
   };
@@ -158,7 +236,8 @@ export default class PersonalTab extends React.Component {
     header: null
   };
   render() {
-    let image = this.state.user.avatar ? this.state.user.avatar : null;
+    let user = this.state.user;
+    let posts = this.state.posts;
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -175,8 +254,8 @@ export default class PersonalTab extends React.Component {
                 <View style={styles.avatar}>
                   <Image
                     source={
-                      image
-                        ? { uri: image }
+                      user.avatar
+                        ? { uri: user.avatar }
                         : require("../../assets/Image/placeholder.png")
                     }
                     resizeMode="cover"
@@ -205,20 +284,18 @@ export default class PersonalTab extends React.Component {
                 </Text> */}
                     <Block row>
                       <Ionicons name="md-mail" style={styles.iconProfile} />
-                      <Text style={styles.textInfoDetail}>
-                      {this.state.user.email}
-                      </Text>
+                      <Text style={styles.textInfoDetail}>{user.email}</Text>
                     </Block>
                     <Block row>
                       <FontAwesome
                         name="birthday-cake"
                         style={styles.iconProfile}
                       />
-                      <Text style={styles.textInfoDetail}>{this.state.user.birthday}</Text>
+                      <Text style={styles.textInfoDetail}>{user.birthday}</Text>
                     </Block>
                     <Block row>
                       <Entypo name="phone" style={styles.iconProfile} />
-                      <Text style={styles.textInfoDetail}>{this.state.user.phone}</Text>
+                      <Text style={styles.textInfoDetail}>{user.phone}</Text>
                     </Block>
                   </Block>
                 </Block>
@@ -288,10 +365,17 @@ export default class PersonalTab extends React.Component {
                   <Block style={styles.divider} />
                 </Block>
                 <View style={styles.listRecipes}>
-                  <ListItem />
-                  <ListItem />
-                  <ListItem />
-                  <ListItem />
+                  {posts.map((item, key) => {
+                    item.author = user.name;
+                    return (
+                      <ListItem
+                        key={key}
+                        userId={this.state.user.idUser}
+                        post={item}
+                        onPress={() => {}}
+                      />
+                    );
+                  })}
                 </View>
               </View>
             </View>
@@ -328,18 +412,39 @@ export default class PersonalTab extends React.Component {
             </View>
             <View style={styles.updateProfileComponent}>
               <Text style={styles.textUpdateProfile}>Tên:</Text>
-              <TextInput style={styles.textInputUpdateProfile}></TextInput>
+              <TextInput
+                style={styles.textInputUpdateProfile}
+                value={this.state.name}
+                onChangeText={text => {
+                  this.setState({ name: text });
+                }}
+              ></TextInput>
             </View>
             <View style={styles.updateProfileComponent}>
               <Text style={styles.textUpdateProfile}>Ngày sinh:</Text>
-              <TextInput style={styles.textInputUpdateProfile}></TextInput>
+              <TextInput
+                style={styles.textInputUpdateProfile}
+                value={this.state.birthday}
+                onChangeText={text => {
+                  this.setState({ birthday: text });
+                }}
+              ></TextInput>
             </View>
             <View style={styles.updateProfileComponent}>
               <Text style={styles.textUpdateProfile}>Số điện thoại:</Text>
-              <TextInput style={styles.textInputUpdateProfile}></TextInput>
+              <TextInput
+                style={styles.textInputUpdateProfile}
+                value={this.state.phone}
+                onChangeText={text => {
+                  this.setState({ phone: text });
+                }}
+              ></TextInput>
             </View>
             <View style={styles.buttonUpdateProContainer}>
-              <TouchableOpacity style={styles.buttonUpdatePro}>
+              <TouchableOpacity
+                onPress={this.updateInfoUserAsync}
+                style={styles.buttonUpdatePro}
+              >
                 <Text style={styles.buttonUpdateProText}>Lưu lại</Text>
               </TouchableOpacity>
               <TouchableOpacity
