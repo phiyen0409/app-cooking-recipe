@@ -3,6 +3,7 @@ const router = express.Router();
 const PostController=require('../controllers/post.controller');
 
 router.route('/').get(PostController.index);
+router.route('/postsorted').get(PostController.listPostSorted);
 router.route('/:id').get(PostController.find);
 router.route('/create/:userId').post(PostController.create);
 router.route('/addcomment/:postId').post(PostController.addComment);

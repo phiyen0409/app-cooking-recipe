@@ -266,5 +266,29 @@ module.exports = {
         error: err
       });
     }
-  }
+  },
+  userProfile: async (req, res) => {
+    let id = req.params.id;
+    try {
+      let user = await User.findById(id).populate('listPostsCreated');
+      user.listPostsCreated.sort((a,b)=>{
+        if(a.createdDate > b.createdDate){
+          return -1;
+        }
+        if (a.createdDate < b.createdDate){
+          return 1;
+        }
+        return 0;
+      });
+      if (user < 1) {
+        return res.json({
+          message: "No user created"
+        });
+      } else {
+        res.json(user);
+      }
+    } catch (err) {
+      res.json(err);
+    }
+  },
 };

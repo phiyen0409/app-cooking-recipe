@@ -18,6 +18,40 @@ module.exports = {
       res.json(err);
     }
   },
+  listPostSorted:async (req, res) => {
+    try {
+      let posts = await Post.find().populate('author').sort({ createdDate: 'desc' });
+      let listResult=[];
+      for (let i=0; i<posts.length;i++){
+        let date=moment(posts[i].createdDate).format("DD/MM/YYYY hh:mm A").toString();
+        listResult.push({
+          _id:posts[i]._id,
+          title: posts[i].title,
+          description: posts[i].description,
+          image: posts[i].image,
+          author:posts[i].author.name,
+          author_id: posts[i].author._id,
+          totalLike: posts[i].totalLike,
+          totalComment: posts[i].totalComment,
+          totalSaved: posts[i].totalSaved,
+          createdDate: date,
+          userLiked:posts[i].userLiked,
+          comments:posts[i].comments,
+          ingredients:posts[i].ingredients,
+          detail:posts[i].detail
+        });
+      }
+      if (posts < 1) {
+        return res.json({
+          message: "No post created"
+        });
+      } else {
+        res.json(listResult);
+      }
+    } catch (err) {
+      res.json(err);
+    }
+  },
   find: async (req, res) => {
     let id = req.params.id;
     try {
@@ -69,7 +103,8 @@ module.exports = {
       let { description } = req.body;
       let { image } = req.body;
       let { author } = req.body;
-      let createdDate = moment().format("DD/MM/YYYY hh:mm A");
+      //let createdDate = moment().format("DD/MM/YYYY hh:mm A");
+      let createdDate = moment();
       let { ingredients } = req.body;
       let { detail } = req.body;
       let post = new Post({
