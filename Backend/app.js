@@ -5,7 +5,7 @@ const router = express.Router;
 const dotenv = require('dotenv');
 dotenv.config();
 const app=express();
-const port=8081;
+const port=process.env.PORT||3000;
 
 
 
@@ -21,19 +21,25 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:500
 
 const userRoutes=require('./routes/user.route');
 const postRoutes=require('./routes/post.route');
-
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useCreateIndex: true}).then(() => {
-    console.log('MONGODB Database is connected')
+//mongoose.Promise = global.Promise;
+const uri='mongodb+srv://cookingapp:04091998@cluster0-rgicw.mongodb.net/test?retryWrites=true&w=majority';
+mongoose.connect(uri);
+mongoose.connection.once(`open`,()=>{
+    console.log('MONGODB Database is connected');
+    app.listen(port,()=>console.log('Server started at PORT '+port));
 });
+// mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useCreateIndex: true}).then(() => {
+//     console.log('MONGODB Database is connected');
+//     app.listen(port,()=>console.log('Server started at PORT '+port));
+// });
 //mongoose.set('useFindAndModify', false);
 
 const user=require('./models/user.model');
 const post=require('./models/post.model');
 
-const hostname = '0.0.0.0';
-app.listen(port,hostname, function(){
-    console.log('Server listening on port '+port);
-});
+// const hostname = 'cookingapp1.herokuapp.com';
+// app.listen(port,hostname, function(){
+//     console.log('Server listening on port '+port);
+// });
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);
