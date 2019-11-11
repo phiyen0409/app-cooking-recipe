@@ -116,14 +116,30 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
+      let flag=0;
+      for (let i=0;i<req.body.detail.length;i++){
+        if (req.body.detail.image===undefined){
+          flag=1;
+        }
+      }
+      if (req.body.image === undefined || flag==1) {
+        return res.status(400).json({ message: "No file received" });
+      } 
+      else {
       let { title } = req.body;
       let { description } = req.body;
-      let { image } = req.body;
+      let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.image);
+      let image = fileName;
       let { author } = req.body;
       //let createdDate = moment().format("DD/MM/YYYY hh:mm A");
       let createdDate = moment();
       let { ingredients } = req.body;
       let { detail } = req.body;
+      for(let i=0;i<detail.length;i++){
+        fileName = await ImageHelper.saveImageBase64("./public/uploads",detail[i].image);
+        console.log(fileName);
+        detail[i].image = fileName;
+      }
       let post = new Post({
         title: title,
         description: description,
@@ -145,6 +161,7 @@ module.exports = {
       res.status(201).json({
         message: "Post created"
       });
+      }
     } catch (err) {
       console.log(err);
     }

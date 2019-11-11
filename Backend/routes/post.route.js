@@ -5,7 +5,7 @@ const PostController=require('../controllers/post.controller');
 router.route('/').get(PostController.index);
 router.route('/postsorted/:userId').get(PostController.listPostSorted);
 router.route('/:id').get(PostController.find);
-router.route('/create/:userId').post(PostController.create);
+router.route('/create').post(PostController.create);
 router.route('/addcomment/:postId').post(PostController.addComment);
 router.route('/deletecomment/:postId').delete(PostController.deleteComment);
 router.route('/findtitle/:title').get(PostController.findByTitle);
