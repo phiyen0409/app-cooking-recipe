@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const Post = require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const ImageHelper = require("../utils/ImageHelper");
 
 module.exports = {
   index: async (req, res) => {
@@ -116,29 +117,29 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      let flag=0;
-      for (let i=0;i<req.body.detail.length;i++){
-        if (req.body.detail.image===undefined){
-          flag=1;
-        }
-      }
-      if (req.body.image === undefined || flag==1) {
-        return res.status(400).json({ message: "No file received" });
-      } 
-      else {
+      let image;
       let { title } = req.body;
       let { description } = req.body;
-      let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.image);
-      let image = fileName;
       let { author } = req.body;
-      //let createdDate = moment().format("DD/MM/YYYY hh:mm A");
       let createdDate = moment();
       let { ingredients } = req.body;
       let { detail } = req.body;
+      if (req.body.image === undefined) {
+        image="";
+      }
+      else{
+        let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.image);
+        image = fileName;
+      }
+
       for(let i=0;i<detail.length;i++){
-        fileName = await ImageHelper.saveImageBase64("./public/uploads",detail[i].image);
-        console.log(fileName);
-        detail[i].image = fileName;
+        if(detail[i].image===undefined){
+          detail[i].image = "";
+        }
+        else{
+          let fileName = await ImageHelper.saveImageBase64("./public/uploads",detail[i].image);
+          detail[i].image = fileName;
+        }
       }
       let post = new Post({
         title: title,
@@ -161,7 +162,7 @@ module.exports = {
       res.status(201).json({
         message: "Post created"
       });
-      }
+      
     } catch (err) {
       console.log(err);
     }
