@@ -19,9 +19,7 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends React.Component {
   constructor(props){
     super(props);
-    let host = '192.168.0.105';
-    let port = '8081';
-    axios.defaults.baseURL = `http://${host}:${port}`;
+    axios.defaults.baseURL = 'https://cookingapp1.herokuapp.com';
   }
   render()
     {
