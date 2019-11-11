@@ -46,20 +46,21 @@ export default class HomeTab extends React.Component {
     }
   };
   componentDidMount() {
-    this._getUserLogin();
-    this.getDataAsync();
+    (async () => {
+      await this._getUserLogin();
+      await this.getDataAsync();
+    })();
   }
   getDataAsync = async () => {
     axios({
       method: "get",
-      url: "/post/postsorted",
+      url: "/post/postsorted/"+this.state.user.idUser,
       data: {
-        userId: this.state.user.idUser
       }
     })
       .then(result => {
         this.setState({
-          posts: result.data
+          posts: result.data  ? result.data : []
         });
         //console.log(result);
       })
@@ -67,7 +68,7 @@ export default class HomeTab extends React.Component {
         console.log(error);
       });
   };
-  handleScroll= function(event: Object) {
+  handleScroll= function(event) {
     console.log(event.nativeEvent.contentOffset.y);
     if(event.nativeEvent.contentOffset.y == 0)
     {
@@ -103,6 +104,8 @@ export default class HomeTab extends React.Component {
                 userId={this.state.user.idUser}
                 post={item}
                 onPress={() => navigation.navigate("Recipe")}
+                isLiked={item.isLiked}
+                isSaved={item.isSaved}
               />
             )}
             keyExtractor={item => item._id}

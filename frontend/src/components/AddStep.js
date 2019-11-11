@@ -32,10 +32,10 @@ export default class AddStep extends Component {
       step: props.step,
       title: props.title,
       image: props.image,
-      description: props.description,
+      content: props.content,
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
-      modalVisible: false,
+      modalVisible: false
     };
   }
   removeItem = () => {
@@ -43,7 +43,7 @@ export default class AddStep extends Component {
   };
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
-  };
+  }
   componentDidMount() {
     this.getPermissionAsync();
   }
@@ -76,11 +76,17 @@ export default class AddStep extends Component {
 
     if (!result.cancelled) {
       let data =
-          "data:image/" +
-          result.uri.split(result.uri.lastIndexOf(".")).pop() +
-          ";base64," +
-          result.base64;
+        "data:image/" +
+        result.uri.split(result.uri.lastIndexOf(".")).pop() +
+        ";base64," +
+        result.base64;
       this.setState({ image: data, modalVisible: false });
+      this.props.updateItem(this.state.id, {
+        step: this.state.name,
+        title: this.state.title,
+        image: this.state.image,
+        content: this.state.content
+      });
     }
   };
   takePhoto = async () => {
@@ -105,6 +111,12 @@ export default class AddStep extends Component {
           ";base64," +
           result.base64;
         this.setState({ image: data, modalVisible: false });
+        this.props.updateItem(this.state.id, {
+          step: this.state.name,
+          title: this.state.title,
+          image: this.state.image,
+          content: this.state.content
+        });
       }
     }
   };
@@ -124,16 +136,28 @@ export default class AddStep extends Component {
             value={this.state.title}
             onChangeText={text => {
               this.setState({ title: text });
+              this.props.updateItem(this.state.id, {
+                step: this.state.name,
+                title: this.state.title,
+                image: this.state.image,
+                content: this.state.content
+              });
             }}
             placeholder="tiêu đề"
           />
         </View>
-        <View style={styles.viewDescription}>
+        <View style={styles.viewContent}>
           <TextInput
-            style={styles.textInputDescription}
-            value={this.state.description}
+            style={styles.textInputContent}
+            value={this.state.content}
             onChangeText={text => {
-              this.setState({ description: text });
+              this.setState({ content: text });
+              this.props.updateItem(this.state.id, {
+                step: this.state.name,
+                title: this.state.title,
+                image: this.state.image,
+                content: this.state.content
+              });
             }}
             placeholder="Nội dung"
             multiline
@@ -149,67 +173,62 @@ export default class AddStep extends Component {
             }
             style={{ height: 150, width: 200, resizeMode: "center" }}
           />
-          <TouchableOpacity style={styles.updateImage} onPress={() => {
-                  this.setModalVisible(true);
-                }}>
+          <TouchableOpacity
+            style={styles.updateImage}
+            onPress={() => {
+              this.setModalVisible(true);
+            }}
+          >
             <Entypo name="camera" size={30} color={"#000"} />
           </TouchableOpacity>
         </View>
 
         <Modal
-              animationType="fade"
-              transparent={true}
-              visible={this.state.modalVisible}
-              onRequestClose={() => {
-                this.setModalVisible(!this.state.modalVisible);
-              }}
-            >
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.setModalVisible(false);
+            }}
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(15,0,0,0.52)"
+            }}
+          ></TouchableOpacity>
+          <View style={styles.containerModal}>
+            <View style={styles.bodyModal}>
               <TouchableOpacity
-                onPress={() => {
-                  this.setModalVisible(false);
-                }}
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(15,0,0,0.52)"
-                }}
-              ></TouchableOpacity>
-              <View style={styles.containerModal}>
-                <View style={styles.bodyModal}>
-                  <TouchableOpacity
-                    style={styles.viewButtonModal}
-                    onPress={this.takePhoto}
-                  >
-                    <View style={styles.viewIconButtonModal}>
-                      <Image
-                        style={styles.iconButtonModal}
-                        source={CameraImage}
-                      />
-                    </View>
-                    <View style={styles.viewTextButtonModal}>
-                      <Text style={styles.textButtonModal}>Máy ảnh</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.viewButtonModal}
-                    onPress={this.choosePhoto}
-                  >
-                    <View style={styles.viewIconButtonModal}>
-                      <Image
-                        style={styles.iconButtonModal}
-                        source={LibraryImage}
-                      />
-                    </View>
-                    <View style={styles.viewTextButtonModal}>
-                      <Text style={styles.textButtonModal}>
-                        Chọn ảnh từ bộ nhớ
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                style={styles.viewButtonModal}
+                onPress={this.takePhoto}
+              >
+                <View style={styles.viewIconButtonModal}>
+                  <Image style={styles.iconButtonModal} source={CameraImage} />
                 </View>
-              </View>
-            </Modal>
+                <View style={styles.viewTextButtonModal}>
+                  <Text style={styles.textButtonModal}>Máy ảnh</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.viewButtonModal}
+                onPress={this.choosePhoto}
+              >
+                <View style={styles.viewIconButtonModal}>
+                  <Image style={styles.iconButtonModal} source={LibraryImage} />
+                </View>
+                <View style={styles.viewTextButtonModal}>
+                  <Text style={styles.textButtonModal}>Chọn ảnh từ bộ nhớ</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -245,7 +264,7 @@ const styles = StyleSheet.create({
     marginTop: -7,
     marginRight: -7
   },
-  viewDescription: {
+  viewContent: {
     borderRadius: 5,
     borderWidth: 2,
     borderColor: "#ffebee",
@@ -269,7 +288,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     fontWeight: "400",
     color: "#8e1e20",
-    textAlignVertical:'top'
+    textAlignVertical: "top"
   },
   textStep: {
     textAlign: "left",
@@ -281,8 +300,8 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#8e1e20"
   },
-  textInputDescription:{
-    textAlignVertical:'top'
+  textInputContent: {
+    textAlignVertical: "top"
   },
   containerModal: {
     position: "absolute",
@@ -305,8 +324,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     //paddingVertical: 5,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   viewIconButtonModal: {
     flex: 1,
@@ -321,13 +340,13 @@ const styles = StyleSheet.create({
   },
   viewTextButtonModal: {
     flex: 10,
-    flexDirection:"row",
-    marginLeft: 10,
+    flexDirection: "row",
+    marginLeft: 10
   },
   textButtonModal: {
-    alignSelf:"flex-start",
+    alignSelf: "flex-start",
     height: "100%",
     textAlign: "left",
-    fontSize:15
+    fontSize: 15
   }
 });

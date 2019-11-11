@@ -69,7 +69,7 @@ export default class PersonalTab extends React.Component {
     super(props);
     this.state = {
       user: {},
-      posts: [{}],
+      posts: [],
       description: props.description,
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
@@ -89,7 +89,7 @@ export default class PersonalTab extends React.Component {
         console.log(result.data);
         console.log("====================================");
         this.setState({
-          posts: result.data.listPostsCreated
+          posts: result.data.listPostsCreated ? result.data.listPostsCreated : []
         });
       })
       .catch(error => {
@@ -372,6 +372,8 @@ export default class PersonalTab extends React.Component {
                         key={key}
                         userId={this.state.user.idUser}
                         post={item}
+                        isLiked={item.isLiked}
+                        isSaved={item.isSaved}
                         onPress={() => {}}
                       />
                     );
