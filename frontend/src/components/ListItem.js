@@ -20,8 +20,8 @@ export default class ListItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      liked: false,
-      saved: false,
+      liked: this.props.isLiked,
+      saved: this.props.isSaved,
     };
   }
   springLike() {
@@ -75,14 +75,9 @@ export default class ListItem extends React.Component {
       Alert.alert(error);
       this.setState(state => {
         return {
-          liked: !this.state.liked,
+          saved: !this.state.saved,
         };
       });
-    });
-    this.setState(state => {
-      return {
-        liked: !this.state.liked,
-      };
     });
     this.setState(state => {
       return {
@@ -102,7 +97,6 @@ export default class ListItem extends React.Component {
         friction: 2,
       }).start();
     }
-    
   }
   render(){
   const {onPress} = this.props;

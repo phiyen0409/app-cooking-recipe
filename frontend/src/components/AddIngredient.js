@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput
+} from "react-native";
 // import  {Table, TableWrapper, Row, Cell, Rows} from 'react-native-table-component';
 import { Block, Icon } from "galio-framework";
 import theme from "../../constant/theme";
@@ -20,9 +26,9 @@ export default class AddIngredient extends Component {
       weight: props.weight
     };
   }
-  removeItem = ()=>{
+  removeItem = () => {
     this.props.removeItem(this.state.id);
-  }
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -34,6 +40,10 @@ export default class AddIngredient extends Component {
               value={this.state.name}
               onChangeText={text => {
                 this.setState({ name: text });
+                this.props.updateItem(this.state.id, {
+                  name: this.state.name,
+                  weight: this.state.weight
+                });
               }}
             />
           </View>
@@ -44,6 +54,10 @@ export default class AddIngredient extends Component {
               value={this.state.weight}
               onChangeText={text => {
                 this.setState({ weight: text });
+                this.props.updateItem(this.state.id, {
+                  name: this.state.name,
+                  weight: this.state.weight
+                });
               }}
             />
           </View>
@@ -66,20 +80,20 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     width: "100%",
-    marginVertical: 3,
+    marginVertical: 3
   },
-  viewInput:{
+  viewInput: {
     flex: 12,
-    height:"100%",
+    height: "100%",
     flexDirection: "row",
     backgroundColor: "#ffcdd2",
     borderRadius: 5,
     padding: 3
-  }, 
+  },
   btnDel: {
     flex: 1,
-    justifyContent:"center",
-    alignItems:"flex-end",
+    justifyContent: "center",
+    alignItems: "flex-end"
   },
   viewLeft: {
     flex: 3,

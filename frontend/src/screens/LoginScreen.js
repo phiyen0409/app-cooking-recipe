@@ -91,7 +91,7 @@ class LoginScreen extends React.Component {
     }
   };
   componentDidMount() {
-    this._getUserLogin();
+    //this._getUserLogin();
   }
   render() {
     return (

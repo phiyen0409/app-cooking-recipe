@@ -9,7 +9,8 @@ import {
   TouchableWithoutFeedback,
   Image,
   Modal,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -30,22 +31,23 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Camera } from "expo-camera";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from "axios";
 
 export default class AddRecipeScreen extends React.Component {
   _getUserLogin = async () => {
     try {
-      const value = await AsyncStorage.getItem('@auth');
+      const value = await AsyncStorage.getItem("@auth");
       if (value !== null) {
         // We have data!!
-        return JSON.parse(value);
+        let user = JSON.parse(value);
+        this.setState({ user: user });
+        console.log(user);
       }
-      return null;
     } catch (error) {
       // Error retrieving data
       console.log(error);
     }
-    return null;
   };
   constructor(props) {
     super(props);
@@ -53,20 +55,18 @@ export default class AddRecipeScreen extends React.Component {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       modalVisible: false,
-      name: "",
+      title: "",
       description: "",
       image: null,
       processes: [
         {
-          id: new Date().getMilliseconds(),
           step: 1,
-          description: "",
+          content: "",
           image: ""
         }
       ],
       ingredients: [
         {
-          id: new Date().getMilliseconds(),
           name: "",
           weight: ""
         }
@@ -79,7 +79,6 @@ export default class AddRecipeScreen extends React.Component {
   addIngredient = () => {
     let { ingredients } = this.state;
     ingredients.push({
-      id: new Date().getMilliseconds(),
       name: "",
       weight: ""
     });
@@ -88,8 +87,7 @@ export default class AddRecipeScreen extends React.Component {
   addStep = () => {
     let { processes } = this.state;
     processes.push({
-      id: new Date().getMilliseconds(),
-      step: 2,
+      step: processes.length + 1,
       name: "",
       weight: ""
     });
@@ -102,11 +100,27 @@ export default class AddRecipeScreen extends React.Component {
   };
   removeItemProcess = id => {
     let { processes } = this.state;
+    let item = processes[id];
+    for (let index = 0; index + id + 1 < processes.length; index++) {
+      processes[index + id + 1].step = item.step + index;
+    }
     processes.splice(id, 1);
     this.setState({ processes: processes });
   };
-
+  updateItemIngredient = (id, item) => {
+    let { ingredients } = this.state;
+    ingredients[id] = item;
+    this.setState({ ingredients: ingredients });
+  };
+  updateItemProcess = (id, item) => {
+    let { processes } = this.state;
+    processes[id] = item;
+    this.setState({ processes: processes });
+  };
   componentDidMount() {
+    (async () => {
+      await this._getUserLogin();
+    })();
     this.getPermissionAsync();
   }
 
@@ -138,10 +152,10 @@ export default class AddRecipeScreen extends React.Component {
 
     if (!result.cancelled) {
       let data =
-          "data:image/" +
-          result.uri.split(result.uri.lastIndexOf(".")).pop() +
-          ";base64," +
-          result.base64;
+        "data:image/" +
+        result.uri.split(result.uri.lastIndexOf(".")).pop() +
+        ";base64," +
+        result.base64;
       this.setState({ image: data, modalVisible: false });
     }
   };
@@ -170,170 +184,203 @@ export default class AddRecipeScreen extends React.Component {
       }
     }
   };
+  addPost = () => {
+    console.log("====================================");
+    console.log("Click me");
+    console.log("====================================");
+    //check validate value
+    axios({
+      method: "post",
+      url: "/post/create",
+      data: {
+        title: this.state.title,
+        description: this.state.description,
+        image: this.state.image,
+        author: this.state.user.idUser,
+        ingredients: this.state.ingredients,
+        detail: this.state.processes
+      }
+    })
+      .then(result => {
+        Alert.alert(result.data.message);
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
+  };
   render() {
     let { ingredients } = this.state;
     let { processes } = this.state;
     let { image } = this.state;
     return (
-      <KeyboardAwareScrollView enableOnAndroid={true} extraHeight={200} extraScrollHeight={200}>
+      <KeyboardAwareScrollView
+        enableOnAndroid={true}
+        extraHeight={200}
+        extraScrollHeight={200}
+      >
         <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.postContainer}>
-            <View style={styles.viewName}>
-              <TextInput
-                multiline={false}
-                style={styles.title}
-                placeholder="Tên món ăn"
-                value={this.state.name}
-                onChangeText={text => {
-                  this.setState({ name: text });
-                }}
-              ></TextInput>
-            </View>
-            <View style={styles.viewImage}>
-              <Image
-                style={{ height: 150, width: 200, resizeMode: "center" }}
-                source={
-                  image
-                    ? { uri: image }
-                    : require("../../assets/Image/placeholder.png")
-                }
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  this.setModalVisible(true);
-                }}
-                style={styles.updateImage}
-              >
-                <Entypo name="camera" size={30} color={"#000"} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.viewDescription}>
-              <TextInput
-                multiline
-                numberOfLines={4}
-                value={this.state.description}
-                onChangeText={text => {
-                  this.setState({ description: text });
-                }}
-                //style={styles.description}
-                placeholder="Mô tả"
-              />
-            </View>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={this.state.modalVisible}
-              onRequestClose={() => {
-                this.setModalVisible(!this.state.modalVisible);
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  this.setModalVisible(false);
-                }}
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(15,0,0,0.52)"
-                }}
-              ></TouchableOpacity>
-              <View style={styles.containerModal}>
-                <View style={styles.bodyModal}>
-                  <TouchableOpacity
-                    style={styles.viewButtonModal}
-                    onPress={this.takePhoto}
-                  >
-                    <View style={styles.viewIconButtonModal}>
-                      <Image
-                        style={styles.iconButtonModal}
-                        source={CameraImage}
-                      />
-                    </View>
-                    <View style={styles.viewTextButtonModal}>
-                      <Text style={styles.textButtonModal}>Máy ảnh</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.viewButtonModal}
-                    onPress={this.choosePhoto}
-                  >
-                    <View style={styles.viewIconButtonModal}>
-                      <Image
-                        style={styles.iconButtonModal}
-                        source={LibraryImage}
-                      />
-                    </View>
-                    <View style={styles.viewTextButtonModal}>
-                      <Text style={styles.textButtonModal}>
-                        Chọn ảnh từ bộ nhớ
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
+          <ScrollView>
+            <View style={styles.postContainer}>
+              <View style={styles.viewName}>
+                <TextInput
+                  multiline={false}
+                  style={styles.title}
+                  placeholder="Tên món ăn"
+                  value={this.state.title}
+                  onChangeText={text => {
+                    this.setState({ title: text });
+                  }}
+                ></TextInput>
               </View>
-            </Modal>
-          </View>
-          <View style={styles.listContainer}>
-            <View style={styles.viewTitle}>
-              <Text style={styles.textTitle}>Thành phần nguyên liệu</Text>
+              <View style={styles.viewImage}>
+                <Image
+                  style={{ height: 150, width: 200, resizeMode: "center" }}
+                  source={
+                    image
+                      ? { uri: image }
+                      : require("../../assets/Image/placeholder.png")
+                  }
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setModalVisible(true);
+                  }}
+                  style={styles.updateImage}
+                >
+                  <Entypo name="camera" size={30} color={"#000"} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.viewDescription}>
+                <TextInput
+                  multiline
+                  numberOfLines={4}
+                  value={this.state.description}
+                  onChangeText={text => {
+                    this.setState({ description: text });
+                  }}
+                  //style={styles.description}
+                  placeholder="Mô tả"
+                />
+              </View>
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.modalVisible}
+                onRequestClose={() => {
+                  this.setModalVisible(!this.state.modalVisible);
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setModalVisible(false);
+                  }}
+                  style={{
+                    flex: 1,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(15,0,0,0.52)"
+                  }}
+                ></TouchableOpacity>
+                <View style={styles.containerModal}>
+                  <View style={styles.bodyModal}>
+                    <TouchableOpacity
+                      style={styles.viewButtonModal}
+                      onPress={this.takePhoto}
+                    >
+                      <View style={styles.viewIconButtonModal}>
+                        <Image
+                          style={styles.iconButtonModal}
+                          source={CameraImage}
+                        />
+                      </View>
+                      <View style={styles.viewTextButtonModal}>
+                        <Text style={styles.textButtonModal}>Máy ảnh</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.viewButtonModal}
+                      onPress={this.choosePhoto}
+                    >
+                      <View style={styles.viewIconButtonModal}>
+                        <Image
+                          style={styles.iconButtonModal}
+                          source={LibraryImage}
+                        />
+                      </View>
+                      <View style={styles.viewTextButtonModal}>
+                        <Text style={styles.textButtonModal}>
+                          Chọn ảnh từ bộ nhớ
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
             </View>
-            <View style={styles.viewListContent}>
-              {ingredients.map((item, key) => {
-                return (
-                  <AddIngredient
-                    key={key}
-                    id={key}
-                    name={item.name}
-                    weight={item.weight}
-                    removeItem={this.removeItemIngredient}
-                  />
-                );
-              })}
+            <View style={styles.listContainer}>
+              <View style={styles.viewTitle}>
+                <Text style={styles.textTitle}>Thành phần nguyên liệu</Text>
+              </View>
+              <View style={styles.viewListContent}>
+                {ingredients.map((item, key) => {
+                  return (
+                    <AddIngredient
+                      key={key}
+                      id={key}
+                      name={item.name}
+                      weight={item.weight}
+                      removeItem={this.removeItemIngredient}
+                      updateItem={this.updateItemIngredient}
+                    />
+                  );
+                })}
+              </View>
+              <View>
+                <TouchableOpacity
+                  style={styles.btnAddIngredient}
+                  onPress={this.addIngredient}
+                >
+                  <Image style={styles.logoAddIngredient} source={PlusImage} />
+                </TouchableOpacity>
+              </View>
             </View>
-            <View>
+            <View style={styles.listContainer}>
+              <View style={styles.viewTitle}>
+                <Text style={styles.textTitle}>Quy trình thực hiện</Text>
+              </View>
+              <View style={styles.viewListContent}>
+                {processes.map((item, key) => {
+                  return (
+                    <AddStep
+                      key={key}
+                      id={key}
+                      step={item.step}
+                      title={item.title}
+                      image={item.image}
+                      content={item.content}
+                      removeItem={this.removeItemProcess}
+                      updateItem={this.updateItemProcess}
+                    />
+                  );
+                })}
+              </View>
               <TouchableOpacity
                 style={styles.btnAddIngredient}
-                onPress={this.addIngredient}
+                onPress={this.addStep}
               >
                 <Image style={styles.logoAddIngredient} source={PlusImage} />
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={styles.listContainer}>
-            <View style={styles.viewTitle}>
-              <Text style={styles.textTitle}>Quy trình thực hiện</Text>
-            </View>
-            <View style={styles.viewListContent}>
-              {processes.map((item, key) => {
-                return (
-                  <AddStep
-                    key={key}
-                    id={key}
-                    step={item.step}
-                    title={item.title}
-                    image={item.image}
-                    description={item.description}
-                    removeItem={this.removeItemProcess}
-                  />
-                );
-              })}
-            </View>
             <TouchableOpacity
-              style={styles.btnAddIngredient}
-              onPress={this.addStep}
+              style={{ width: "50%", height: "50%" }}
+              onPress={this.addPost}
             >
-              <Image style={styles.logoAddIngredient} source={PlusImage} />
+              <View style={styles.buttonUploadPost}>
+                <Text style={styles.textButtonUploadPost}>Đăng bài</Text>
+              </View>
             </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={{width:'50%', height:'50%'}}>
-                <View style={styles.buttonUploadPost}>
-                  <Text style={styles.textButtonUploadPost}>Đăng bài</Text>
-                </View>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
       </KeyboardAwareScrollView>
     );
   }
@@ -346,7 +393,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "center",
     paddingBottom: 10,
-    paddingTop:20
+    paddingTop: 20
     //backgroundColor: "#ffcdd2",
   },
   postContainer: {
@@ -462,8 +509,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     //paddingVertical: 5,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   viewIconButtonModal: {
     flex: 1,
@@ -478,32 +525,32 @@ const styles = StyleSheet.create({
   },
   viewTextButtonModal: {
     flex: 10,
-    flexDirection:"row",
-    marginLeft: 10,
+    flexDirection: "row",
+    marginLeft: 10
   },
   textButtonModal: {
-    alignSelf:"flex-start",
+    alignSelf: "flex-start",
     height: "100%",
     textAlign: "left",
-    fontSize:15
+    fontSize: 15
   },
-  buttonUploadPost:{
+  buttonUploadPost: {
     //flex:1,
     width: 150,
     backgroundColor: "#830707",
     borderRadius: 15,
-    marginHorizontal: '60%',
+    marginHorizontal: "60%",
     // paddingVertical:12,
     marginBottom: 20,
     marginTop: 5,
     height: 50,
-    justifyContent: 'center',
-    alignItems:'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   textButtonUploadPost: {
     fontSize: 18,
     fontWeight: "bold",
-    textAlign: 'center',
+    textAlign: "center",
     color: "#fff"
-  },
+  }
 });
