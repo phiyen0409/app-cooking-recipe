@@ -30,6 +30,7 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Camera } from "expo-camera";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class AddRecipeScreen extends React.Component {
   _getUserLogin = async () => {
@@ -174,7 +175,8 @@ export default class AddRecipeScreen extends React.Component {
     let { processes } = this.state;
     let { image } = this.state;
     return (
-      <View style={styles.container}>
+      <KeyboardAwareScrollView enableOnAndroid={true} extraHeight={200} extraScrollHeight={200}>
+        <View style={styles.container}>
         <ScrollView>
           <View style={styles.postContainer}>
             <View style={styles.viewName}>
@@ -325,8 +327,14 @@ export default class AddRecipeScreen extends React.Component {
               <Image style={styles.logoAddIngredient} source={PlusImage} />
             </TouchableOpacity>
           </View>
+          <TouchableOpacity style={{width:'50%', height:'50%'}}>
+                <View style={styles.buttonUploadPost}>
+                  <Text style={styles.textButtonUploadPost}>Đăng bài</Text>
+                </View>
+          </TouchableOpacity>
         </ScrollView>
       </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -337,7 +345,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
-    paddingBottom: 10
+    paddingBottom: 10,
+    paddingTop:20
     //backgroundColor: "#ffcdd2",
   },
   postContainer: {
@@ -477,5 +486,24 @@ const styles = StyleSheet.create({
     height: "100%",
     textAlign: "left",
     fontSize:15
-  }
+  },
+  buttonUploadPost:{
+    //flex:1,
+    width: 150,
+    backgroundColor: "#830707",
+    borderRadius: 15,
+    marginHorizontal: '60%',
+    // paddingVertical:12,
+    marginBottom: 20,
+    marginTop: 5,
+    height: 50,
+    justifyContent: 'center',
+    alignItems:'center'
+  },
+  textButtonUploadPost: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: 'center',
+    color: "#fff"
+  },
 });

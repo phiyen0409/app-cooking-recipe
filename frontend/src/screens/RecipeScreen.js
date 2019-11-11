@@ -11,6 +11,7 @@ import {
 import Process from "../components/Process";
 import Comment from "../components/Comment";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class RecipeScreen extends React.Component {
 //   static navigationOptions = {
@@ -18,6 +19,7 @@ export default class RecipeScreen extends React.Component {
 //   };
   render() {
     return (
+      <KeyboardAwareScrollView enableOnAndroid={true} extraHeight={200} extraScrollHeight={200}>
       <View style={styles.container}>
         <ScrollView>
           <View style = {styles.postContainer}>
@@ -70,6 +72,7 @@ export default class RecipeScreen extends React.Component {
         </View>
         </ScrollView>
       </View>
+      </KeyboardAwareScrollView>
 
     );
   }

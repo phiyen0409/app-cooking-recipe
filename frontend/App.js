@@ -12,6 +12,7 @@ import axios from "axios";
 import AddIntro from './src/components/AddIntro';
 import AddIngredient from './src/components/AddIngredient';
 import AddRecipeScreen from './src/tabs/AddRecipeTab';
+import PersonalTab from './src/tabs/PersonalTab';
 
 const AppContainer = createAppContainer(AppNavigator);
 

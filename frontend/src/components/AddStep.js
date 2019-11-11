@@ -268,7 +268,8 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     fontWeight: "400",
-    color: "#8e1e20"
+    color: "#8e1e20",
+    textAlignVertical:'top'
   },
   textStep: {
     textAlign: "left",
@@ -279,6 +280,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     fontWeight: "400",
     color: "#8e1e20"
+  },
+  textInputDescription:{
+    textAlignVertical:'top'
   },
   containerModal: {
     position: "absolute",
