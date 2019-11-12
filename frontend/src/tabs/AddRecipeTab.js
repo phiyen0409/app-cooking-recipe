@@ -62,7 +62,8 @@ export default class AddRecipeScreen extends React.Component {
         {
           step: 1,
           content: "",
-          image: ""
+          image: "",
+          title:"",
         }
       ],
       ingredients: [
@@ -88,8 +89,9 @@ export default class AddRecipeScreen extends React.Component {
     let { processes } = this.state;
     processes.push({
       step: processes.length + 1,
-      name: "",
-      weight: ""
+      content: "",
+      image: "",
+      title:"",
     });
     this.setState({ processes: processes });
   };

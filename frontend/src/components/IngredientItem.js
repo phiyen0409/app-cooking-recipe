@@ -35,7 +35,7 @@ export default function IngredientItem(props) {
                 <Text style = {{textAlign: "left", height : '100%', margin: 5, marginBottom: 2}}>{ingredient.name}</Text>
             </View>
             <View style = {{flex: 1, height: '100%'}}>
-                <Text style = {{textAlign: "right", height : '100%', margin: 5, marginBottom: 2}}>{ingredient.data}</Text>
+                <Text style = {{textAlign: "right", height : '100%', margin: 5, marginBottom: 2}}>{ingredient.weight}</Text>
             </View>
 
         </View>

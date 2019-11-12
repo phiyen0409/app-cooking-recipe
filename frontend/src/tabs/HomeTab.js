@@ -102,7 +102,7 @@ export default class HomeTab extends React.Component {
               <ListItem
                 userId={this.state.user.idUser}
                 post={item}
-                onPress={() => navigation.navigate("Recipe")}
+                onPress={() => navigation.navigate("Recipe",{post: item})}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
               />
