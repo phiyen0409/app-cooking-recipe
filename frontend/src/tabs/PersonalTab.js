@@ -20,7 +20,7 @@ import {
 } from "react-native-responsive-screen";
 import axios from "axios";
 import { Block, Text } from "galio-framework";
-import { FontAwesome, AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
+import { FontAwesome, AntDesign, Ionicons, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
@@ -245,6 +245,9 @@ export default class PersonalTab extends React.Component {
           style={styles.profileContainer}
           imageStyle={styles.profileBackground}
         >
+            <TouchableOpacity style={styles.logoutView}>
+            <MaterialCommunityIcons name='logout' size={40} color='white' />
+            </TouchableOpacity>
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ width, marginTop: "15%" }}
@@ -561,6 +564,12 @@ const styles = StyleSheet.create({
     width: width,
     height: height / 2,
     opacity: 0.8
+  },
+  logoutView:{
+    position:'absolute',
+    zIndex:3,
+    top:30,
+    right:6
   },
   cardView: {
     padding: 16,
