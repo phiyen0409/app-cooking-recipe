@@ -19,6 +19,7 @@ import ListItem from "../components/ListItem";
 import AvatarImage from "../../assets/Image/avatar.png";
 import theme from "../../constant/theme";
 import uploadImage from "../../assets/Image/blog.png";
+import PTRView from 'react-native-pull-to-refresh';
 
 export default class HomeTab extends React.Component {
   static navigationOptions = {
@@ -28,7 +29,8 @@ export default class HomeTab extends React.Component {
     super(props);
     this.state = {
       user: {},
-      posts: []
+      posts: [],
+      refreshing:false,
     };
   }
   _getUserLogin = async () => {
@@ -60,7 +62,8 @@ export default class HomeTab extends React.Component {
     })
       .then(result => {
         this.setState({
-          posts: result.data  ? result.data : []
+          posts: result.data  ? result.data : [],
+          refreshing:false,
         });
         //console.log(result);
       })
@@ -75,6 +78,16 @@ export default class HomeTab extends React.Component {
       
     }
   };
+  handleRefresh=()=>{
+    this.setState({
+      refreshing:true
+    },
+    ()=>{
+      this.getDataAsync();
+    }
+    )
+  }  
+  
   render() {
     const { navigation } = this.props;
 
@@ -108,6 +121,8 @@ export default class HomeTab extends React.Component {
               />
             )}
             keyExtractor={item => item._id}
+            onRefresh={()=>this.handleRefresh()}
+            refreshing={this.state.refreshing}
           />
       </View>
     );
