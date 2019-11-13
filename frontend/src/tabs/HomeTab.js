@@ -95,7 +95,6 @@ export default class HomeTab extends React.Component {
           </View>
         </View>
       </View> */}
-        <View>
           <FlatList
             onScroll={this.handleScroll} scrollEventThrottle={16}
             data={this.state.posts}
@@ -110,7 +109,6 @@ export default class HomeTab extends React.Component {
             )}
             keyExtractor={item => item._id}
           />
-        </View>
       </View>
     );
   }
@@ -119,7 +117,7 @@ export default class HomeTab extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    //paddingTop: 20,
+    paddingTop: 35,
     paddingBottom: 20,
 
     flex: 1,
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#ffcdd2",
     paddingLeft: 10,
-    paddingRight: 5
+    paddingRight: 10
 
     // backgroundColor: '#fff',
   },

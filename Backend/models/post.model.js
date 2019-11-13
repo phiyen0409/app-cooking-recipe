@@ -23,6 +23,7 @@ const PostSchema=new Schema({
     }],
     detail:[{
         step: Number,
+        title: String,
         image: String,
         content: String
     }]
