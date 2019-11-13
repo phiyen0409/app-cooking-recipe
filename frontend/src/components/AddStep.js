@@ -46,6 +46,7 @@ export default class AddStep extends Component {
   }
   componentDidMount() {
     this.getPermissionAsync();
+    this.updateItem();
   }
 
   getPermissionAsync = async () => {

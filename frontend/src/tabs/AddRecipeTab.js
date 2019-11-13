@@ -194,25 +194,28 @@ export default class AddRecipeScreen extends React.Component {
   };
   addPost = () => {
     //check validate value
-
-    axios({
-      method: "post",
-      url: "/post/create",
-      data: {
-        title: this.state.title,
-        description: this.state.description,
-        image: this.state.image,
-        author: this.state.user.idUser,
-        ingredients: this.state.ingredients,
-        detail: this.state.processes
-      }
-    })
-      .then(result => {
-        Alert.alert(result.data.message);
-      })
-      .catch(error => {
-        Alert.alert(error);
-      });
+    console.log(this.state.title);
+    console.log(this.state.description);
+    console.log(this.state.ingredients);
+    console.log(this.state.processes);
+    // axios({
+    //   method: "post",
+    //   url: "/post/create",
+    //   data: {
+    //     title: this.state.title,
+    //     description: this.state.description,
+    //     image: this.state.image,
+    //     author: this.state.user.idUser,
+    //     ingredients: this.state.ingredients,
+    //     detail: this.state.processes
+    //   }
+    // })
+    //   .then(result => {
+    //     Alert.alert(result.data.message);
+    //   })
+    //   .catch(error => {
+    //     Alert.alert(error);
+    //   });
   };
   render() {
     let { ingredients } = this.state;

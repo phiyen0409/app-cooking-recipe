@@ -21,7 +21,7 @@ module.exports = {
   },
   listPostSorted:async (req, res) => {
     try {
-      let posts = await Post.find().populate('author').sort({ createdDate: 'desc' });
+      let posts = await Post.find().populate({path: 'author'}).populate({path: 'comments.user'}).sort({ createdDate: 'desc' });
       let {userId}=req.params;
       let user=await User.findById(userId);
       let listResult=[];

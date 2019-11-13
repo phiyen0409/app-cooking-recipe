@@ -18,6 +18,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
+import CodePush from 'react-native-code-push';
 import axios from "axios";
 import { Block, Text } from "galio-framework";
 import { FontAwesome, AntDesign, Ionicons, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -243,6 +244,15 @@ export default class PersonalTab extends React.Component {
   static navigationOptions = {
     header: null
   };
+  logOut= async () => {
+    try {
+      await AsyncStorage.removeItem("@auth");
+      
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+  }
   render() {
     let user = this.state.user;
     let posts = this.state.posts;
@@ -253,7 +263,26 @@ export default class PersonalTab extends React.Component {
           style={styles.profileContainer}
           imageStyle={styles.profileBackground}
         >
-            <TouchableOpacity style={styles.logoutView}>
+            <TouchableOpacity style={styles.logoutView} onPress={() => {
+                  Alert.alert(
+                    "Thông báo",
+                    "Bạn có muốn đăng xuất?",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {
+                          this.logOut();
+                        }
+                      },
+                      {
+                        text: "Hủy",
+                        //onPress: () => console.log('Cancel Pressed'),
+                        style: "cancel"
+                      }
+                    ],
+                    { cancelable: false }
+                  );
+                }}>
             <MaterialCommunityIcons name='logout' size={40} color='white' />
             </TouchableOpacity>
           <ScrollView

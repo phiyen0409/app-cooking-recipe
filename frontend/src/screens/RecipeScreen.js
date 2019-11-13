@@ -1,5 +1,12 @@
 import React from "react";
-import { ScrollView, StyleSheet, View, Text, Image } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList
+} from "react-native";
 import IngredientListItem from "../components/IngredientListItem";
 import theme from "../../constant/theme";
 import { Block, Icon } from "galio-framework";
@@ -16,16 +23,15 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 export default class RecipeScreen extends React.Component {
   constructor(props) {
     super(props);
-    
   }
   //   static navigationOptions = {
   //     header: null
   //   };
   render() {
     const post = this.props.navigation.getParam("post");
-    console.log('====================================');
+    console.log("====================================");
     console.log(post);
-    console.log('====================================');
+    console.log("====================================");
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
@@ -47,9 +53,7 @@ export default class RecipeScreen extends React.Component {
                 <Image style={styles.image} source={{ uri: post.image }} />
               </View>
               <View style={styles.viewContent}>
-                  <Text style={styles.description}>
-                    {post.description}
-                  </Text>
+                <Text style={styles.description}>{post.description}</Text>
               </View>
             </View>
 
@@ -65,10 +69,11 @@ export default class RecipeScreen extends React.Component {
               <View style={styles.viewTitle}>
                 <Text style={styles.title}>Bình luận</Text>
               </View>
-              <ScrollView>
-                <Comment />
-                <Comment />
-              </ScrollView>
+              <FlatList
+                data={post.comments}
+                renderItem={({ item }) => <Comment comment={item} />}
+                keyExtractor={item => item._id}
+              />
               <View style={styles.viewComment}>
                 <TextInput
                   style={styles.textInputCmt}
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    fontWeight: "300",
+    fontWeight: "300"
   },
 
   viewComment: {

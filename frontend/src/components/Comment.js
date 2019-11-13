@@ -19,50 +19,27 @@ import {
 } from 'react-native-responsive-screen';
 
 
-export default function Comment(props){
-return(
-    // <View style={styles.container}>
-    //     <View style = {styles.viewTitle}>
-    //         <Text style = {styles.title}>
-    //             Bình luận
-    //         </Text>
-            
-    //     </View>
-    //     <View style = {styles.content}>
-    //         <View style = {{flexDirection: 'row'}}>
-    //             <Image style = {{}} source = {Avatar}>
-
-    //             </Image>
-    //             <Text>
-    //                 Ly
-    //             </Text>
-    //         </View>
-    //         <View> style = {styles.description}
-    //             <Text>
-    //                  bfbfbvkvskjsb
-    //             </Text>
-    //         </View>
-    //     </View>
-    // </View>
-
+export default class Comment extends React.Component{
+    constructor(props) {
+        super(props);
+      }
+render(){
+    const comment = this.props.comment;
+    return(
     <View style={styles.viewContent}>
             <View style = {{flex: 1, flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: "#830707", height: '100%', marginTop: 15}}>
-                <Image style = {styles.avatar} source = {Avatar}/>
-                <Text style = {{marginLeft: 5, fontWeight: "400", color: "#8e1e20"}}>Lynk Huyền</Text>
-                {/* <Text style = {{paddingLeft: 5, paddingRight: 5, fontWeight: "400", color: "#8e1e20"}}>{step.title}</Text> */}
+                <Image style = {styles.avatar} source = {comment.user.avatar}/>
+    <Text style = {{marginLeft: 5, fontWeight: "400", color: "#8e1e20"}}>{comment.user.name}</Text>
 
             </View>
             <View style = {styles.discription, {margin:5, paddingRight: 5, height : '100%'}}>
-                {/* <View style = {styles.imageContainer}> */}
-                    {/* <Image style={styles.image} source={Im}/> */}
-                {/* </View> */}
-                <Text>asdfghjkl  hgvvb bjf jr jfn ghj bnh nkjiuibb uh huy gvgcff hgcfgcggbh</Text>
-                {/* <View style = {{height: '100%', margin: 5,padding: 5,}}>
-                    <Text>{step.data}</Text>
-                </View> */}
+
+                <Text>{comment.content}</Text>
+
             </View>
         </View>
     );
+            }
 }
 
 const styles = StyleSheet.create({
