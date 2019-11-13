@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View , AsyncStorage} from "react-native";
 import ListItem from "./src/components/ListItem";
 import LoginScreen from "./src/screens/LoginScreen";
 import HomeScreen from "./src/screens/HomeScreen";
@@ -13,8 +13,6 @@ import AddIntro from "./src/components/AddIntro";
 import AddIngredient from "./src/components/AddIngredient";
 import AddRecipeScreen from "./src/tabs/AddRecipeTab";
 import PersonalTab from "./src/tabs/PersonalTab";
-
-//const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
   constructor(props) {
@@ -41,7 +39,7 @@ export default class App extends React.Component {
   componentDidMount() {
     this.isSignedIn()
       .then(res => this.setState({ signedIn: res, checkedSignIn: true }))
-      .catch(err => alert("An error occurred"));
+      //.catch(err => alert("An error occurred"));
   }
   render() {
     const { checkedSignIn, signedIn } = this.state;
@@ -50,7 +48,9 @@ export default class App extends React.Component {
     }
     // If we haven't checked AsyncStorage yet, don't render anything (better ways to do this)
     const Layout = AppNavigator(signedIn);
-    return <Layout />
+    const AppContainer = createAppContainer(Layout);
+    return <AppContainer />
+
     // return (
     //   // <View style={styles.container}>
     //   //   {/* <LoginScreen/> */}

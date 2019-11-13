@@ -13,7 +13,10 @@ class HomeScreen extends Component {
   }
 
   render() {
-    return <TabContainer />;
+    const changeScreen = this.props.navigation;
+    const Layout = HomeScreenTabNavigator(changeScreen);
+    const TabContainer = createAppContainer(Layout);
+    return <TabContainer changeScreen={changeScreen} />;
   }
 }
 

@@ -245,13 +245,13 @@ export default class PersonalTab extends React.Component {
     header: null
   };
   logOut= async () => {
-    try {
-      await AsyncStorage.removeItem("@auth");
-      
-    } catch (error) {
-      // Error retrieving data
-      console.log(error.message);
-    }
+    AsyncStorage.removeItem("@auth").then(() =>{
+      console.log('====================================');
+      console.log('logout');
+      console.log('====================================');
+      let { navigation } = this.props;
+      navigation.navigate("Login");
+    });
   }
   render() {
     let user = this.state.user;
