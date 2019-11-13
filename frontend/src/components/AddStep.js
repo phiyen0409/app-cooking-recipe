@@ -65,7 +65,14 @@ export default class AddStep extends Component {
         console.log(error);
       });
   };
-
+  updateItem = () =>{
+    this.props.updateItem(this.state.id, {
+      step: this.state.step,
+      title: this.state.title,
+      image: this.state.image,
+      content: this.state.content
+    });
+  }
   choosePhoto = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -77,16 +84,11 @@ export default class AddStep extends Component {
     if (!result.cancelled) {
       let data =
         "data:image/" +
-        result.uri.split(result.uri.lastIndexOf(".")).pop() +
+        result.uri.substring(result.uri.lastIndexOf(".") + 1, result.uri.length) +
         ";base64," +
         result.base64;
       this.setState({ image: data, modalVisible: false });
-      this.props.updateItem(this.state.id, {
-        step: this.state.name,
-        title: this.state.title,
-        image: this.state.image,
-        content: this.state.content
-      });
+      this.updateItem();
     }
   };
   takePhoto = async () => {
@@ -107,16 +109,11 @@ export default class AddStep extends Component {
       if (!result.cancelled) {
         let data =
           "data:image/" +
-          result.uri.split(result.uri.lastIndexOf(".")).pop() +
+          result.uri.substring(result.uri.lastIndexOf(".") + 1, result.uri.length) +
           ";base64," +
           result.base64;
         this.setState({ image: data, modalVisible: false });
-        this.props.updateItem(this.state.id, {
-          step: this.state.name,
-          title: this.state.title,
-          image: this.state.image,
-          content: this.state.content
-        });
+        this.updateItem();
       }
     }
   };
@@ -136,12 +133,7 @@ export default class AddStep extends Component {
             value={this.state.title}
             onChangeText={text => {
               this.setState({ title: text });
-              this.props.updateItem(this.state.id, {
-                step: this.state.name,
-                title: this.state.title,
-                image: this.state.image,
-                content: this.state.content
-              });
+              this.updateItem();
             }}
             placeholder="tiêu đề"
           />
@@ -152,12 +144,7 @@ export default class AddStep extends Component {
             value={this.state.content}
             onChangeText={text => {
               this.setState({ content: text });
-              this.props.updateItem(this.state.id, {
-                step: this.state.name,
-                title: this.state.title,
-                image: this.state.image,
-                content: this.state.content
-              });
+              this.updateItem();
             }}
             placeholder="Nội dung"
             multiline

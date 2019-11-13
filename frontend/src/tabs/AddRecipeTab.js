@@ -63,7 +63,7 @@ export default class AddRecipeScreen extends React.Component {
           step: 1,
           content: "",
           image: "",
-          title:"",
+          title: ""
         }
       ],
       ingredients: [
@@ -91,7 +91,7 @@ export default class AddRecipeScreen extends React.Component {
       step: processes.length + 1,
       content: "",
       image: "",
-      title:"",
+      title: ""
     });
     this.setState({ processes: processes });
   };
@@ -155,7 +155,10 @@ export default class AddRecipeScreen extends React.Component {
     if (!result.cancelled) {
       let data =
         "data:image/" +
-        result.uri.split(result.uri.lastIndexOf(".")).pop() +
+        result.uri.substring(
+          result.uri.lastIndexOf(".") + 1,
+          result.uri.length
+        ) +
         ";base64," +
         result.base64;
       this.setState({ image: data, modalVisible: false });
@@ -179,7 +182,10 @@ export default class AddRecipeScreen extends React.Component {
       if (!result.cancelled) {
         let data =
           "data:image/" +
-          result.uri.split(result.uri.lastIndexOf(".")).pop() +
+          result.uri.substring(
+            result.uri.lastIndexOf(".") + 1,
+            result.uri.length
+          ) +
           ";base64," +
           result.base64;
         this.setState({ image: data, modalVisible: false });
@@ -187,10 +193,8 @@ export default class AddRecipeScreen extends React.Component {
     }
   };
   addPost = () => {
-    console.log("====================================");
-    console.log("Click me");
-    console.log("====================================");
     //check validate value
+
     axios({
       method: "post",
       url: "/post/create",

@@ -38,24 +38,18 @@ export default class RecipeScreen extends React.Component {
               <View style={styles.viewTitle}>
                 <Text style={styles.title}>{post.title}</Text>
                 <View>
-                  {/* <image>
-
-                </image> */}
                   <Text style={(styles.title, styles.author)}>
                     {post.author}
                   </Text>
                 </View>
               </View>
-
               <View style={styles.imageView}>
                 <Image style={styles.image} source={{ uri: post.image }} />
               </View>
               <View style={styles.viewContent}>
-                <ScrollView>
                   <Text style={styles.description}>
                     {post.description}
                   </Text>
-                </ScrollView>
               </View>
             </View>
 
@@ -175,26 +169,18 @@ const styles = StyleSheet.create({
   viewContent: {
     flexDirection: "row",
     alignItems: "stretch",
-    marginBottom: 10,
-    marginLeft: 0,
-    marginRight: 0,
-    paddingLeft: 5,
-    paddingRight: 5,
+    marginVertical: 10,
+    marginHorizontal: 15,
+    padding: 5,
     borderWidth: 2,
     borderTopWidth: 0,
     borderColor: "#ffebee",
     borderRadius: 10,
-    // borderBottomLeftRadius: 10,
-    // borderBottomRightRadius: 10,
     shadowColor: "#cdb7b5"
   },
 
   description: {
-    marginBottom: 8,
-    marginTop: 8,
-    paddingBottom: 8,
     fontWeight: "300",
-    marginTop: -1
   },
 
   viewComment: {
