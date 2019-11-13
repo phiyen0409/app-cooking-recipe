@@ -21,11 +21,11 @@ export default function Step(props) {
           marginTop: 15
         }}
       >
-        <Text style={styles.title}>Buoc</Text>
+        <Text style={styles.title}>Bước</Text>
         <Text
           style={{ textAlign: "left", fontWeight: "400", color: "#8e1e20" }}
         >
-          {step.step}:
+          {'' + step.step}:
         </Text>
         <Text
           style={{

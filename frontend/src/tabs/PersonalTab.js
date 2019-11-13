@@ -89,7 +89,9 @@ export default class PersonalTab extends React.Component {
         console.log(result.data);
         console.log("====================================");
         this.setState({
-          posts: result.data.listPostsCreated ? result.data.listPostsCreated : []
+          posts: result.data.listPostsCreated
+            ? result.data.listPostsCreated
+            : []
         });
       })
       .catch(error => {
@@ -196,7 +198,10 @@ export default class PersonalTab extends React.Component {
     if (!result.cancelled) {
       let data =
         "data:image/" +
-        result.uri.split(result.uri.lastIndexOf(".")).pop() +
+        result.uri.substring(
+          result.uri.lastIndexOf(".") + 1,
+          result.uri.length
+        ) +
         ";base64," +
         result.base64;
       this.setState({ modalVisible: false });
@@ -224,7 +229,10 @@ export default class PersonalTab extends React.Component {
       if (!result.cancelled) {
         let data =
           "data:image/" +
-          result.uri.split(result.uri.lastIndexOf(".")).pop() +
+          result.uri.substring(
+            result.uri.lastIndexOf(".") + 1,
+            result.uri.length
+          ) +
           ";base64," +
           result.base64;
         this.setState({ modalVisible: false });

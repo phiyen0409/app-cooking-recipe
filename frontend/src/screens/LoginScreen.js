@@ -40,7 +40,6 @@ class LoginScreen extends React.Component {
       });
 
       if (result.type === "success") {
-        alert(result.user.email);
         axios({
           method: "post",
           url: "/user/login",
@@ -91,7 +90,7 @@ class LoginScreen extends React.Component {
     }
   };
   componentDidMount() {
-    //this._getUserLogin();
+    this._getUserLogin();
   }
   render() {
     return (

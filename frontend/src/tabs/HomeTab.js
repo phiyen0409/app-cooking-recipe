@@ -69,7 +69,7 @@ export default class HomeTab extends React.Component {
       });
   };
   handleScroll= function(event) {
-    console.log(event.nativeEvent.contentOffset.y);
+    //console.log(event.nativeEvent.contentOffset.y);
     if(event.nativeEvent.contentOffset.y == 0)
     {
       

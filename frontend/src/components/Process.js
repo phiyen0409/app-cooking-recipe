@@ -42,7 +42,7 @@ export default class Process extends Component {
             style={styles.dataWrapper}
             data={stepList}
             renderItem={({ item }) => <Step step={item} />}
-            keyExtractor={item => `${item.step}`}
+            keyExtractor={item => `${item._id}`}
           />
         </View>
       </View>
