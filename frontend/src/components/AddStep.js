@@ -46,7 +46,7 @@ export default class AddStep extends Component {
   }
   componentDidMount() {
     this.getPermissionAsync();
-    this.updateItem();
+    
   }
 
   getPermissionAsync = async () => {
@@ -119,6 +119,7 @@ export default class AddStep extends Component {
     }
   };
   render() {
+    //this.updateItem();
     let { image } = this.state;
     return (
       <View style={styles.container}>

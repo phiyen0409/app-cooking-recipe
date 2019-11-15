@@ -6,7 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Animated
+  Animated,
+  Modal
 } from "react-native";
 import { Block, Icon } from "galio-framework";
 import Im from "../../assets/Image/suonxaochuangot.jpg";
@@ -14,7 +15,7 @@ import { red } from "ansi-colors";
 import LikeImage from "../../assets/Image/Interact/like.png";
 import CommentImage from "../../assets/Image/Interact/comment.png";
 import SaveImage from "../../assets/Image/Interact/save.png";
-import { FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, AntDesign, MaterialIcons, Entypo } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -31,7 +32,9 @@ export default class ListItem extends React.Component {
       liked: this.props.isLiked,
       saved: this.props.isSaved,
       totalLike: this.props.post.totalLike,
-      totalSaved: this.props.post.totalSaved
+      totalSaved: this.props.post.totalSaved,
+      modalVisible: false,
+      id:this.props.post._id,
     };
     console.log("====================================");
     console.log(this.props);
@@ -113,6 +116,31 @@ export default class ListItem extends React.Component {
       }).start();
     }
   }
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
+  removeItem = () => {
+    this.props.removeItem(this.state.id);
+    console.log('RemoveItem: '+this.state.id);
+  };
+  deletePost=async ()=>{
+    this.setState({ modalVisible: false });
+    console.log(this.props.post._id);
+    this.removeItem();
+    // axios({
+    //   method: "delete",
+    //   url: "post/delete/" + this.props.post._id,
+    //   data: {
+    //   }
+    // })
+    //   .then(result => {
+    //     Alert.alert(result);
+    //     this.props.getDataAsync();
+    //   })
+    //   .catch(error => {
+    //     Alert.alert(error);
+    //   });
+  }
   render() {
     const { onPress } = this.props;
     const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
@@ -120,6 +148,13 @@ export default class ListItem extends React.Component {
     const post = this.props.post;
     return (
       <View style={styles.container}>
+        { this.props.personalTab?
+        <TouchableOpacity style={styles.menuView} onPress={() => {
+          this.setModalVisible(true);
+        }}>
+            <Entypo name='menu' size={25} color="#830707" />
+        </TouchableOpacity>:null
+        }
         <View
           style={{
             flex: 4,
@@ -171,7 +206,7 @@ export default class ListItem extends React.Component {
               </Text>
             </Block>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={onPress}>
             <Block style={styles.buttonBlock}>
               <MaterialIcons name="comment" size={30} color="#A4A4A4" />
               <Text style={{ fontSize: 6 }}>
@@ -196,6 +231,70 @@ export default class ListItem extends React.Component {
             </Block>
           </TouchableOpacity>
         </View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.setModalVisible(false);
+            }}
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(15,0,0,0.52)"
+            }}
+          ></TouchableOpacity>
+          <View style={styles.containerModal}>
+            <View style={styles.bodyModal}>
+              <TouchableOpacity
+                style={styles.viewButtonModal}
+              >
+                <View style={styles.viewIconButtonModal}>
+                  <Entypo name='edit' size={25} />
+                </View>
+                <View style={styles.viewTextButtonModal}>
+                  <Text style={styles.textButtonModal}>Chỉnh sửa bài viết</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.viewButtonModal}
+                onPress={() => {
+                  Alert.alert(
+                    "Thông báo",
+                    "Bạn có muốn xóa bài viết?",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {
+                          this.deletePost();
+                        }
+                      },
+                      {
+                        text: "Hủy",
+                        //onPress: () => console.log('Cancel Pressed'),
+                        style: "cancel"
+                      }
+                    ],
+                    { cancelable: false }
+                  );
+                }}
+              >
+                <View style={styles.viewIconButtonModal}>
+                  <AntDesign name='delete' size={25} />
+                </View>
+                <View style={styles.viewTextButtonModal}>
+                  <Text style={styles.textButtonModal}>Xóa bài viết</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -208,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // height: hp('20%'),
 
-    padding: 15,
+    padding: 5,
     // borderTopLeftRadius: 40,
     // borderBottomRightRadius: 40,
     backgroundColor: "#fff",
@@ -216,10 +315,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
-    marginBottom: 10,
-    borderRadius: 25
+    marginBottom: 15,
+    borderRadius: 25,
+    borderColor:'#ffcdd2',
+    borderWidth:1,
   },
-
+  menuView:{
+    position:'absolute',
+    zIndex:3,
+    top:5,
+    right:7
+  },
   viewContent: {
     flex: 2,
     flexDirection: "column",
@@ -296,5 +402,51 @@ const styles = StyleSheet.create({
   logoButton: {
     width: 25,
     height: 25
+  },
+  containerModal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    bottom: 0,
+    backgroundColor: "#FFF"
+  },
+  bodyModal: {
+    flex: 1,
+    width: "100%",
+    alignContent: "stretch",
+    justifyContent: "center"
+  },
+  viewButtonModal: {
+    width: "100%",
+    height: 45,
+    flex: 1,
+    flexDirection: "row",
+    //paddingVertical: 5,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  viewIconButtonModal: {
+    flex: 1,
+    //height: 20,
+    paddingLeft: 5,
+    justifyContent: "center",
+    alignContent: "center"
+  },
+  iconButtonModal: {
+    width: 35,
+    height: 35
+  },
+  viewTextButtonModal: {
+    flex: 10,
+    flexDirection: "row",
+    marginLeft: 10
+  },
+  textButtonModal: {
+    alignSelf: "flex-start",
+    height: "100%",
+    textAlign: "left",
+    fontSize: 15
   }
 });

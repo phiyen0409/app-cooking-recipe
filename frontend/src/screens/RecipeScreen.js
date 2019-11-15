@@ -5,7 +5,9 @@ import {
   View,
   Text,
   Image,
-  FlatList
+  FlatList,
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import IngredientListItem from "../components/IngredientListItem";
 import theme from "../../constant/theme";
@@ -19,19 +21,72 @@ import Process from "../components/Process";
 import Comment from "../components/Comment";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from "axios";
 
 export default class RecipeScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state={
+      commentContent:"",
+      post : this.props.navigation.getParam("post"),
+      loading: false,
+    }
   }
   //   static navigationOptions = {
   //     header: null
   //   };
+  getPost=async()=>{
+    axios({
+      method:"get",
+      url:"/post/"+this.state.post._id,
+      data:{
+
+      }
+    })
+    .then(result=>{
+      this.setState({
+        post: result.data  ? result.data : [],
+        commentContent:"",
+         loading:false,
+      })
+    })
+    .catch(error => {
+      Alert.alert(error);
+    });
+    }
+  addComment=async()=>{
+    if(this.state.commentContent!==""){
+      this.setState({
+        loading:true,
+      });
+      const userId = this.props.navigation.getParam("userId");
+    axios({
+      method: "post",
+      url: "/post/addcomment/"+this.state.post._id,
+      data: {
+        content: this.state.commentContent,
+        user: userId
+      }
+    })
+      .then(result => {
+        Alert.alert(result.data.message);
+        this.getPost();
+        
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
+    }
+    else{
+      Alert.alert("Bạn chưa nhập nội dung");
+    }
+  }
   render() {
-    const post = this.props.navigation.getParam("post");
-    console.log("====================================");
-    console.log(post);
-    console.log("====================================");
+    // const post = this.props.navigation.getParam("post");
+    // console.log("====================================");
+    // console.log(post);
+    // console.log("====================================");
+    let post=this.state.post;
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
@@ -79,8 +134,12 @@ export default class RecipeScreen extends React.Component {
                   style={styles.textInputCmt}
                   multiline
                   placeholder="Viết bình luận"
+                  value={this.state.commentContent}
+                  onChangeText={text => {
+                    this.setState({ commentContent: text });
+                  }}
                 />
-                <TouchableOpacity style={{ width: "100%", height: "60%" }}>
+                <TouchableOpacity style={{ width: "100%", height: "60%" }} onPress={this.addComment}>
                   <View style={styles.buttonCmt}>
                     <Text style={styles.textButtonCmt}>Gửi</Text>
                   </View>
@@ -89,6 +148,11 @@ export default class RecipeScreen extends React.Component {
             </View>
           </ScrollView>
         </View>
+        {
+          this.state.loading?
+          <ActivityIndicator style={{position:'absolute', top:'50%',left:'50%',zIndex:5}} size="large" color="#830707" />:
+          null
+        }
       </KeyboardAwareScrollView>
     );
   }

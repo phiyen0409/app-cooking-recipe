@@ -73,13 +73,13 @@ module.exports = {
   find: async (req, res) => {
     let id = req.params.id;
     try {
-      let post = await Post.findById(id);
+      let post = await Post.findById(id).populate({path: 'comments.user'});
       if (post < 1) {
         return res.json({
           message: "No post created"
         });
       } else {
-        res.json(user);
+        res.json(post);
       }
     } catch (err) {
       res.json(err);
@@ -214,16 +214,17 @@ module.exports = {
   // },
   // delete: async (req, res) => {
   //   let { id } = req.params;
-  //   let user = await User.findById(id);
-  //   if (!user) {
+  //   let post = await Post.findById(id);
+  //   if (!post) {
   //     return res.status(500).json({
-  //       message: "No user"
+  //       message: "No post"
   //     });
   //   }
   //   try {
-  //     let userDelete = await User.deleteOne({ _id: id });
+  //     await User.listPostsCreated
+  //     await User.deleteOne({ _id: id });
   //     res.json({
-  //       message: "User deleted"
+  //       message: "post deleted"
   //     });
   //   } catch (err) {
   //     res.json(err);

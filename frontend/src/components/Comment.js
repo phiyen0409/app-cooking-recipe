@@ -27,12 +27,17 @@ render(){
     const comment = this.props.comment;
     return(
     <View style={styles.viewContent}>
-            <View style = {{flex: 1, flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: "#830707", height: '100%', marginTop: 15}}>
-                <Image style = {styles.avatar} source = {comment.user.avatar}/>
-    <Text style = {{marginLeft: 5, fontWeight: "400", color: "#8e1e20"}}>{comment.user.name}</Text>
+            <View style = {{flex: 4, flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: "#830707", height: '100%', marginTop: 15}}>
+                <Image style = {styles.avatar} source = {{uri: comment.user.avatar}}/>
+            <Text style = {{marginLeft: 5, fontWeight: "400", color: "#8e1e20"}}>{comment.user.name}</Text>
 
             </View>
-            <View style = {styles.discription, {margin:5, paddingRight: 5, height : '100%'}}>
+            <View style = {styles.date, {margin:5, paddingRight: 5, height : '100%',flex:1}}>
+
+                <Text style={styles.dateComent}>{comment.date}</Text>
+
+            </View>
+            <View style = {styles.description, {margin:5, paddingRight: 5, height : '100%',flex:2}}>
 
                 <Text>{comment.content}</Text>
 
@@ -112,30 +117,14 @@ const styles = StyleSheet.create({
     },
 
     description:{
-        flex: 2,
-        marginBottom: 8,
-        paddingBottom: 0,
-        fontWeight: "300",
-        marginLeft: 15,
+        // flex: 2,
+        // marginBottom: 8,
+        // paddingBottom: 0,
+        // fontWeight: "300",
+        // marginLeft: 15,
     },
-
-    // button:{
-    //     flex: 1,
-    //     // backgroundColor: "#b71c1c",
-    //     margin: 5,
-    //     paddingTop: 10
-    //     //borderRadius: 4,
-    //     // borderLeftWidth: 0.5,
-    //     // borderLeftColor: 'red'
-        
-    // },
-    // buttonBlock:{
-    //     justifyContent: 'center',
-    //     alignContent: 'center',
-    //     alignItems: 'center'
-    // },
-    // logoButton: {
-    //     width: 25,
-    //     height:25
-    // },
+    dateComent:{
+        fontSize:10,
+        color:"#585858"
+    }
 });

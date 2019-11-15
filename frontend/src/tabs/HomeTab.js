@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   View,
   AsyncStorage,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -31,6 +32,8 @@ export default class HomeTab extends React.Component {
       user: {},
       posts: [],
       refreshing:false,
+      loading:true,
+      personalTab:false,
     };
   }
   _getUserLogin = async () => {
@@ -64,6 +67,7 @@ export default class HomeTab extends React.Component {
         this.setState({
           posts: result.data  ? result.data : [],
           refreshing:false,
+          loading:false
         });
         //console.log(result);
       })
@@ -93,21 +97,10 @@ export default class HomeTab extends React.Component {
 
     return (
       <View style={styles.container}>
-        {/* <View style={styles.headerContainer}>
-        <View style={{ flexDirection: "row" }}>
-          <View style={styles.imgContainer}>
-          <Image style={styles.avtImage} source={AvatarImage} resizeMode='cover'></Image>
-          </View>
-          <View style={styles.updatebtnContainer}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>
-                Đăng công thức{"  "}
-                <Image style={styles.uploadImg} source={uploadImage} />
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View> */}
+        {
+          this.state.loading?
+          <ActivityIndicator size="large" color="white" />
+          :
           <FlatList
             onScroll={this.handleScroll} scrollEventThrottle={16}
             data={this.state.posts}
@@ -115,7 +108,8 @@ export default class HomeTab extends React.Component {
               <ListItem
                 userId={this.state.user.idUser}
                 post={item}
-                onPress={() => navigation.navigate("Recipe",{post: item})}
+                personalTab={this.state.personalTab}
+                onPress={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
               />
@@ -124,6 +118,7 @@ export default class HomeTab extends React.Component {
             onRefresh={()=>this.handleRefresh()}
             refreshing={this.state.refreshing}
           />
+            }
       </View>
     );
   }

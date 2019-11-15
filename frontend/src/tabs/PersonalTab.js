@@ -12,7 +12,8 @@ import {
   Alert,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  AsyncStorage
+  AsyncStorage,
+  ActivityIndicator
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -39,6 +40,7 @@ import LibraryImage from "../../assets/Image/library.png";
 //import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 const { width, height } = Dimensions.get("screen");
 export default class PersonalTab extends React.Component {
+
   _getUserLogin = async () => {
     try {
       const value = await AsyncStorage.getItem("@auth");
@@ -79,7 +81,9 @@ export default class PersonalTab extends React.Component {
       name: "",
       birthday: "",
       phone: "",
-      image: ""
+      image: "",
+      loadingPost:true,
+      personalTab: true,
     };
   }
   getDataAsync = async () => {
@@ -90,6 +94,7 @@ export default class PersonalTab extends React.Component {
         console.log(result.data);
         console.log("====================================");
         this.setState({
+          loadingPost:false,
           posts: result.data.listPostsCreated
             ? result.data.listPostsCreated
             : []
@@ -253,9 +258,26 @@ export default class PersonalTab extends React.Component {
       navigation.navigate("Login");
     });
   }
+  removeItemPost = id => {
+    let { posts } = this.state.posts;
+    let i;
+    for(i=0;i<posts.length;i++){
+      if (posts[i]._id==id){
+        { break; }
+      }
+    }
+    console.log("List post:")
+    console.log(posts);
+    console.log("i=" +i);
+    console.log(posts.splice(i, 1));
+    //posts.splice(i, 1);
+    //this.setState({ posts: posts });
+  };
+
   render() {
     let user = this.state.user;
     let posts = this.state.posts;
+    const { navigation } = this.props;
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -287,7 +309,7 @@ export default class PersonalTab extends React.Component {
             </TouchableOpacity>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ width, marginTop: "15%" }}
+            style={{ width, marginTop: "15%", marginBottom:"8%" }}
           >
             <View style={styles.cardView}>
               <Block middle style={styles.avatarContainer}>
@@ -405,16 +427,23 @@ export default class PersonalTab extends React.Component {
                   <Block style={styles.divider} />
                 </Block>
                 <View style={styles.listRecipes}>
-                  {posts.map((item, key) => {
+                  {
+                    this.state.loadingPost?
+                    <ActivityIndicator size="large" color="#830707" />
+                    :
+                  posts.map((item, key) => {
                     item.author = user.name;
                     return (
                       <ListItem
                         key={key}
                         userId={this.state.user.idUser}
                         post={item}
+                        personalTab={this.state.personalTab}
+                        getDataAsync={this.getDataAsync}
+                        removeItem={this.removeItemPost}
                         isLiked={item.isLiked}
                         isSaved={item.isSaved}
-                        onPress={() => {}}
+                        onPress={() => navigation.navigate("Recipe",{post: item})}
                       />
                     );
                   })}
@@ -517,16 +546,6 @@ export default class PersonalTab extends React.Component {
                 <Text style={styles.buttonUpdateProText}>Hủy bỏ</Text>
               </TouchableOpacity>
             </View>
-            {/* <View>
-              <Text>Hello World!</Text>
-
-              <TouchableHighlight
-                onPress={() => {
-                  this.setUpdateProfileVisible(!this.state.updateProfileVisible);
-                }}>
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
-            </View> */}
           </View>
         </Modal>
 
@@ -712,6 +731,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 15,
     color: "#830707"
+  },
+  listRecipes:{
+    paddingBottom:20,
   },
   updateProfilePopup: {
     backgroundColor: "white",

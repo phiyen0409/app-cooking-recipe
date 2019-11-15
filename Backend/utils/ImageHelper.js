@@ -2,6 +2,7 @@ const fs = require("fs");
 const dotenv = require('dotenv');
 dotenv.config();
 const APP_URL = process.env.APP_URL;
+const uuid = require('uuid');
 
 const ImageHelper = {
   saveImageBase64: async (path, base64String) => {
@@ -10,7 +11,7 @@ const ImageHelper = {
     let base64Image = arrData.pop();
     let lowerCase = arrData[0].toLowerCase();
     let extension = undefined;
-    let name = path + "/" + new Date().getTime();
+    let name = path + "/" + uuid.v1();
 
     if (lowerCase.indexOf("png") !== -1) extension = "png";
     else if (
