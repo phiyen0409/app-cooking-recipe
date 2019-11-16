@@ -168,18 +168,49 @@ module.exports = {
     }
   },
   update: async (req, res) => {
-    let post = await Post.findById(req.params.postId);
-    let { title } = req.body;
-    let { description } = req.body;
-    let { image } = req.body;
-    let { ingredients } = req.body;
-    let { detail } = req.body;
+    try {
+      let { id } = req.params;
+    let post = await Post.findById(id);
+    if (!post) {
+      return res.status(500).json({
+        message: "No post"
+      });
+    }
+      let image;
+      let { title } = req.body;
+      let { description } = req.body;
+      let { ingredients } = req.body;
+      let { detail } = req.body;
+      if (req.body.image === undefined) {
+        image="";
+      }
+      else{
+        let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.image);
+        image = fileName;
+      }
 
-    post.title = title;
-    post.description = description;
-    post.image = image;
-    post.ingredients = ingredients;
-    post.detail = detail;
+      for(let i=0;i<detail.length;i++){
+        if(detail[i].image===undefined){
+          detail[i].image = "";
+        }
+        else{
+          let fileName = await ImageHelper.saveImageBase64("./public/uploads",detail[i].image);
+          detail[i].image = fileName;
+        }
+      }
+        post.title= title;
+        post.description= description;
+        post.image= image;
+        post.ingredients= ingredients;
+        post.detail= detail;
+      await post.save();
+      res.status(201).json({
+        message: "Post updated"
+      });
+      
+    } catch (err) {
+      console.log(err);
+    }
   },
   // update: async (req, res) => {
   //   let { id } = req.params;
@@ -221,8 +252,7 @@ module.exports = {
   //     });
   //   }
   //   try {
-  //     await User.listPostsCreated
-  //     await User.deleteOne({ _id: id });
+      
   //     res.json({
   //       message: "post deleted"
   //     });
@@ -262,7 +292,8 @@ module.exports = {
       let post = await Post.findById(req.params.postId);
       let {user}=req.body;
       let {content}=req.body;
-      let date = moment().format("DD/MM/YYYY hh:mm A");
+      let date=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Ho_Chi_Minh"}));
+      date = moment(date).format("DD/MM/YYYY hh:mm A");
       let comment={"user": user, "content": content,"date": date};
       post.comments.push(comment);
       post.totalComment+=1;
