@@ -41,7 +41,7 @@ export default class AddIngredient extends Component {
               onChangeText={text => {
                 this.setState({ name: text });
                 this.props.updateItem(this.state.id, {
-                  name: this.state.name,
+                  name: text,
                   weight: this.state.weight
                 });
               }}
@@ -56,7 +56,7 @@ export default class AddIngredient extends Component {
                 this.setState({ weight: text });
                 this.props.updateItem(this.state.id, {
                   name: this.state.name,
-                  weight: this.state.weight
+                  weight: text
                 });
               }}
             />

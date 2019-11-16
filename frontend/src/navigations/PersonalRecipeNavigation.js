@@ -1,13 +1,13 @@
 import React from "react-native";
 import { createStackNavigator } from "react-navigation-stack";
 
-import HomeTab from "./src/tabs/HomeTab";
-import RecipeScreen from "./src/screens/RecipeScreen";
+import PersonalTab from "../tabs/PersonalTab";
+import RecipeScreen from "../screens/RecipeScreen";
 
-const RecipeNavigation = createStackNavigator(
+const PersonalRecipeNavigation = createStackNavigator(
   {
-    Home: {
-      screen: HomeTab,
+    Personal: {
+      screen: PersonalTab,
       navigationOptions:{
         header: null,
       }
@@ -22,10 +22,6 @@ const RecipeNavigation = createStackNavigator(
       header: null,
     },
   }
-  // {
-  //   header: null,
-  //   headerMode: 'none'
-  // }
 );
 
-export default RecipeNavigation;
+export default PersonalRecipeNavigation;

@@ -5,7 +5,7 @@ import LoginScreen from "./src/screens/LoginScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import RecipeScreen from "./src/screens/RecipeScreen";
 import IngredientItem from "./src/components/IngredientListItem";
-import AppNavigator from "./AppNavigator";
+import AppNavigator from "./src/navigations/AppNavigator";
 import { createAppContainer } from "react-navigation";
 import IntroItem from "./src/components/IntroItem";
 import axios from "axios";

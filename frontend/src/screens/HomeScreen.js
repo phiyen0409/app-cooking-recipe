@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { createAppContainer } from "react-navigation";
-import HomeScreenTabNavigator from "../../HomeScreenTabNavigator";
+import HomeScreenTabNavigator from "../navigations/HomeScreenTabNavigator";
 
 const TabContainer = createAppContainer(HomeScreenTabNavigator);
 

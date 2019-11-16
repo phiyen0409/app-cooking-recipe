@@ -1,19 +1,20 @@
 import React from "react";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import TrendingTab from "./src/tabs/TrendingTab";
-import HomeTab from "./src/tabs/HomeTab";
-import SavedTab from "./src/tabs/SavedTab";
-import PersonalTab from "./src/tabs/PersonalTab";
-import AddRecipeTab from "./src/tabs/AddRecipeTab"
+import TrendingTab from "../tabs/TrendingTab";
+import HomeTab from "../tabs/HomeTab";
+import SavedTab from "../tabs/SavedTab";
+import PersonalTab from "../tabs/PersonalTab";
+import AddRecipeTab from "../tabs/AddRecipeTab"
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import { AddButton } from "./src/components/AddButton";
-import RecipeNavigation from "./RecipeNavigation";
+import { AddButton } from "../components/AddButton";
+import HomeRecipeNavigation from "./HomeRecipeNavigation";
+import PersonalRecipeNavigation from "./PersonalRecipeNavigation";
 
 const TrendingTabStack = createStackNavigator({ TrendingTab });
-const HomeTabStack = createStackNavigator({ RecipeNavigation });
+const HomeTabStack = createStackNavigator({ HomeRecipeNavigation });
 const SavedTabStack = createStackNavigator({ SavedTab });
-const PersonalTabStack = createStackNavigator({ PersonalTab });
+const PersonalTabStack = createStackNavigator({ PersonalRecipeNavigation });
 const AddRecipeTabStack=createStackNavigator({AddRecipeTab});
 
 const HomeScreenTabNavigator = createBottomTabNavigator(
