@@ -288,18 +288,18 @@ export default class AddRecipeScreen extends React.Component {
             description:"",
             image: null,
             processes: [
-              {
-                step: 1,
-                content: "",
-                image: "",
-                title: ""
-              }
+              // {
+              //   step: 1,
+              //   content: "",
+              //   image: "",
+              //   title: ""
+              // }
             ],
             ingredients: [
-              {
-                name: "",
-                weight: ""
-              }
+              // {
+              //   name: "",
+              //   weight: ""
+              // }
             ]
           });
         })

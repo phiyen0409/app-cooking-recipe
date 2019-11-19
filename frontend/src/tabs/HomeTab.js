@@ -74,13 +74,6 @@ export default class HomeTab extends React.Component {
         console.log(error);
       });
   };
-  handleScroll= function(event) {
-    //console.log(event.nativeEvent.contentOffset.y);
-    if(event.nativeEvent.contentOffset.y == 0)
-    {
-      
-    }
-  };
   handleRefresh=()=>{
     this.setState({
       refreshing:true
@@ -118,7 +111,6 @@ export default class HomeTab extends React.Component {
                 switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
-                getDataAsync={this.getDataAsync}
               />
             )}
             keyExtractor={item => item._id}

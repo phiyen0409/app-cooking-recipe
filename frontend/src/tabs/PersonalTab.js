@@ -441,7 +441,6 @@ export default class PersonalTab extends React.Component {
                         userId={this.state.user.idUser}
                         post={item}
                         canEdit={true}
-                        getDataAsync={this.getDataAsync}
                         removeItem={this.removeItemPost}
                         isLiked={item.isLiked}
                         isSaved={item.isSaved}
