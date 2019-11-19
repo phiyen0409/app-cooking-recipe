@@ -125,30 +125,32 @@ export default class ListItem extends React.Component {
   };
   deletePost=async ()=>{
     this.setState({ modalVisible: false });
-    console.log(this.props.post._id);
-    this.removeItem();
-    // axios({
-    //   method: "delete",
-    //   url: "post/delete/" + this.props.post._id,
-    //   data: {
-    //   }
-    // })
-    //   .then(result => {
-    //     Alert.alert(result);
-    //     this.props.getDataAsync();
-    //   })
-    //   .catch(error => {
-    //     Alert.alert(error);
-    //   });
+    // console.log(this.props.post._id);
+    // this.removeItem();
+    axios({
+      method: "delete",
+      url: "post/delete/" + this.props.post._id,
+      data: {
+      }
+    })
+      .then(result => {
+        Alert.alert(result);
+        //this.props.getDataAsync();
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
   }
   render() {
-    const { onPress } = this.props;
+    const { switchEditScreen } = this.props;
+    const { switchRecipeScreen } = this.props;
     const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
     const AnimatedFontaws = Animated.createAnimatedComponent(FontAwesome);
     const post = this.props.post;
+
     return (
       <View style={styles.container}>
-        { this.props.personalTab?
+        { this.props.canEdit?
         <TouchableOpacity style={styles.menuView} onPress={() => {
           this.setModalVisible(true);
         }}>
@@ -165,7 +167,8 @@ export default class ListItem extends React.Component {
         >
           <TouchableOpacity
             style={{ width: "100%", height: "100%" }}
-            onPress={onPress}
+            onPress={switchRecipeScreen}
+            
           >
             <View style={{ flexDirection: "row" }}>
               <View style={styles.imageContainer}>
@@ -206,7 +209,7 @@ export default class ListItem extends React.Component {
               </Text>
             </Block>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={onPress}>
+          <TouchableOpacity style={styles.button} onPress={switchRecipeScreen}>
             <Block style={styles.buttonBlock}>
               <MaterialIcons name="comment" size={30} color="#A4A4A4" />
               <Text style={{ fontSize: 6 }}>
@@ -254,6 +257,10 @@ export default class ListItem extends React.Component {
             <View style={styles.bodyModal}>
               <TouchableOpacity
                 style={styles.viewButtonModal}
+                onPress={() => {
+                  this.setModalVisible(false);
+                  switchEditScreen();
+                }}
               >
                 <View style={styles.viewIconButtonModal}>
                   <Entypo name='edit' size={25} />

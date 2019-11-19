@@ -10,7 +10,8 @@ import {
   Image,
   Modal,
   AsyncStorage,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -51,14 +52,23 @@ export default class AddRecipeScreen extends React.Component {
   };
   constructor(props) {
     super(props);
+    let isEdit=false;
+    if(this.props.navigation.getParam("edit")===true){
+      isEdit=true;
+    }
+    console.log(isEdit);
+    const post= this.props.navigation.getParam("post");
+    console.log(post)
     this.state = {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       modalVisible: false,
-      title: "",
-      description: "",
-      image: null,
-      processes: [
+      isEdit:isEdit,
+      postId:isEdit ? post._id : "",
+      title: isEdit ? post.title : "",
+      description: isEdit?post.description: "",
+      image: isEdit?post.image:null,
+      processes:isEdit?post.detail: [
         {
           step: 1,
           content: "",
@@ -66,12 +76,13 @@ export default class AddRecipeScreen extends React.Component {
           title: ""
         }
       ],
-      ingredients: [
+      ingredients:isEdit?post.ingredients: [
         {
           name: "",
           weight: ""
         }
-      ]
+      ],
+      loading: false
     };
   }
   setModalVisible(visible) {
@@ -192,41 +203,128 @@ export default class AddRecipeScreen extends React.Component {
       }
     }
   };
+  checkValidate=(post)=>{
+    if (post.title===""){
+      Alert.alert("Tiêu đề công thức không được để trống");
+      return false;
+    }
+    if (post.image===null){
+      Alert.alert("Ảnh công thức không được để trống");
+      return false;
+    }
+    if (post.description===""){
+      Alert.alert("Mô tả công thức không được để trống");
+      return false;
+    }
+    for (let i=0;i<post.ingredients.length;i++){
+      if (post.ingredients[i].name===""){
+        Alert.alert("Tên nguyên liệu không được để trống");
+        return false;
+      }
+    }
+    for (let i=0;i<post.detail.length;i++){
+      if (post.detail[i].title===""){
+        Alert.alert("Tiêu đề bước không được để trống");
+        return false;
+      }
+      if(post.detail[i].content===""){
+        Alert.alert("Nội dung bước không được để trống");
+        return false;
+      }
+
+    }
+    return true;
+  }
   addPost = () => {
     //check validate value
-    console.log(this.state.title);
-    console.log(this.state.description);
-    console.log(this.state.ingredients);
-    console.log(this.state.processes);
-    // axios({
-    //   method: "post",
-    //   url: "/post/create",
-    //   data: {
-    //     title: this.state.title,
-    //     description: this.state.description,
-    //     image: this.state.image,
-    //     author: this.state.user.idUser,
-    //     ingredients: this.state.ingredients,
-    //     detail: this.state.processes
-    //   }
-    // })
-    //   .then(result => {
-    //     Alert.alert(result.data.message);
-    //   })
-    //   .catch(error => {
-    //     Alert.alert(error);
-    //   });
+    let post={
+      title: this.state.title,
+      description: this.state.description,
+      image: this.state.image,
+      ingredients: this.state.ingredients,
+      detail: this.state.processes
+    }
+    if (this.checkValidate(post)===true){
+      if(this.state.isEdit){
+        this.state.loading=true;
+        axios({
+          method: "put",
+          url: "/post/update/"+this.state.postId,
+          data: {
+            title: this.state.title,
+            description: this.state.description,
+            image: this.state.image,
+            ingredients: this.state.ingredients,
+            detail: this.state.processes
+          }
+        })
+          .then(result => {
+            Alert.alert(result.data.message);
+            this.state.loading=false;
+          })
+          .catch(error => {
+            Alert.alert(error);
+          });
+      }
+      else{
+        this.state.loading=true;
+        axios({
+        method: "post",
+        url: "/post/create",
+        data: {
+          title: this.state.title,
+          description: this.state.description,
+          image: this.state.image,
+          author: this.state.user.idUser,
+          ingredients: this.state.ingredients,
+          detail: this.state.processes
+        }
+      })
+        .then(result => {
+          Alert.alert(result.data.message);
+          this.setState({
+            loading:false,
+            title:  "",
+            description:"",
+            image: null,
+            processes: [
+              {
+                step: 1,
+                content: "",
+                image: "",
+                title: ""
+              }
+            ],
+            ingredients: [
+              {
+                name: "",
+                weight: ""
+              }
+            ]
+          });
+        })
+        .catch(error => {
+          Alert.alert(error);
+        });
+      }
+    }
   };
   render() {
     let { ingredients } = this.state;
     let { processes } = this.state;
     let { image } = this.state;
+    const {isEdit} = this.state;
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
         extraHeight={200}
         extraScrollHeight={200}
       >
+        {
+      this.state.loading?<View style={styles.viewLoading}>
+        <ActivityIndicator size="large" color="white" />
+      </View>:null
+        }
         <View style={styles.container}>
           <ScrollView>
             <View style={styles.postContainer}>
@@ -385,7 +483,7 @@ export default class AddRecipeScreen extends React.Component {
               onPress={this.addPost}
             >
               <View style={styles.buttonUploadPost}>
-                <Text style={styles.textButtonUploadPost}>Đăng bài</Text>
+                <Text style={styles.textButtonUploadPost}>{isEdit?"Cập nhật":"Đăng bài"}</Text>
               </View>
             </TouchableOpacity>
           </ScrollView>
@@ -504,7 +602,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
     bottom: 0,
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
+    zIndex:5
   },
   bodyModal: {
     flex: 1,
@@ -561,5 +660,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#fff"
+  },
+  viewLoading:{
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top:0,
+    backgroundColor: "rgba(15,0,0,0.52)",
+    zIndex:4
   }
 });

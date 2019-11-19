@@ -33,7 +33,6 @@ export default class HomeTab extends React.Component {
       posts: [],
       refreshing:false,
       loading:true,
-      personalTab:false,
     };
   }
   _getUserLogin = async () => {
@@ -90,7 +89,13 @@ export default class HomeTab extends React.Component {
       this.getDataAsync();
     }
     )
-  }  
+  };
+  checkEdit=(author)=>{
+    if(author===this.state.user.idUser){
+      return true;
+    }
+    return false;
+  };
   
   render() {
     const { navigation } = this.props;
@@ -108,10 +113,12 @@ export default class HomeTab extends React.Component {
               <ListItem
                 userId={this.state.user.idUser}
                 post={item}
-                personalTab={this.state.personalTab}
-                onPress={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
+                canEdit={this.checkEdit(item.author_id)}
+                switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
+                switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
+                getDataAsync={this.getDataAsync}
               />
             )}
             keyExtractor={item => item._id}

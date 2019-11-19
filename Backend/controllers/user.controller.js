@@ -270,7 +270,8 @@ module.exports = {
   userProfile: async (req, res) => {
     let id = req.params.id;
     try {
-      let user = await User.findById(id).populate('listPostsCreated');
+      let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}});
+
       user.listPostsCreated.sort((a,b)=>{
         if(a.createdDate > b.createdDate){
           return -1;

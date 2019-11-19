@@ -83,7 +83,6 @@ export default class PersonalTab extends React.Component {
       phone: "",
       image: "",
       loadingPost:true,
-      personalTab: true,
     };
   }
   getDataAsync = async () => {
@@ -257,8 +256,8 @@ export default class PersonalTab extends React.Component {
       let { navigation } = this.props;
       navigation.navigate("Login");
     });
-  }
-  removeItemPost = id => {
+  };
+  removeItemPost =(id) => {
     let { posts } = this.state.posts;
     let i;
     for(i=0;i<posts.length;i++){
@@ -273,11 +272,14 @@ export default class PersonalTab extends React.Component {
     //posts.splice(i, 1);
     //this.setState({ posts: posts });
   };
+  // switchScreen=(name,item)=>{
+  //   this.props.navigation.navigate(name,{post: item});
+  // };
 
   render() {
     let user = this.state.user;
     let posts = this.state.posts;
-    const { navigation } = this.props;
+    const navigation=this.props.navigation;
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -438,12 +440,13 @@ export default class PersonalTab extends React.Component {
                         key={key}
                         userId={this.state.user.idUser}
                         post={item}
-                        personalTab={this.state.personalTab}
+                        canEdit={true}
                         getDataAsync={this.getDataAsync}
                         removeItem={this.removeItemPost}
                         isLiked={item.isLiked}
                         isSaved={item.isSaved}
-                        onPress={() => navigation.navigate("Recipe",{post: item})}
+                        switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit:true})}
+                        switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
                       />
                     );
                   })}

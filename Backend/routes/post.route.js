@@ -13,6 +13,6 @@ router.route('/findauthor/:userid').get(PostController.findByAuthor);
 
 router.route('/updatelike/:postId').put(PostController.updateLike);
 router.route('/update/:id').put(PostController.update);
-// router.route('/delete/:id').delete(PostController.delete);
+router.route('/delete/:id').delete(PostController.delete);
 
 module.exports = router;

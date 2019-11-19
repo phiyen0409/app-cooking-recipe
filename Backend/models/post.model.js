@@ -26,7 +26,11 @@ const PostSchema=new Schema({
         title: String,
         image: String,
         content: String
-    }]
+    }],
+    isHide:{
+        type: Boolean,
+        default: false
+    }
 });
 const Post = mongoose.model('Posts',PostSchema);
 

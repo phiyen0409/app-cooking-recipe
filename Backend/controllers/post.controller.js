@@ -21,7 +21,7 @@ module.exports = {
   },
   listPostSorted:async (req, res) => {
     try {
-      let posts = await Post.find().populate({path: 'author'}).populate({path: 'comments.user'}).sort({ createdDate: 'desc' });
+      let posts = await Post.find({ isHide: false }).populate({path: 'author'}).populate({path: 'comments.user'}).sort({ createdDate: 'desc' });
       let {userId}=req.params;
       let user=await User.findById(userId);
       let listResult=[];
@@ -184,6 +184,9 @@ module.exports = {
       if (req.body.image === undefined) {
         image="";
       }
+      else if(req.body.image.includes("https://cookingapp1.herokuapp.com/public/uploads/")){
+        image=req.body.image;
+      }
       else{
         let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.image);
         image = fileName;
@@ -193,6 +196,9 @@ module.exports = {
         if(detail[i].image===undefined){
           detail[i].image = "";
         }
+        else if(detail[i].image.includes("https://cookingapp1.herokuapp.com/public/uploads/")){
+        image=detail[i].image;
+      }
         else{
           let fileName = await ImageHelper.saveImageBase64("./public/uploads",detail[i].image);
           detail[i].image = fileName;
@@ -243,23 +249,25 @@ module.exports = {
   //       });
   //     });
   // },
-  // delete: async (req, res) => {
-  //   let { id } = req.params;
-  //   let post = await Post.findById(id);
-  //   if (!post) {
-  //     return res.status(500).json({
-  //       message: "No post"
-  //     });
-  //   }
-  //   try {
+  delete: async (req, res) => {
+    let { id } = req.params;
+    let post = await Post.findById(id);
+    post.isHide=true;
+    await post.save();
+    if (!post) {
+      return res.status(500).json({
+        message: "No post"
+      });
+    }
+    try {
       
-  //     res.json({
-  //       message: "post deleted"
-  //     });
-  //   } catch (err) {
-  //     res.json(err);
-  //   }
-  // },
+      res.json({
+        message: "post deleted"
+      });
+    } catch (err) {
+      res.json(err);
+    }
+  },
   updateLike: async (req, res) => {
     try {
       let post = await Post.findById(req.params.postId);
