@@ -119,7 +119,7 @@ module.exports = {
       });
     }
     try {
-      let userDelete = await User.deleteOne({ _id: id });
+      await User.deleteOne({ _id: id });
       res.json({
         message: "User deleted"
       });
@@ -271,7 +271,15 @@ module.exports = {
     let id = req.params.id;
     try {
       let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}});
-
+      let totalRecipe=user.listPostsCreated.length;
+      let totalLike=0;
+      for(let i=0;i<totalRecipe;i++){
+        totalLike=totalLike+user.listPostsCreated[i].totalLike;
+      }
+      let totalComment=0;
+      for(let i=0;i<totalRecipe;i++){
+        totalComment=totalComment+user.listPostsCreated[i].totalComment;
+      }
       user.listPostsCreated.sort((a,b)=>{
         if(a.createdDate > b.createdDate){
           return -1;
@@ -286,7 +294,7 @@ module.exports = {
           message: "No user created"
         });
       } else {
-        res.json(user);
+        res.json({user:user,totalLike:totalLike,totalComment:totalComment,totalRecipe:totalRecipe});
       }
     } catch (err) {
       res.json(err);

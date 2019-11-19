@@ -13,7 +13,8 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   AsyncStorage,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -83,6 +84,10 @@ export default class PersonalTab extends React.Component {
       phone: "",
       image: "",
       loadingPost:true,
+      refreshing:false,
+      totalLike:0,
+      totalComment:0,
+      totalRecipe:0,
     };
   }
   getDataAsync = async () => {
@@ -94,9 +99,13 @@ export default class PersonalTab extends React.Component {
         console.log("====================================");
         this.setState({
           loadingPost:false,
-          posts: result.data.listPostsCreated
-            ? result.data.listPostsCreated
-            : []
+          refreshing:false,
+          posts: result.data.user.listPostsCreated
+            ? result.data.user.listPostsCreated
+            : [],
+          totalComment:result.data.totalComment,
+          totalRecipe:result.data.totalRecipe,
+          totalLike:result.data.totalLike,
         });
       })
       .catch(error => {
@@ -272,9 +281,15 @@ export default class PersonalTab extends React.Component {
     //posts.splice(i, 1);
     //this.setState({ posts: posts });
   };
-  // switchScreen=(name,item)=>{
-  //   this.props.navigation.navigate(name,{post: item});
-  // };
+  handleRefresh=()=>{
+    this.setState({
+      refreshing:true
+    },
+    ()=>{
+      this.getDataAsync();
+    }
+    )
+  };
 
   render() {
     let user = this.state.user;
@@ -282,6 +297,7 @@ export default class PersonalTab extends React.Component {
     const navigation=this.props.navigation;
     return (
       <View style={styles.container}>
+
         <ImageBackground
           source={backgroundImg}
           style={styles.profileContainer}
@@ -312,6 +328,9 @@ export default class PersonalTab extends React.Component {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ width, marginTop: "15%", marginBottom:"8%" }}
+            refreshControl={
+              <RefreshControl refreshing={this.state.refreshing} onRefresh={()=>this.handleRefresh()} />
+            }
           >
             <View style={styles.cardView}>
               <Block middle style={styles.avatarContainer}>
@@ -371,7 +390,7 @@ export default class PersonalTab extends React.Component {
                       color="#830707"
                       style={{ marginBottom: 4 }}
                     >
-                      2K
+                      {this.state.totalRecipe}
                     </Text>
                     <Text size={12}>Công thức</Text>
                   </Block>
@@ -382,7 +401,7 @@ export default class PersonalTab extends React.Component {
                       size={12}
                       style={{ marginBottom: 4 }}
                     >
-                      1000
+                      {this.state.totalLike}
                     </Text>
                     <Text size={12}>Lượt thích</Text>
                   </Block>
@@ -393,7 +412,7 @@ export default class PersonalTab extends React.Component {
                       size={12}
                       style={{ marginBottom: 4 }}
                     >
-                      89
+                      {this.state.totalComment}
                     </Text>
                     <Text size={12}>Bình luận</Text>
                   </Block>
@@ -441,7 +460,7 @@ export default class PersonalTab extends React.Component {
                         userId={this.state.user.idUser}
                         post={item}
                         canEdit={true}
-                        removeItem={this.removeItemPost}
+                        handleRefresh={this.handleRefresh}
                         isLiked={item.isLiked}
                         isSaved={item.isSaved}
                         switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit:true})}

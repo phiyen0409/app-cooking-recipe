@@ -218,37 +218,6 @@ module.exports = {
       console.log(err);
     }
   },
-  // update: async (req, res) => {
-  //   let { id } = req.params;
-  //   let user = await User.findById(id);
-  //   if (!user) {
-  //     return res.status(500).json({
-  //       message: "No user"
-  //     });
-  //   }
-  //   let { name } = req.body;
-  //   let birthday = moment(req.body.birthday, "DD/MM/YYYY").format("DD/MM/YYYY");
-  //   let { avatar } = req.body;
-  //   let { phone } = req.body;
-  //   user.name = name;
-  //   user.birthday = birthday;
-  //   user.avatar = avatar;
-  //   user.phone = phone;
-  //   user
-  //     .save()
-  //     .then(result => {
-  //       console.log(result);
-  //       res.status(201).json({
-  //         message: "User updated"
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       res.status(500).json({
-  //         error: err
-  //       });
-  //     });
-  // },
   delete: async (req, res) => {
     let { id } = req.params;
     let post = await Post.findById(id);

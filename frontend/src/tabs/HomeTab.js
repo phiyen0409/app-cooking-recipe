@@ -111,6 +111,7 @@ export default class HomeTab extends React.Component {
                 switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
+                handleRefresh={this.handleRefresh}
               />
             )}
             keyExtractor={item => item._id}

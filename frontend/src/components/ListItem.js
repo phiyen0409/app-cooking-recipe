@@ -119,28 +119,21 @@ export default class ListItem extends React.Component {
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
-  removeItem = () => {
-    this.props.removeItem(this.state.id);
-    console.log('RemoveItem: '+this.state.id);
-  };
   deletePost = async ()=>{
     this.setState({ modalVisible: false });
-    Alert.alert("LAAAAAAAAAAAAAAAAA");
-    // console.log(this.props.post._id);
-    // this.removeItem();
-    // axios({
-    //   method: "put",
-    //   url: "post/delete/" + this.props.post._id,
-    //   data: {
-    //   }
-    // })
-    //   .then(result => {
-    //     Alert.alert(result);
-    //     // this.props.handleRefresh();
-    //   })
-    //   .catch(error => {
-    //     Alert.alert(error);
-    //   });
+    axios({
+      method: "put",
+      url: "post/delete/" + this.props.post._id,
+      data: {
+      }
+    })
+      .then(result => {
+        Alert.alert("Xóa thành công");
+        this.props.handleRefresh();
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
   }
   render() {
     const { switchEditScreen } = this.props;
