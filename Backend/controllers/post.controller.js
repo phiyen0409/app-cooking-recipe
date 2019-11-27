@@ -196,8 +196,8 @@ module.exports = {
         if(detail[i].image===undefined){
           detail[i].image = "";
         }
-        else if(detail[i].image.includes("https://cookingapp1.herokuapp.com/public/uploads/")){
-        image=detail[i].image;
+        else if(req.body.detail[i].image.includes("https://cookingapp1.herokuapp.com/public/uploads/")){
+        detail[i].image=req.body.detail[i].image;
       }
         else{
           let fileName = await ImageHelper.saveImageBase64("./public/uploads",detail[i].image);
