@@ -9,6 +9,7 @@ import {
   View,
   AsyncStorage
 } from "react-native";
+import NotificationItem from "../components/NotificationItem";
 
 export default class SavedTab extends React.Component {
   _getUserLogin = async () => {
@@ -30,9 +31,37 @@ export default class SavedTab extends React.Component {
       };
   render() {  
   return (
-    <View>
-     <Text>SavedTab</Text>
+    <View style={styles.container}>
+        <ScrollView>
+          {/* <View style = {styles.postContainer}> */}
+            <NotificationItem/>
+            <NotificationItem/>
+            <NotificationItem/>
+            <NotificationItem/>
+          {/* </View> */}
+        </ScrollView>
+      
     </View>
-  );
+    );
+  }
 }
-}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    paddingTop: 35,
+    paddingBottom: 20,
+
+    flex: 1,
+    alignItems: "stretch",
+    justifyContent: "center",
+    backgroundColor: "#ffcdd2",
+    paddingLeft: 10,
+    paddingRight: 10
+
+    // backgroundColor: '#fff',
+  },
+  postContainer: {
+    padding: 5
+  }
+});
