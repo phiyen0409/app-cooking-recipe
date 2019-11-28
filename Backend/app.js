@@ -6,9 +6,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 const app=express();
 
-
-// const port=process.env.PORT||3000;
-// const serveIndex = require('serve-index');
+const host = process.env.HOST;
+const port = process.env.PORT || 3000;
+const serveIndex = require('serve-index');
 
 
 const upload = require('./utils/upload');
@@ -42,8 +42,7 @@ const post=require('./models/post.model');
 //     console.log('Server listening on port '+port);
 // });
 
-const host = process.env.HOST;
-const port = process.env.PORT || 3000;
+
 app.listen(port,host ,function(){
     console.log('Server listening on port '+host+":"+port);
 });
