@@ -22,6 +22,7 @@ import Comment from "../components/Comment";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from "axios";
+import Slideshow from 'react-native-slideshow';
 
 export default class RecipeScreen extends React.Component {
   constructor(props) {
@@ -30,8 +31,44 @@ export default class RecipeScreen extends React.Component {
       commentContent:"",
       post : this.props.navigation.getParam("post"),
       loading: false,
+      position: 1,
+      interval: null,
+      dataSource: [
+        {
+          title: 'Title 1',
+          caption: 'Caption 1',
+          url: 'https://i.pinimg.com/originals/e6/7a/3d/e67a3dfc08353a0ef5f93cc356d0dacb.jpg',
+        }, {
+          title: 'Title 2',
+          caption: 'Caption 2',
+          url: 'http://placeimg.com/640/480/animals?t=1574956936985',
+        }, {
+          title: 'Title 3',
+          caption: 'Caption 3',
+          url: 'http://placeimg.com/640/480/animals?t=1574957043570',
+        }, {
+          title: 'Title 4',
+          caption: 'Caption 4',
+          url: 'http://placeimg.com/640/480/animals?t=1574958904402',
+        },
+      ],
     }
   }
+
+  componentWillMount() {
+    this.setState({
+      interval: setInterval(() => {
+        this.setState({
+          position: this.state.position === this.state.dataSource.length ? 0 : this.state.position + 1
+        });
+      }, 2000)
+    });
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.state.interval);
+  }  
+
   //   static navigationOptions = {
   //     header: null
   //   };
@@ -104,9 +141,14 @@ export default class RecipeScreen extends React.Component {
                   </Text>
                 </View>
               </View>
-              <View style={styles.imageView}>
-                <Image style={styles.image} source={{ uri: post.image }} />
-              </View>
+              {/* <View style={styles.imageView}> */}
+                {/* <Image style={styles.image} source={{ uri: post.image }} /> */}
+                <Slideshow containerStyle ={{padding: 5}}
+                  dataSource={this.state.dataSource}
+                  position = {this.state.position}
+                  onPositiionChanged={position => this.setState({position})}
+                />
+              {/* </View> */}
               <View style={styles.viewContent}>
                 <Text style={styles.description}>{post.description}</Text>
               </View>
@@ -207,10 +249,10 @@ const styles = StyleSheet.create({
   },
 
   imageView: {
-    flex: 1,
+    // flex: 1,
     flexDirection: "column",
     justifyContent: "center",
-    height: hp("30%"),
+    // height: hp("30%"),
     padding: 5,
     alignItems: "center",
     alignSelf: "center",
