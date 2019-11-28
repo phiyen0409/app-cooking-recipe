@@ -28,15 +28,11 @@ export default class NotesScreen extends Component {
     return (
         <View style = {styles.container}>
           <ScrollView>
-          <View style = {styles.postContainer}>
             <NoteList/>
             <NoteList/>
             <NoteList/>
             <NoteList/>
-          </View>
           </ScrollView>
-            
-
         </View>
     );
   }
@@ -46,18 +42,19 @@ export default class NotesScreen extends Component {
     container: {
       flex: 1,
       flexDirection: "column",
+      backgroundColor: "#ffcdd2",
       // alignItems: "center",
       // backgroundColor: "#fff",
       // height: theme.SIZES.BASE *15,
       padding: 5,
-      paddingTop: 35,
+      paddingTop: 15,
       height: '100%',
       // paddingBottom: 20,
 
       // alignItems: "stretch",
       // justifyContent: "center",
       // backgroundColor: "#000",
-      margin: 5,
+      //margin: 5,
       // paddingLeft: 40,
       // paddingRight: 40,
       // paddingBottom: 70,

@@ -51,6 +51,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     // height: theme.SIZES.BASE *15,
     padding: 15,
+    borderRadius: 25,
+    borderColor:'#ffcdd2',
+    borderWidth:1,
+    marginBottom:15
     // height: '100%',
     // margin: 5,
     // paddingLeft: 40,
@@ -90,7 +94,8 @@ const styles = StyleSheet.create({
     maxHeight: 50,
     width: "100%",
     marginTop: 0,
-    alignSelf: "center"
+    alignSelf: "center",
+    //backgroundColor: "#FFBF00"
     // backgroundColor: '#cdb7b5',
   },
 
@@ -109,6 +114,7 @@ const styles = StyleSheet.create({
   content: {
     alignContent: "center",
     width: wp("90%"),
+    //backgroundColor:"#F7D358",
     // flex: 4,
     // height: 4,
     flexDirection: "column",
