@@ -43,8 +43,14 @@ const post=require('./models/post.model');
 // });
 
 
-app.listen(port,host ,function(){
-    console.log('Server listening on port '+host+":"+port);
+// app.listen(port,host ,function(){
+//     console.log('Server listening on port '+host+":"+port);
+// });
+
+var server = app.listen(3000, function () {
+    var host = server.address().address
+    var port = server.address().port
+    console.log("Ung dung Node.js dang hoat dong tai dia chi: http://%s:%s", host, port)
 });
 
 app.use('/user', userRoutes);
