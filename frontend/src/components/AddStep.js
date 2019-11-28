@@ -7,7 +7,8 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  Modal
+  Modal,
+  Platform
 } from "react-native";
 import { Block } from "galio-framework";
 import theme from "../../constant/theme";
@@ -23,6 +24,7 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Camera } from "expo-camera";
+import axios from "axios";
 
 export default class AddStep extends Component {
   constructor(props) {
@@ -31,7 +33,7 @@ export default class AddStep extends Component {
       id: props.id,
       step: props.step,
       title: props.title,
-      image: props.image,
+      images: props.images,
       content: props.content,
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
@@ -69,7 +71,7 @@ export default class AddStep extends Component {
     this.props.updateItem(this.state.id, {
       step: this.state.step,
       title: this.state.title,
-      image: this.state.image,
+      images: this.state.images,
       content: this.state.content
     });
   };
@@ -90,13 +92,11 @@ export default class AddStep extends Component {
         ) +
         ";base64," +
         result.base64;
-      this.setState({ image: data, modalVisible: false });
-      this.props.updateItem(this.state.id, {
-        step: this.state.step,
-        title: this.state.title,
-        image: data,
-        content: this.state.content
-      });
+
+      this.uploadImage(data);
+      //console.log(result);
+      
+      this.setState({ modalVisible: false });
     }
   };
   takePhoto = async () => {
@@ -123,19 +123,48 @@ export default class AddStep extends Component {
           ) +
           ";base64," +
           result.base64;
-        this.setState({ image: data, modalVisible: false });
-        this.props.updateItem(this.state.id, {
-          step: this.state.step,
-          title: this.state.title,
-          image: data,
-          content: this.state.content
-        });
+
+        this.uploadImage(data);
+        this.setState({ modalVisible: false });
       }
     }
   };
+  uploadImage = (image) => {
+
+    // let listImage = this.state.images;
+    // listImage.push(image);
+    // this.setState({ images: listImage });
+    // this.props.updateItem(this.state.id, {
+    //   step: this.state.step,
+    //   title: this.state.title,
+    //   images: listImage,
+    //   content: this.state.content
+    // });
+
+      axios({
+        method: "post",
+        url: "/file/upload/imagebase64",
+        data: {
+          image: image
+        }
+      })
+      .then(response => {
+        console.log(response.data.image);
+        
+        let listImage = this.state.images;
+        listImage.push(response.data.image);
+        this.setState({ images: listImage });
+        this.props.updateItem(this.state.id, {
+          step: this.state.step,
+          title: this.state.title,
+          images: listImage,
+          content: this.state.content
+        });
+      });
+  };
   render() {
     //this.updateItem();
-    let { image } = this.state;
+    let { images } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.btnDel}>
@@ -153,7 +182,7 @@ export default class AddStep extends Component {
               this.props.updateItem(this.state.id, {
                 step: this.state.step,
                 title: text,
-                image: this.state.image,
+                images: this.state.images,
                 content: this.state.content
               });
             }}
@@ -169,7 +198,7 @@ export default class AddStep extends Component {
               this.props.updateItem(this.state.id, {
                 step: this.state.step,
                 title: this.state.title,
-                image: this.state.image,
+                images: this.state.images,
                 content: text
               });
             }}
@@ -178,15 +207,22 @@ export default class AddStep extends Component {
             numberOfLines={4}
           />
         </View>
+        <ScrollView style={styles.scrollViewImage} horizontal={true}>
         <View style={styles.viewImage}>
-          <Image
-            source={
-              image
-                ? { uri: image }
-                : require("../../assets/Image/placeholder.png")
-            }
-            style={{ height: 150, width: 200, resizeMode: "center" }}
-          />
+          {images.map((item, key) => {
+            return (
+              <Image
+                source={
+                  item
+                    ? { uri: item }
+                    : require("../../assets/Image/placeholder.png")
+                }
+                style={styles.image}
+                key={key}
+              />
+            );
+          })}
+
           <TouchableOpacity
             style={styles.updateImage}
             onPress={() => {
@@ -196,6 +232,8 @@ export default class AddStep extends Component {
             <Entypo name="camera" size={30} color={"#000"} />
           </TouchableOpacity>
         </View>
+        </ScrollView>
+        
 
         <Modal
           animationType="fade"
@@ -284,18 +322,31 @@ const styles = StyleSheet.create({
     borderColor: "#ffebee",
     padding: 3
   },
+  scrollViewImage: {
+    padding: 5,
+  },
   viewImage: {
     marginTop: 5,
+    flexDirection: "row",
     justifyContent: "center",
     alignContent: "center",
     alignItems: "center"
   },
+  image: {
+    marginRight: 10,
+    width: 70,
+    height: 70,
+    borderRadius: 10
+  },
   updateImage: {
-    position: "absolute",
-    left: "50%",
-    bottom: 0,
-    marginLeft: -10,
-    marginBottom: 3
+    marginRight: 10,
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    backgroundColor: '#3399cc',
+    alignItems: "center",
+    justifyContent: "center",
+    //alignContent: "center"
   },
   textInputTitle: {
     paddingLeft: 5,

@@ -15,7 +15,7 @@ import { red } from "ansi-colors";
 import LikeImage from "../../assets/Image/Interact/like.png";
 import CommentImage from "../../assets/Image/Interact/comment.png";
 import SaveImage from "../../assets/Image/Interact/save.png";
-import { FontAwesome, AntDesign, MaterialIcons, Entypo } from "@expo/vector-icons";
+import { FontAwesome, AntDesign, MaterialIcons, Entypo,SimpleLineIcons } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -143,14 +143,12 @@ export default class ListItem extends React.Component {
     const post = this.props.post;
 
     return (
-      <View style={styles.container}>
-        { this.props.canEdit?
+      <View style={[styles.container,{backgroundColor: this.props.canEdit?"#FFFACB":"#FFF"}]}>
         <TouchableOpacity style={styles.menuView} onPress={() => {
           this.setModalVisible(true);
         }}>
             <Entypo name='menu' size={25} color="#830707" />
-        </TouchableOpacity>:null
-        }
+        </TouchableOpacity>
         <View
           style={{
             flex: 4,
@@ -249,6 +247,7 @@ export default class ListItem extends React.Component {
           ></TouchableOpacity>
           <View style={styles.containerModal}>
             <View style={styles.bodyModal}>
+              {this.props.canEdit?
               <TouchableOpacity
                 style={styles.viewButtonModal}
                 onPress={() => {
@@ -262,7 +261,8 @@ export default class ListItem extends React.Component {
                 <View style={styles.viewTextButtonModal}>
                   <Text style={styles.textButtonModal}>Chỉnh sửa bài viết</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity>:null}
+              {this.props.canEdit?
               <TouchableOpacity
                 style={styles.viewButtonModal}
                 onPress={() => {
@@ -292,6 +292,19 @@ export default class ListItem extends React.Component {
                 <View style={styles.viewTextButtonModal}>
                   <Text style={styles.textButtonModal}>Xóa bài viết</Text>
                 </View>
+              </TouchableOpacity>:null}
+              <TouchableOpacity
+                style={styles.viewButtonModal}
+                onPress={() => {
+                  this.setModalVisible(false);
+                }}
+              >
+                <View style={styles.viewIconButtonModal}>
+                  <SimpleLineIcons name='note' size={25} />
+                </View>
+                <View style={styles.viewTextButtonModal}>
+                  <Text style={styles.textButtonModal}>Lưu nguyên liệu</Text>
+                </View>
               </TouchableOpacity>
             </View>
           </View>
@@ -311,7 +324,7 @@ const styles = StyleSheet.create({
     padding: 5,
     // borderTopLeftRadius: 40,
     // borderBottomRightRadius: 40,
-    backgroundColor: "#fff",
+    //backgroundColor: "#fff",
     shadowColor: "#830707",
     shadowOpacity: 0.3,
     shadowRadius: 10,

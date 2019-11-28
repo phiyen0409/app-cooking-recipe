@@ -4,6 +4,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import PersonalTab from "../tabs/PersonalTab";
 import RecipeScreen from "../screens/RecipeScreen";
 import AddRecipeTab from "../tabs/AddRecipeTab";
+import NoteScreen from "../screens/NotesScreen";
 
 const PersonalRecipeNavigation = createStackNavigator(
   {
@@ -19,6 +20,9 @@ const PersonalRecipeNavigation = createStackNavigator(
     },
     EditRecipe: {
       screen: AddRecipeTab
+    },
+    Notes:{
+      screen: NoteScreen
     }
   },
   
