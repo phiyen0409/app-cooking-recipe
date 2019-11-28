@@ -80,20 +80,20 @@ export default class AddStep extends Component {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      // base64: true
+      base64: true
     });
 
     if (!result.cancelled) {
-      // let data =
-      //   "data:image/" +
-      //   result.uri.substring(
-      //     result.uri.lastIndexOf(".") + 1,
-      //     result.uri.length
-      //   ) +
-      //   ";base64," +
-      //   result.base64;
+      let data =
+        "data:image/" +
+        result.uri.substring(
+          result.uri.lastIndexOf(".") + 1,
+          result.uri.length
+        ) +
+        ";base64," +
+        result.base64;
 
-      this.uploadImage(result.uri);
+      this.uploadImage(data);
       //console.log(result);
       
       this.setState({ modalVisible: false });
@@ -110,21 +110,21 @@ export default class AddStep extends Component {
         exif: true,
         allowsEditing: true,
         quality: 0.7,
-        // base64: true,
+        base64: true,
         aspect: [4, 3]
       });
 
       if (!result.cancelled) {
-        // let data =
-        //   "data:image/" +
-        //   result.uri.substring(
-        //     result.uri.lastIndexOf(".") + 1,
-        //     result.uri.length
-        //   ) +
-        //   ";base64," +
-        //   result.base64;
+        let data =
+          "data:image/" +
+          result.uri.substring(
+            result.uri.lastIndexOf(".") + 1,
+            result.uri.length
+          ) +
+          ";base64," +
+          result.base64;
 
-        this.uploadImage(result.uri);
+        this.uploadImage(data);
         this.setState({ modalVisible: false });
       }
     }
@@ -141,19 +141,16 @@ export default class AddStep extends Component {
     //   content: this.state.content
     // });
 
-    let formData = new FormData();
-
-    formData.append("photo", {
-      image: Platform.OS === "android" ? image : image.replace("file://", "")
-    });
-
-    axios
-      .post("/file/upload/image", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
+      axios({
+        method: "post",
+        url: "/file/upload/imagebase64",
+        data: {
+          image: image
         }
       })
       .then(response => {
+        console.log(response.data.image);
+        
         let listImage = this.state.images;
         listImage.push(response.data.image);
         this.setState({ images: listImage });

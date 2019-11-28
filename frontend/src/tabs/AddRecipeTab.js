@@ -68,7 +68,7 @@ export default class AddRecipeScreen extends React.Component {
       postId: isEdit ? post._id : "",
       title: isEdit ? post.title : "",
       description: isEdit ? post.description : "",
-      images: isEdit ? post.images : null,
+      image: isEdit ? post.image : null,
       processes: isEdit
         ? post.detail
         : [
@@ -168,15 +168,15 @@ export default class AddRecipeScreen extends React.Component {
     });
 
     if (!result.cancelled) {
-      // let data =
-      //   "data:image/" +
-      //   result.uri.substring(
-      //     result.uri.lastIndexOf(".") + 1,
-      //     result.uri.length
-      //   ) +
-      //   ";base64," +
-      //   result.base64;
-      this.uploadImage(result.uri);
+      let data =
+          "data:image/" +
+          result.uri.substring(
+            result.uri.lastIndexOf(".") + 1,
+            result.uri.length
+          ) +
+          ";base64," +
+          result.base64;
+        this.uploadImage(data);
       this.setState({ modalVisible: false });
     }
   };
@@ -191,20 +191,20 @@ export default class AddRecipeScreen extends React.Component {
         exif: true,
         allowsEditing: true,
         quality: 0.7,
-        //base64: true,
+        base64: true,
         aspect: [4, 3]
       });
 
       if (!result.cancelled) {
-        // let data =
-        //   "data:image/" +
-        //   result.uri.substring(
-        //     result.uri.lastIndexOf(".") + 1,
-        //     result.uri.length
-        //   ) +
-        //   ";base64," +
-        //   result.base64;
-        this.uploadImage(result.uri);
+        let data =
+          "data:image/" +
+          result.uri.substring(
+            result.uri.lastIndexOf(".") + 1,
+            result.uri.length
+          ) +
+          ";base64," +
+          result.base64;
+        this.uploadImage(data);
         this.setState({ modalVisible: false });
       }
     }
@@ -241,20 +241,19 @@ export default class AddRecipeScreen extends React.Component {
     return true;
   };
   uploadImage = image => {
-    let formData = new FormData();
 
-    formData.append("photo", {
-      image: Platform.OS === "android" ? image : image.replace("file://", "")
-    });
-
-    axios
-      .post("file/upload/image", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      })
+    axios({
+      method: 'post',
+      url: '/file/upload/imagebase64',
+      data: {
+        image: image,
+      }
+    })
       .then(response => {
+        console.log(response.data.image);
         this.setState({ image: response.data.image });
+      }).catch(error =>{
+        console.log(error);
       });
   };
   addPost = () => {
@@ -309,18 +308,18 @@ export default class AddRecipeScreen extends React.Component {
               description: "",
               image: null,
               processes: [
-                // {
-                //   step: 1,
-                //   content: "",
-                //   image: "",
-                //   title: ""
-                // }
+                {
+                  step: 1,
+                  content: "",
+                  images: [],
+                  title: ""
+                }
               ],
               ingredients: [
-                // {
-                //   name: "",
-                //   weight: ""
-                // }
+                {
+                  name: "",
+                  weight: ""
+                }
               ]
             });
           })
