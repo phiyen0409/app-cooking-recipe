@@ -17,7 +17,9 @@ import PersonalTab from "./src/tabs/PersonalTab";
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    axios.defaults.baseURL = "https://cookingapp1.herokuapp.com";
+    //axios.defaults.baseURL = "https://cookingapp1.herokuapp.com";
+    
+    axios.defaults.baseURL = "cookingapp.eastasia.cloudapp.azure.com";
     this.state = {
       signedIn: false,
       checkedSignIn: false

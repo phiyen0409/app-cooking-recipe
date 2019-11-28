@@ -5,11 +5,10 @@ const router = express.Router;
 const dotenv = require('dotenv');
 dotenv.config();
 const app=express();
-const port=process.env.PORT||3000;
-const serveIndex = require('serve-index');
 
 
-
+// const port=process.env.PORT||3000;
+// const serveIndex = require('serve-index');
 
 
 const upload = require('./utils/upload');
@@ -27,7 +26,7 @@ const fileRoutes=require('./routes/file.route');
 mongoose.connect(process.env.DB_CONNECTION);
 mongoose.connection.once(`open`,()=>{
     console.log('MONGODB Database is connected');
-    app.listen(port,()=>console.log('Server started at PORT '+port));
+    //app.listen(port,()=>console.log('Server started at PORT '+port));
 });
 // mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useCreateIndex: true}).then(() => {
 //     console.log('MONGODB Database is connected');
@@ -42,11 +41,12 @@ const post=require('./models/post.model');
 // app.listen(port,hostname, function(){
 //     console.log('Server listening on port '+port);
 // });
-// const host = process.env.HOST;
-// const port = process.env.PORT;
-// app.listen(port,host ,function(){
-//     console.log('Server listening on port '+host+":"+port);
-// });
+
+const host = process.env.HOST;
+const port = process.env.PORT || 3000;
+app.listen(port,host ,function(){
+    console.log('Server listening on port '+host+":"+port);
+});
 
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);

@@ -11,7 +11,8 @@ import {
   Modal,
   AsyncStorage,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -52,36 +53,40 @@ export default class AddRecipeScreen extends React.Component {
   };
   constructor(props) {
     super(props);
-    let isEdit=false;
-    if(this.props.navigation.getParam("edit")===true){
-      isEdit=true;
+    let isEdit = false;
+    if (this.props.navigation.getParam("edit") === true) {
+      isEdit = true;
     }
     console.log(isEdit);
-    const post= this.props.navigation.getParam("post");
-    console.log(post)
+    const post = this.props.navigation.getParam("post");
+    console.log(post);
     this.state = {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       modalVisible: false,
-      isEdit:isEdit,
-      postId:isEdit ? post._id : "",
+      isEdit: isEdit,
+      postId: isEdit ? post._id : "",
       title: isEdit ? post.title : "",
-      description: isEdit?post.description: "",
-      image: isEdit?post.image:null,
-      processes:isEdit?post.detail: [
-        {
-          step: 1,
-          content: "",
-          image: "",
-          title: ""
-        }
-      ],
-      ingredients:isEdit?post.ingredients: [
-        {
-          name: "",
-          weight: ""
-        }
-      ],
+      description: isEdit ? post.description : "",
+      images: isEdit ? post.images : null,
+      processes: isEdit
+        ? post.detail
+        : [
+            {
+              step: 1,
+              content: "",
+              images: [],
+              title: ""
+            }
+          ],
+      ingredients: isEdit
+        ? post.ingredients
+        : [
+            {
+              name: "",
+              weight: ""
+            }
+          ],
       loading: false
     };
   }
@@ -101,7 +106,7 @@ export default class AddRecipeScreen extends React.Component {
     processes.push({
       step: processes.length + 1,
       content: "",
-      image: "",
+      images: [],
       title: ""
     });
     this.setState({ processes: processes });
@@ -154,25 +159,25 @@ export default class AddRecipeScreen extends React.Component {
         console.log(error);
       });
   };
-
   choosePhoto = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      base64: true
+      //base64: true
     });
 
     if (!result.cancelled) {
-      let data =
-        "data:image/" +
-        result.uri.substring(
-          result.uri.lastIndexOf(".") + 1,
-          result.uri.length
-        ) +
-        ";base64," +
-        result.base64;
-      this.setState({ image: data, modalVisible: false });
+      // let data =
+      //   "data:image/" +
+      //   result.uri.substring(
+      //     result.uri.lastIndexOf(".") + 1,
+      //     result.uri.length
+      //   ) +
+      //   ";base64," +
+      //   result.base64;
+      this.uploadImage(result.uri);
+      this.setState({ modalVisible: false });
     }
   };
   takePhoto = async () => {
@@ -186,70 +191,87 @@ export default class AddRecipeScreen extends React.Component {
         exif: true,
         allowsEditing: true,
         quality: 0.7,
-        base64: true,
+        //base64: true,
         aspect: [4, 3]
       });
 
       if (!result.cancelled) {
-        let data =
-          "data:image/" +
-          result.uri.substring(
-            result.uri.lastIndexOf(".") + 1,
-            result.uri.length
-          ) +
-          ";base64," +
-          result.base64;
-        this.setState({ image: data, modalVisible: false });
+        // let data =
+        //   "data:image/" +
+        //   result.uri.substring(
+        //     result.uri.lastIndexOf(".") + 1,
+        //     result.uri.length
+        //   ) +
+        //   ";base64," +
+        //   result.base64;
+        this.uploadImage(result.uri);
+        this.setState({ modalVisible: false });
       }
     }
   };
-  checkValidate=(post)=>{
-    if (post.title===""){
+  checkValidate = post => {
+    if (post.title === "") {
       Alert.alert("Tiêu đề công thức không được để trống");
       return false;
     }
-    if (post.image===null){
+    if (post.image === null) {
       Alert.alert("Ảnh công thức không được để trống");
       return false;
     }
-    if (post.description===""){
+    if (post.description === "") {
       Alert.alert("Mô tả công thức không được để trống");
       return false;
     }
-    for (let i=0;i<post.ingredients.length;i++){
-      if (post.ingredients[i].name===""){
+    for (let i = 0; i < post.ingredients.length; i++) {
+      if (post.ingredients[i].name === "") {
         Alert.alert("Tên nguyên liệu không được để trống");
         return false;
       }
     }
-    for (let i=0;i<post.detail.length;i++){
-      if (post.detail[i].title===""){
+    for (let i = 0; i < post.detail.length; i++) {
+      if (post.detail[i].title === "") {
         Alert.alert("Tiêu đề bước không được để trống");
         return false;
       }
-      if(post.detail[i].content===""){
+      if (post.detail[i].content === "") {
         Alert.alert("Nội dung bước không được để trống");
         return false;
       }
-
     }
     return true;
-  }
+  };
+  uploadImage = image => {
+    let formData = new FormData();
+
+    formData.append("photo", {
+      image: Platform.OS === "android" ? image : image.replace("file://", "")
+    });
+
+    axios
+      .post("file/upload/image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+      .then(response => {
+        this.setState({ image: response.data.image });
+      });
+  };
   addPost = () => {
     //check validate value
-    let post={
+    let post = {
       title: this.state.title,
       description: this.state.description,
       image: this.state.image,
       ingredients: this.state.ingredients,
       detail: this.state.processes
-    }
-    if (this.checkValidate(post)===true){
-      if(this.state.isEdit){
-        this.state.loading=true;
+    };
+    if (this.checkValidate(post) === true) {
+      if (this.state.isEdit) {
+        this.state.loading = true;
         axios({
           method: "put",
-          url: "/post/update/"+this.state.postId,
+          url: "/post/update/" + this.state.postId,
           data: {
             title: this.state.title,
             description: this.state.description,
@@ -260,52 +282,51 @@ export default class AddRecipeScreen extends React.Component {
         })
           .then(result => {
             Alert.alert(result.data.message);
-            this.state.loading=false;
+            this.state.loading = false;
           })
           .catch(error => {
             Alert.alert(error);
           });
-      }
-      else{
-        this.state.loading=true;
+      } else {
+        this.state.loading = true;
         axios({
-        method: "post",
-        url: "/post/create",
-        data: {
-          title: this.state.title,
-          description: this.state.description,
-          image: this.state.image,
-          author: this.state.user.idUser,
-          ingredients: this.state.ingredients,
-          detail: this.state.processes
-        }
-      })
-        .then(result => {
-          Alert.alert(result.data.message);
-          this.setState({
-            loading:false,
-            title:  "",
-            description:"",
-            image: null,
-            processes: [
-              // {
-              //   step: 1,
-              //   content: "",
-              //   image: "",
-              //   title: ""
-              // }
-            ],
-            ingredients: [
-              // {
-              //   name: "",
-              //   weight: ""
-              // }
-            ]
-          });
+          method: "post",
+          url: "/post/create",
+          data: {
+            title: this.state.title,
+            description: this.state.description,
+            image: this.state.image,
+            author: this.state.user.idUser,
+            ingredients: this.state.ingredients,
+            detail: this.state.processes
+          }
         })
-        .catch(error => {
-          Alert.alert(error);
-        });
+          .then(result => {
+            Alert.alert(result.data.message);
+            this.setState({
+              loading: false,
+              title: "",
+              description: "",
+              image: null,
+              processes: [
+                // {
+                //   step: 1,
+                //   content: "",
+                //   image: "",
+                //   title: ""
+                // }
+              ],
+              ingredients: [
+                // {
+                //   name: "",
+                //   weight: ""
+                // }
+              ]
+            });
+          })
+          .catch(error => {
+            Alert.alert(error);
+          });
       }
     }
   };
@@ -313,18 +334,18 @@ export default class AddRecipeScreen extends React.Component {
     let { ingredients } = this.state;
     let { processes } = this.state;
     let { image } = this.state;
-    const {isEdit} = this.state;
+    const { isEdit } = this.state;
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
         extraHeight={200}
         extraScrollHeight={200}
       >
-        {
-      this.state.loading?<View style={styles.viewLoading}>
-        <ActivityIndicator size="large" color="white" />
-      </View>:null
-        }
+        {this.state.loading ? (
+          <View style={styles.viewLoading}>
+            <ActivityIndicator size="large" color="white" />
+          </View>
+        ) : null}
         <View style={styles.container}>
           <ScrollView>
             <View style={styles.postContainer}>
@@ -463,7 +484,7 @@ export default class AddRecipeScreen extends React.Component {
                       id={key}
                       step={item.step}
                       title={item.title}
-                      image={item.image}
+                      images={item.images}
                       content={item.content}
                       removeItem={this.removeItemProcess}
                       updateItem={this.updateItemProcess}
@@ -483,7 +504,9 @@ export default class AddRecipeScreen extends React.Component {
               onPress={this.addPost}
             >
               <View style={styles.buttonUploadPost}>
-                <Text style={styles.textButtonUploadPost}>{isEdit?"Cập nhật":"Đăng bài"}</Text>
+                <Text style={styles.textButtonUploadPost}>
+                  {isEdit ? "Cập nhật" : "Đăng bài"}
+                </Text>
               </View>
             </TouchableOpacity>
           </ScrollView>
@@ -603,7 +626,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     bottom: 0,
     backgroundColor: "#FFF",
-    zIndex:5
+    zIndex: 5
   },
   bodyModal: {
     flex: 1,
@@ -661,12 +684,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#fff"
   },
-  viewLoading:{
+  viewLoading: {
     position: "absolute",
     left: 0,
     right: 0,
-    top:0,
+    top: 0,
     backgroundColor: "rgba(15,0,0,0.52)",
-    zIndex:4
+    zIndex: 4
   }
 });
