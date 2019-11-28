@@ -19,7 +19,7 @@ export default class App extends React.Component {
     super(props);
     //axios.defaults.baseURL = "https://cookingapp1.herokuapp.com";
     
-    axios.defaults.baseURL = "cookingapp.eastasia.cloudapp.azure.com";
+    axios.defaults.baseURL = "http://cookingapp.eastasia.cloudapp.azure.com:3000";
     this.state = {
       signedIn: false,
       checkedSignIn: false

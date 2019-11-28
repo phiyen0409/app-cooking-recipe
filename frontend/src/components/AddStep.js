@@ -148,7 +148,7 @@ export default class AddStep extends Component {
     });
 
     axios
-      .post("file/upload/image", formData, {
+      .post("/file/upload/image", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
