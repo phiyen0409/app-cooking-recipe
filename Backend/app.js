@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:500
 
 const userRoutes=require('./routes/user.route');
 const postRoutes=require('./routes/post.route');
+const fileRoutes=require('./routes/file.route');
 //mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB_CONNECTION);
 mongoose.connection.once(`open`,()=>{
@@ -49,3 +50,4 @@ const post=require('./models/post.model');
 
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);
+app.use('/file', fileRoutes);
