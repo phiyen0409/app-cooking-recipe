@@ -24,7 +24,8 @@ const PostSchema=new Schema({
     detail:[{
         step: Number,
         title: String,
-        image: String,
+        images: [{
+            type: String}],
         content: String
     }],
     isHide:{
