@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, ScrollView, FlatList } from "react-native";
+import { Image,Text, View, StyleSheet, ScrollView, FlatList,TouchableOpacity,Alert,Animated,Modal } from "react-native";
 import {
   Table,
   TableWrapper,
@@ -8,6 +8,7 @@ import {
   Rows
 } from "react-native-table-component";
 import theme from "../../constant/theme";
+import { FontAwesome, AntDesign, MaterialIcons, Entypo,SimpleLineIcons } from "@expo/vector-icons";
 // import flatlistIngredient from '../Data/flatlistIngredient';
 
 import {
@@ -17,27 +18,92 @@ import {
 import Note from "./Note";
 
 export default class NoteList extends Component {
-//   constructor(props) {
-//     super(props);
-    
-//   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisible: false,
+      id: this.props.note._id
+    };
+  }
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
 
   render() {
     // const { ingredientlist } = this.state;
-
+    const note = this.props.note;
     return (
       <View style={styles.container}>
-        {/* <ScrollView> */}
+        <TouchableOpacity style={styles.menuView} onPress={() => {
+          this.setModalVisible(true);
+        }}>
+            <Entypo name='menu' size={25} color="#830707" />
+        </TouchableOpacity>
         <View style={styles.viewTitle}>
-          <Text style={styles.title}>Tên món</Text>
+      <Text style={styles.title}>{note.post.title}</Text>
         </View>
         <View style={styles.content}>
-          {/* <FlatList
-            
-          /> */}
-          <Note/>
-          <Note/>
+        <FlatList
+            style={styles.dataWrapper}
+            data={note.listIngre}
+            renderItem={({ item }) => <Note ingre={item} />}
+            keyExtractor={item => `${item._id}`}
+          />
         </View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              this.setModalVisible(false);
+            }}
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(15,0,0,0.52)"
+            }}
+          ></TouchableOpacity>
+          <View style={styles.containerModal}>
+            <View style={styles.bodyModal}>
+              <TouchableOpacity
+                style={styles.viewButtonModal}
+                onPress={() => {
+                  Alert.alert(
+                    "Thông báo",
+                    "Bạn có muốn xóa ghi chú?",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {
+                          this.setModalVisible(false);
+                        }
+                      },
+                      {
+                        text: "Hủy",
+                        //onPress: () => console.log('Cancel Pressed'),
+                        style: "cancel"
+                      }
+                    ],
+                    { cancelable: false }
+                  );
+                }}
+              >
+                <View style={styles.viewIconButtonModal}>
+                  <AntDesign name='delete' size={25} color="#830707" />
+                </View>
+                <View style={styles.viewTextButtonModal}>
+                  <Text style={styles.textButtonModal}>Xóa ghi chú</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -123,7 +189,59 @@ const styles = StyleSheet.create({
     // paddingLeft: 5,
     // paddingRight: 5,
   },
-
+  menuView:{
+    position:'absolute',
+    zIndex:3,
+    top:5,
+    right:7
+  },
+  containerModal: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    bottom: 0,
+    backgroundColor: "#FFF"
+  },
+  bodyModal: {
+    flex: 1,
+    width: "100%",
+    alignContent: "stretch",
+    justifyContent: "center"
+  },
+  viewButtonModal: {
+    width: "100%",
+    height: 45,
+    flex: 1,
+    flexDirection: "row",
+    //paddingVertical: 5,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  viewIconButtonModal: {
+    flex: 1,
+    //height: 20,
+    paddingLeft: 5,
+    justifyContent: "center",
+    alignContent: "center"
+  },
+  iconButtonModal: {
+    width: 35,
+    height: 35
+  },
+  viewTextButtonModal: {
+    flex: 10,
+    flexDirection: "row",
+    marginLeft: 10
+  },
+  textButtonModal: {
+    alignSelf: "flex-start",
+    height: "100%",
+    textAlign: "left",
+    fontSize: 15,
+    color: "#830707"
+  },
   // wrapper: {
   //     flexDirection: 'column',
   //     marginTop: -1,
