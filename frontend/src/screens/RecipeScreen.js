@@ -22,7 +22,7 @@ import Comment from "../components/Comment";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from "axios";
-import Slideshow from 'react-native-slideshow';
+import Slideshow from 'react-native-image-slider-show';
 
 export default class RecipeScreen extends React.Component {
   constructor(props) {
@@ -49,6 +49,11 @@ export default class RecipeScreen extends React.Component {
         }, {
           title: 'Title 4',
           caption: 'Caption 4',
+          url: 'http://placeimg.com/640/480/animals?t=1574958904402',
+        },
+        {
+          title: 'Title 5',
+          caption: 'Caption 5',
           url: 'http://placeimg.com/640/480/animals?t=1574958904402',
         },
       ],

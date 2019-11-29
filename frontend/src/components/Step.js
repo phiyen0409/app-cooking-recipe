@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, ScrollView, Image } from "react-native";
-import Slideshow from 'react-native-slideshow';
+import Slideshow from 'react-native-image-slider-show';
 import theme from "../../constant/theme";
 import Im from "../../assets/Image/suonxaochuangot.jpg";
 import {
