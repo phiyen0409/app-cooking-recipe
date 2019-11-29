@@ -135,6 +135,23 @@ export default class ListItem extends React.Component {
         Alert.alert(error);
       });
   }
+  saveNote=async()=>{
+    this.setState({ modalVisible: false });
+    axios({
+      method:"post",
+      url:"user/savenote",
+      data:{
+        userId: this.props.userId,
+        postId: this.props.post._id
+      }
+    })
+    .then(result=>{
+      Alert.alert("Lưu thành công");
+    })
+    .catch(error => {
+      Alert.alert(error);
+    });
+  }
   render() {
     const { switchEditScreen } = this.props;
     const { switchRecipeScreen } = this.props;
@@ -256,7 +273,7 @@ export default class ListItem extends React.Component {
                 }}
               >
                 <View style={styles.viewIconButtonModal}>
-                  <Entypo name='edit' size={25} />
+                  <Entypo name='edit' size={25} color="#830707" />
                 </View>
                 <View style={styles.viewTextButtonModal}>
                   <Text style={styles.textButtonModal}>Chỉnh sửa bài viết</Text>
@@ -287,7 +304,7 @@ export default class ListItem extends React.Component {
                 }}
               >
                 <View style={styles.viewIconButtonModal}>
-                  <AntDesign name='delete' size={25} />
+                  <AntDesign name='delete' size={25} color="#830707" />
                 </View>
                 <View style={styles.viewTextButtonModal}>
                   <Text style={styles.textButtonModal}>Xóa bài viết</Text>
@@ -296,11 +313,11 @@ export default class ListItem extends React.Component {
               <TouchableOpacity
                 style={styles.viewButtonModal}
                 onPress={() => {
-                  this.setModalVisible(false);
+                  this.saveNote();
                 }}
               >
                 <View style={styles.viewIconButtonModal}>
-                  <SimpleLineIcons name='note' size={25} />
+                  <SimpleLineIcons name='note' size={25} color="#830707" />
                 </View>
                 <View style={styles.viewTextButtonModal}>
                   <Text style={styles.textButtonModal}>Lưu nguyên liệu</Text>
@@ -461,6 +478,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     height: "100%",
     textAlign: "left",
-    fontSize: 15
+    fontSize: 15,
+    color: "#830707"
   }
 });

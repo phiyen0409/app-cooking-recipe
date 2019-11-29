@@ -176,7 +176,7 @@ module.exports = {
   },
   saveNote: async (req, res) => {
     try {
-      let user = await User.findById(req.params.userId);
+      let user = await User.findById(req.body.userId);
       let post = await Post.findById(req.body.postId);
       let ingrePost = post.ingredients;
       let ingreNote = [];
@@ -189,12 +189,27 @@ module.exports = {
         };
         ingreNote.push(ingreItem);
       }
-      let note = { post: post._id, title: post.title, listIngre: ingreNote };
+      let note = { post: post._id,listIngre: ingreNote };
       user.listNotes.push(note);
       await user.save();
       res.status(201).json({
         message: "Added note"
       });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  getNote:async(req, res)=>{
+    try {
+      let user = await User.findById(req.params.userId).populate({ path: "listNotes.post" });
+      let ingreNote = user.listNotes;
+      if (ingreNote < 1) {
+        return res.json({
+          message: "No note"
+        });
+      } else {
+        res.json(ingreNote);
+      }
     } catch (err) {
       console.log(err);
     }

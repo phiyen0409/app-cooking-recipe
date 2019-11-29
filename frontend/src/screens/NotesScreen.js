@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Text, View, StyleSheet, ScrollView, FlatList } from "react-native";
+import { Text, View, StyleSheet, ScrollView, FlatList, ActivityIndicator } from "react-native";
 import {
   Table,
   TableWrapper,
@@ -17,22 +17,74 @@ import {
 import NoteList from "../components/NoteList";
 
 export default class NotesScreen extends Component {
-//   constructor(props) {
-//     super(props);
-    
-//   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: this.props.navigation.getParam("userId"),
+      notes: [],
+      refreshing:false,
+      loading:true,
+    };
+  }
+  componentDidMount() {
+    (async () => {
+      await this.getDataAsync();
+    })();
+  }
+  getDataAsync = async () => {
+    axios({
+      method: "get",
+      url: "/user/getnote/"+this.state.user,
+      data: {
+      }
+    })
+      .then(result => {
+        console.log(result.data);
+        this.setState({
+          notes: result.data  ? result.data : [],
+          refreshing:false,
+          loading:false
+        });
+        //console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  handleRefresh=()=>{
+    this.setState({
+      refreshing:true
+    },
+    ()=>{
+      this.getDataAsync();
+    }
+    )
+  };
 
   render() {
     // const { ingredientlist } = this.state;
 
     return (
         <View style = {styles.container}>
-          <ScrollView>
-            <NoteList/>
-            <NoteList/>
-            <NoteList/>
-            <NoteList/>
-          </ScrollView>
+          {
+          this.state.loading?
+          <ActivityIndicator size="large" color="white" />
+          :
+          <FlatList
+            onScroll={this.handleScroll} scrollEventThrottle={16}
+            data={this.state.notes}
+            renderItem={({ item }) => (
+              <NoteList
+                userId={this.state.user}
+                note={item}
+                handleRefresh={this.handleRefresh}
+              />
+            )}
+            keyExtractor={item => item._id}
+            onRefresh={()=>this.handleRefresh()}
+            refreshing={this.state.refreshing}
+          />
+            }
         </View>
     );
   }

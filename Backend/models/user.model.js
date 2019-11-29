@@ -17,7 +17,6 @@ const UserSchema=new Schema({
     listLikesPost:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
     listNotes:[{
         post: {type: mongoose.Schema.Types.ObjectId, ref: 'Posts'},
-        title: String,
         listIngre: [{
             ingreName: String,
             ingreWeight: String,

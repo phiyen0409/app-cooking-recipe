@@ -11,7 +11,8 @@ export default class Note extends React.Component {
   constructor(){
     super();
     this.state = {
-      check: false
+      check: false,
+      ingre:this.props.ingre
     }
   }
 
@@ -22,6 +23,7 @@ export default class Note extends React.Component {
   }
   
   render(){
+    const {ingre}=this.state;
   return (
     <View style={styles.container}>
        <View
@@ -37,10 +39,10 @@ export default class Note extends React.Component {
             }}
         >
             <View style = {{flex: 4, height: '100%', padding: 2}}>
-                <Text style = {{textAlign: "left", height : '100%'}}>Tên nguyên liệu</Text>
+                <Text style = {{textAlign: "left", height : '100%'}}>{ingre.ingreName}</Text>
             </View>
             <View style = {{flex: 2, height: '100%', padding: 2}}>
-                <Text style = {{textAlign: "right", height : '100%'}}>2 kg</Text>
+          <Text style = {{textAlign: "right", height : '100%'}}>{ingre.ingreWeight}</Text>
             </View>
             <View style = {{flex: 1, padding: 2, alignItems: 'center'}}>
                 <CheckBox value = {this.state.check} onChange = {() => this.checkBox()} style = {{flex: 1, height: '100%'}}></CheckBox>
