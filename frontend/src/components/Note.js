@@ -8,8 +8,8 @@ import {
 
 // export default class IngredientItem extends component {
 export default class Note extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       check: false,
       ingre:this.props.ingre

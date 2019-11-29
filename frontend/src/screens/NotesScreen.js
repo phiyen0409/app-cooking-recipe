@@ -40,13 +40,12 @@ export default class NotesScreen extends Component {
       }
     })
       .then(result => {
-        console.log(result.data);
+        console.log("Result: "+result.data);
         this.setState({
           notes: result.data  ? result.data : [],
           refreshing:false,
           loading:false
         });
-        //console.log(result);
       })
       .catch(error => {
         console.log(error);
@@ -63,8 +62,6 @@ export default class NotesScreen extends Component {
   };
 
   render() {
-    // const { ingredientlist } = this.state;
-
     return (
         <View style = {styles.container}>
           {

@@ -214,9 +214,22 @@ module.exports = {
       console.log(err);
     }
   },
+  checkNote:async(req,res)=>{
+    try {
+      let {userId}=req.body;
+      let { noteId } = req.body;
+      let { ingreId } = req.body;
+      await User.findOneAndUpdate({_id:userId },{$set:{"listNotes.$[a].listIngre.$[b].ingreCheck":true}},{arraFilters:[{"a._id":noteId},{"b._id":ingreId}]});
+      res.status(201).json({
+        message: "updated check note"
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
   deleteNote: async (req, res) => {
     try {
-      let user = await User.findById(req.params.userId);
+      let user = await User.findById(req.body.userId);
       let { noteId } = req.body;
       user.listNotes.remove({ _id: noteId });
       await user.save();
