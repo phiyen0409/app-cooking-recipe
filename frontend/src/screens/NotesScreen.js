@@ -15,6 +15,7 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import NoteList from "../components/NoteList";
+import axios from "axios";
 
 export default class NotesScreen extends Component {
   constructor(props) {
