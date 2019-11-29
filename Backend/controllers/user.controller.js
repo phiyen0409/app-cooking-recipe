@@ -219,7 +219,21 @@ module.exports = {
       let {userId}=req.body;
       let { noteId } = req.body;
       let { ingreId } = req.body;
-      await User.findOneAndUpdate({_id:userId },{$set:{"listNotes.$[a].listIngre.$[b].ingreCheck":true}},{arraFilters:[{"a._id":noteId},{"b._id":ingreId}]});
+      let user = await User.findById(userId);
+      let flag;
+      for (let i=0;i<user.listNotes.length;i++){
+        if(user.listNotes[i]._id==noteId){
+          let note=user.listNotes[i];
+          for(let j=0;j<note.listIngre.length;j++){
+            if (note.listIngre[j]._id==ingreId){
+              flag=note.listIngre[j].ingreCheck;
+              break;
+            }
+          }
+        }
+      }
+      await User.findOneAndUpdate({_id:userId },{$set:{"listNotes.$[a].listIngre.$[b].ingreCheck":flag?false:true}},{arrayFilters:[{"a._id":noteId},{"b._id":ingreId}]});
+
       res.status(201).json({
         message: "updated check note"
       });

@@ -13,7 +13,7 @@ router.route('/savepost/:userId').put(UserController.savePost);
 router.route('/savenote').post(UserController.saveNote);
 router.route('/getnote/:userId').get(UserController.getNote);
 router.route('/checknote').put(UserController.checkNote);
-router.route('/deletenote/:userId').delete(UserController.deleteNote);
+router.route('/deletenote').delete(UserController.deleteNote);
 router.route('/delete/:id').delete(UserController.delete);
 //router.route('/upload/avatar/:userId').post(upload.single('avatar'),UserController.updateAvatar);
 router.route('/upload/avatar/:userId').put(UserController.updateAvatar);
