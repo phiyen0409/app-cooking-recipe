@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     backgroundColor: "#fff",
-    // height: theme.SIZES.BASE *15,
-    padding: 15
+    padding: 15,
+    borderRadius: 4
     // margin: 5,
     // paddingLeft: 40,
     // paddingRight: 40,

@@ -310,7 +310,7 @@ export default class AddRecipeScreen extends React.Component {
               loading: false,
               title: "",
               description: "",
-              image: null,
+              image: "",
               processes: [
                 // {
                 //   step: 1,

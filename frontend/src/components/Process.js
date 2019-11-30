@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     // margin: 5,
-    padding: 15
+    padding: 15,
+    borderRadius: 4,
   },
 
   viewTitle: {

@@ -172,12 +172,12 @@ module.exports = {
           message: "No post"
         });
       }
-      let image;
+      let { image } = req.body;
       let { title } = req.body;
       let { description } = req.body;
       let { ingredients } = req.body;
       let { detail } = req.body;
-      if (req.body.image === undefined) {
+      if (image === undefined) {
         image = "";
       } else if (
         req.body.image.includes(
