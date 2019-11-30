@@ -1,35 +1,27 @@
-import React from "react";
+import React, {Component} from 'react';
+import { Text, View, StyleSheet, ScrollView, FlatList, ActivityIndicator } from "react-native";
 import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  AsyncStorage,
-  FlatList,
-  ActivityIndicator
-} from "react-native";
+  Table,
+  TableWrapper,
+  Row,
+  Cell,
+  Rows
+} from "react-native-table-component";
+import theme from "../../constant/theme";
+// import flatlistIngredient from '../Data/flatlistIngredient';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import axios from "axios";
 import ListItem from "../components/ListItem";
-import AvatarImage from "../../assets/Image/avatar.png";
-import theme from "../../constant/theme";
-import uploadImage from "../../assets/Image/blog.png";
-import PTRView from 'react-native-pull-to-refresh';
+import axios from "axios";
 
-export default class HomeTab extends React.Component {
-  static navigationOptions = {
-    header: null
-  };
+export default class SavedScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        user: this.props.navigation.getParam("userId"),
+      user: this.props.navigation.getParam("userId"),
       posts: [],
       refreshing:false,
       loading:true,
@@ -43,17 +35,17 @@ export default class HomeTab extends React.Component {
   getDataAsync = async () => {
     axios({
       method: "get",
-      url: "/post/postsorted/"+this.state.user.idUser,
+      url: "/user/savedpost/"+this.state.user,
       data: {
       }
     })
       .then(result => {
+        console.log("Result: "+result.data);
         this.setState({
           posts: result.data  ? result.data : [],
           refreshing:false,
           loading:false
         });
-        //console.log(result);
       })
       .catch(error => {
         console.log(error);
@@ -68,19 +60,11 @@ export default class HomeTab extends React.Component {
     }
     )
   };
-  checkEdit=(author)=>{
-    if(author===this.state.user.idUser){
-      return true;
-    }
-    return false;
-  };
-  
-  render() {
-    const { navigation } = this.props;
 
+  render() {
     return (
-      <View style={styles.container}>
-        {
+        <View style = {styles.container}>
+          {
           this.state.loading?
           <ActivityIndicator size="large" color="white" />
           :
@@ -89,13 +73,8 @@ export default class HomeTab extends React.Component {
             data={this.state.posts}
             renderItem={({ item }) => (
               <ListItem
-                userId={this.state.user.idUser}
+                userId={this.state.user}
                 post={item}
-                canEdit={this.checkEdit(item.author_id)}
-                switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
-                switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
-                isLiked={item.isLiked}
-                isSaved={item.isSaved}
                 handleRefresh={this.handleRefresh}
               />
             )}
@@ -104,68 +83,35 @@ export default class HomeTab extends React.Component {
             refreshing={this.state.refreshing}
           />
             }
-      </View>
+        </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-    paddingTop: 35,
-    paddingBottom: 20,
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: "column",
+      backgroundColor: "#ffcdd2",
+      // alignItems: "center",
+      // backgroundColor: "#fff",
+      // height: theme.SIZES.BASE *15,
+      padding: 5,
+      paddingTop: 15,
+      height: '100%',
+      // paddingBottom: 20,
 
-    flex: 1,
-    alignItems: "stretch",
-    justifyContent: "center",
-    backgroundColor: "#ffcdd2",
-    paddingLeft: 10,
-    paddingRight: 10
-
-    // backgroundColor: '#fff',
-  },
-  postContainer: {
-    paddingTop: 5,
-    paddingRight: 5
-  }
-  // headerContainer: {
-  //   // paddingTop: 5,
-  //   marginTop: 40
-  //   // marginBottom: 5,
-  // },
-  // imgContainer: {
-  //   flex: 2,
-  //   alignSelf: "stretch",
-  //   borderRadius: 50,
-  //   paddingBottom: 5
-  // },
-  // avtImage: {
-  //   height: hp("8%"),
-  //   width: hp("8%"),
-  //   borderRadius: 50
-  // },
-  // button: {
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   width: wp("55%"),
-  //   backgroundColor: "#830707",
-  //   borderRadius: 25,
-  //   marginBottom: 10,
-  //   height: hp("5%")
-  // },
-  // updatebtnContainer: {
-  //   flex: 4,
-  //   alignItems: "center",
-  //   justifyContent: "center"
-  // },
-  // buttonText: {
-  //   fontSize: theme.SIZES.BASE,
-  //   fontWeight: "500",
-  //   textAlign: "center",
-  //   color: "#FFF"
-  // },
-  // uploadImg: {
-  //   height: hp("3%"),
-  //   width: wp("5%")
-  // }
-});
+      // alignItems: "stretch",
+      // justifyContent: "center",
+      // backgroundColor: "#000",
+      //margin: 5,
+      // paddingLeft: 40,
+      // paddingRight: 40,
+      // paddingBottom: 70,
+    },
+    postContainer: {
+      marginTop: 5,
+      paddingRight: 5,
+      height: '100%',
+    }
+})

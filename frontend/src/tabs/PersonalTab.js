@@ -438,7 +438,9 @@ export default class PersonalTab extends React.Component {
                     <Image source={noteButton} style={styles.imgButton} />
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                 onPress={()=>navigation.navigate("Saved",{userId:this.state.user.idUser})}
+                >
                   <View style={styles.buttonBlock}>
                     <Image source={savedButton} style={styles.imgButton} />
                   </View>

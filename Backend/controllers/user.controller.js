@@ -312,7 +312,7 @@ module.exports = {
   userProfile: async (req, res) => {
     let id = req.params.id;
     try {
-      let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}}).populate({path:'listPostsCreated',populate:{path:'comments.user'}});
+      let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}}).populate({path:'listPostsCreated',populate:[{path:'comments.user'},{path:'author'}]});
       let totalRecipe=user.listPostsCreated.length;
       let totalLike=0;
       let totalComment=0;
@@ -377,7 +377,7 @@ module.exports = {
   getSavedPost:async(req, res)=>{
     try {
       let id = req.params.id;
-      let user = await User.findById(id).populate({"path":'listPostsSaved',"match":{"isHide":false}}).populate({path:'listPostsSaved',populate:{path:'comments.user'}});
+      let user = await User.findById(id).populate({"path":'listPostsSaved',"match":{"isHide":false}}).populate({path:'listPostsSaved',populate:[{path:'comments.user'},{path:'author'}]});
       let listResult=[];
       user.listPostsSaved.sort((a,b)=>{
         if(a.createdDate > b.createdDate){
@@ -399,11 +399,6 @@ module.exports = {
         } else {
           isLiked = false;
         }
-        if (user.listPostsSaved.includes(user.listPostsSaved[i]._id)) {
-          isSaved = true;
-        } else {
-          isSaved = false;
-        }
         listResult.push({
           _id: user.listPostsSaved[i]._id,
           title: user.listPostsSaved[i].title,
@@ -420,7 +415,7 @@ module.exports = {
           ingredients: user.listPostsSaved[i].ingredients,
           detail: user.listPostsSaved[i].detail,
           isLiked: isLiked,
-          isSaved: isSaved
+          isSaved: true
         });
 
       }

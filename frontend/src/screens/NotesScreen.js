@@ -35,7 +35,7 @@ export default class NotesScreen extends Component {
   getDataAsync = async () => {
     axios({
       method: "get",
-      url: "/user/getnote/"+this.state.user,
+      url: "/user/notes/"+this.state.user,
       data: {
       }
     })
