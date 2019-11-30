@@ -68,7 +68,7 @@ export default class AddRecipeScreen extends React.Component {
       postId: isEdit ? post._id : "",
       title: isEdit ? post.title : "",
       description: isEdit ? post.description : "",
-      image: isEdit ? post.image : null,
+      image: isEdit ? post.image : "",
       processes: isEdit
         ? post.detail
         : [
@@ -164,19 +164,22 @@ export default class AddRecipeScreen extends React.Component {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      //base64: true
+      base64: true
     });
 
     if (!result.cancelled) {
       let data =
-          "data:image/" +
-          result.uri.substring(
-            result.uri.lastIndexOf(".") + 1,
-            result.uri.length
-          ) +
-          ";base64," +
-          result.base64;
-        this.uploadImage(data);
+        "data:image/" +
+        result.uri.substring(
+          result.uri.lastIndexOf(".") + 1,
+          result.uri.length
+        ) +
+        ";base64," +
+        result.base64;
+
+      this.uploadImage(data);
+      //console.log(result);
+      
       this.setState({ modalVisible: false });
     }
   };
@@ -204,6 +207,7 @@ export default class AddRecipeScreen extends React.Component {
           ) +
           ";base64," +
           result.base64;
+
         this.uploadImage(data);
         this.setState({ modalVisible: false });
       }
@@ -308,18 +312,18 @@ export default class AddRecipeScreen extends React.Component {
               description: "",
               image: null,
               processes: [
-                {
-                  step: 1,
-                  content: "",
-                  images: [],
-                  title: ""
-                }
+                // {
+                //   step: 1,
+                //   content: "",
+                //   images: [],
+                //   title: ""
+                // }
               ],
               ingredients: [
-                {
-                  name: "",
-                  weight: ""
-                }
+                // {
+                //   name: "",
+                //   weight: ""
+                // }
               ]
             });
           })
@@ -363,7 +367,7 @@ export default class AddRecipeScreen extends React.Component {
                 <Image
                   style={{ height: 150, width: 200, resizeMode: "center" }}
                   source={
-                    image
+                    image.length
                       ? { uri: image }
                       : require("../../assets/Image/placeholder.png")
                   }
