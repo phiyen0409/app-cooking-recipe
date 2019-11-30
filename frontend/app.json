@@ -28,6 +28,10 @@
     },
     "android": {
       "package": "com.nhom17.cookingapp"
+    },
+    "notification" : {
+      "iosDisplayInForeground" : true,
+      "_displayInForeground" : true
     }
   }
 }

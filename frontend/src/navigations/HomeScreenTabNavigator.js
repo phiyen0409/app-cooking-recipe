@@ -3,7 +3,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import TrendingTab from "../tabs/TrendingTab";
 import HomeTab from "../tabs/HomeTab";
-import SavedTab from "../tabs/SavedTab";
+import NotificationTab from "../tabs/NotificationTab";
 import PersonalTab from "../tabs/PersonalTab";
 import AddRecipeTab from "../tabs/AddRecipeTab"
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
@@ -13,7 +13,7 @@ import PersonalRecipeNavigation from "./PersonalRecipeNavigation";
 
 const TrendingTabStack = createStackNavigator({ TrendingTab });
 const HomeTabStack = createStackNavigator({ HomeRecipeNavigation });
-const SavedTabStack = createStackNavigator({ SavedTab });
+const NotificationTabStack = createStackNavigator({ NotificationTab });
 const PersonalTabStack = createStackNavigator({ PersonalRecipeNavigation });
 const AddRecipeTabStack=createStackNavigator({AddRecipeTab});
 
@@ -49,11 +49,11 @@ const HomeScreenTabNavigator = createBottomTabNavigator(
         }
       })
     },
-    Saved: {
+    Notification: {
       header: null,
-      screen: SavedTabStack,
+      screen: NotificationTabStack,
       navigationOptions: {
-        tabBarLabel: "Đã lưu",
+        tabBarLabel: "Thông báo",
         tabBarIcon: ({ tintColor }) => (
           <FontAwesome name="bookmark" size={20} color={tintColor} />
         )

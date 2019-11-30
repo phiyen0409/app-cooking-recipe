@@ -19,5 +19,6 @@ router.route('/delete/:id').delete(UserController.delete);
 router.route('/upload/avatar/:userId').put(UserController.updateAvatar);
 router.route('/login').post(UserController.login);
 router.route('/savedpost/:id').get(UserController.getSavedPost);
+router.route('/push-token/:id').put(UserController.pushToken);
 
 module.exports = router;

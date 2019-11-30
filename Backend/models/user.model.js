@@ -23,7 +23,8 @@ const UserSchema=new Schema({
             ingreCheck: Boolean
         }]
     }],
-    listPostsSaved: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}]
+    listPostsSaved: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
+    tokens: [],
 });
 const User = mongoose.model('Users',UserSchema);
 
