@@ -122,14 +122,14 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      let image;
+      let { image } = req.body;
       let { title } = req.body;
       let { description } = req.body;
       let { author } = req.body;
       let createdDate = moment();
       let { ingredients } = req.body;
       let { detail } = req.body;
-      if (req.body.image === undefined) {
+      if (image === undefined) {
         image = "";
       }
 
