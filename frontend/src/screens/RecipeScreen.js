@@ -146,14 +146,9 @@ export default class RecipeScreen extends React.Component {
                   </Text>
                 </View>
               </View>
-              {/* <View style={styles.imageView}> */}
-                {/* <Image style={styles.image} source={{ uri: post.image }} /> */}
-                <Slideshow containerStyle ={{padding: 5}}
-                  dataSource={this.state.dataSource}
-                  position = {this.state.position}
-                  onPositiionChanged={position => this.setState({position})}
-                />
-              {/* </View> */}
+              <View style={styles.imageView}>
+                <Image style={styles.image} source={{ uri: post.image }} /> 
+              </View>
               <View style={styles.viewContent}>
                 <Text style={styles.description}>{post.description}</Text>
               </View>

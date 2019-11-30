@@ -16,17 +16,36 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import Note from "./Note";
-
+import axios from "axios";
 export default class NoteList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
-      id: this.props.note._id
+      id: this.props.note._id,
+      userId:this.props.userId
     };
   }
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
+  }
+  deleteNote(){
+    this.setState({ modalVisible: false });
+    axios({
+      method: "delete",
+      url: "user/deletenote",
+      data: {
+        userId:this.state.userId,
+        noteId: this.state.id
+      }
+    })
+      .then(result => {
+        Alert.alert("Xóa thành công");
+        this.props.handleRefresh();
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
   }
 
   render() {
@@ -46,7 +65,7 @@ export default class NoteList extends Component {
         <FlatList
             style={styles.dataWrapper}
             data={note.listIngre}
-            renderItem={({ item }) => <Note ingre={item} />}
+            renderItem={({ item }) => <Note ingre={item} noteId={this.state.id} userId={this.state.userId} />}
             keyExtractor={item => `${item._id}`}
           />
         </View>
@@ -81,7 +100,7 @@ export default class NoteList extends Component {
                       {
                         text: "OK",
                         onPress: () => {
-                          this.setModalVisible(false);
+                          this.deleteNote();
                         }
                       },
                       {

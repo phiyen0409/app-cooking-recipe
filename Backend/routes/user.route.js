@@ -18,5 +18,6 @@ router.route('/delete/:id').delete(UserController.delete);
 //router.route('/upload/avatar/:userId').post(upload.single('avatar'),UserController.updateAvatar);
 router.route('/upload/avatar/:userId').put(UserController.updateAvatar);
 router.route('/login').post(UserController.login);
+router.route('/getsavedpost/:id').get(UserController.getSavedPost);
 
 module.exports = router;

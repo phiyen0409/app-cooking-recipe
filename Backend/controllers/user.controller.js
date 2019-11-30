@@ -312,16 +312,11 @@ module.exports = {
   userProfile: async (req, res) => {
     let id = req.params.id;
     try {
-      let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}});
+      let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}}).populate({path:'listPostsCreated',populate:{path:'comments.user'}});
       let totalRecipe=user.listPostsCreated.length;
       let totalLike=0;
-      for(let i=0;i<totalRecipe;i++){
-        totalLike=totalLike+user.listPostsCreated[i].totalLike;
-      }
       let totalComment=0;
-      for(let i=0;i<totalRecipe;i++){
-        totalComment=totalComment+user.listPostsCreated[i].totalComment;
-      }
+      let listResult=[];
       user.listPostsCreated.sort((a,b)=>{
         if(a.createdDate > b.createdDate){
           return -1;
@@ -331,15 +326,113 @@ module.exports = {
         }
         return 0;
       });
+      for(let i=0;i<totalRecipe;i++){
+        totalLike=totalLike+user.listPostsCreated[i].totalLike;
+        totalComment=totalComment+user.listPostsCreated[i].totalComment;
+        let date = moment(user.listPostsCreated[i].createdDate)
+          .format("DD/MM/YYYY hh:mm A")
+          .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+        let isLiked;
+        let isSaved;
+        if (user.listPostsCreated[i].userLiked.includes(user._id)) {
+          isLiked = true;
+        } else {
+          isLiked = false;
+        }
+        if (user.listPostsSaved.includes(user.listPostsCreated[i]._id)) {
+          isSaved = true;
+        } else {
+          isSaved = false;
+        }
+        listResult.push({
+          _id: user.listPostsCreated[i]._id,
+          title: user.listPostsCreated[i].title,
+          description: user.listPostsCreated[i].description,
+          image: user.listPostsCreated[i].image,
+          author: user.listPostsCreated[i].author.name,
+          author_id: user.listPostsCreated[i].author._id,
+          totalLike: user.listPostsCreated[i].totalLike,
+          totalComment: user.listPostsCreated[i].totalComment,
+          totalSaved: user.listPostsCreated[i].totalSaved,
+          createdDate: date,
+          userLiked: user.listPostsCreated[i].userLiked,
+          comments: user.listPostsCreated[i].comments,
+          ingredients: user.listPostsCreated[i].ingredients,
+          detail: user.listPostsCreated[i].detail,
+          isLiked: isLiked,
+          isSaved: isSaved
+        });
+      }
       if (user < 1) {
         return res.json({
           message: "No user created"
         });
       } else {
-        res.json({user:user,totalLike:totalLike,totalComment:totalComment,totalRecipe:totalRecipe});
+        res.json({posts:listResult,totalLike:totalLike,totalComment:totalComment,totalRecipe:totalRecipe});
       }
     } catch (err) {
       res.json(err);
+    }
+  },
+  getSavedPost:async(req, res)=>{
+    try {
+      let id = req.params.id;
+      let user = await User.findById(id).populate({"path":'listPostsSaved',"match":{"isHide":false}}).populate({path:'listPostsSaved',populate:{path:'comments.user'}});
+      let listResult=[];
+      user.listPostsSaved.sort((a,b)=>{
+        if(a.createdDate > b.createdDate){
+          return -1;
+        }
+        if (a.createdDate < b.createdDate){
+          return 1;
+        }
+        return 0;
+      });
+      for(let i=0;i<user.listPostsSaved.length;i++){
+        let date = moment(user.listPostsSaved[i].createdDate)
+          .format("DD/MM/YYYY hh:mm A")
+          .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+        let isLiked;
+        let isSaved;
+        if (user.listPostsSaved[i].userLiked.includes(user._id)) {
+          isLiked = true;
+        } else {
+          isLiked = false;
+        }
+        if (user.listPostsSaved.includes(user.listPostsSaved[i]._id)) {
+          isSaved = true;
+        } else {
+          isSaved = false;
+        }
+        listResult.push({
+          _id: user.listPostsSaved[i]._id,
+          title: user.listPostsSaved[i].title,
+          description: user.listPostsSaved[i].description,
+          image: user.listPostsSaved[i].image,
+          author: user.listPostsSaved[i].author.name,
+          author_id: user.listPostsSaved[i].author._id,
+          totalLike: user.listPostsSaved[i].totalLike,
+          totalComment: user.listPostsSaved[i].totalComment,
+          totalSaved: user.listPostsSaved[i].totalSaved,
+          createdDate: date,
+          userLiked: user.listPostsSaved[i].userLiked,
+          comments: user.listPostsSaved[i].comments,
+          ingredients: user.listPostsSaved[i].ingredients,
+          detail: user.listPostsSaved[i].detail,
+          isLiked: isLiked,
+          isSaved: isSaved
+        });
+
+      }
+      if (listResult < 1) {
+        return res.json({
+          message: "No post saved"
+        });
+      } else {
+        res.json(listResult);
+      }
+    } catch (err) {
+      console.log(err);
     }
   },
 };

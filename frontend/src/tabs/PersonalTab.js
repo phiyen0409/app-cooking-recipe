@@ -100,8 +100,8 @@ export default class PersonalTab extends React.Component {
         this.setState({
           loadingPost:false,
           refreshing:false,
-          posts: result.data.user.listPostsCreated
-            ? result.data.user.listPostsCreated
+          posts: result.data.posts
+            ? result.data.posts
             : [],
           totalComment:result.data.totalComment,
           totalRecipe:result.data.totalRecipe,

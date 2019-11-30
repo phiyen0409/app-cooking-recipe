@@ -5,6 +5,7 @@ import PersonalTab from "../tabs/PersonalTab";
 import RecipeScreen from "../screens/RecipeScreen";
 import AddRecipeTab from "../tabs/AddRecipeTab";
 import NoteScreen from "../screens/NotesScreen";
+import SavedScreen from "../screens/SavedScreen";
 
 const PersonalRecipeNavigation = createStackNavigator(
   {
@@ -23,6 +24,9 @@ const PersonalRecipeNavigation = createStackNavigator(
     },
     Notes:{
       screen: NoteScreen
+    },
+    Saved:{
+      screen:SavedScreen
     }
   },
   
