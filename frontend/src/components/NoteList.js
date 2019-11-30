@@ -23,7 +23,8 @@ export default class NoteList extends Component {
     this.state = {
       modalVisible: false,
       id: this.props.note._id,
-      userId:this.props.userId
+      userId:this.props.userId,
+      loadMore: false
     };
   }
   setModalVisible(visible) {
@@ -61,6 +62,7 @@ export default class NoteList extends Component {
         <View style={styles.viewTitle}>
       <Text style={styles.title}>{note.post.title}</Text>
         </View>
+        
         <View style={styles.content}>
         <FlatList
             style={styles.dataWrapper}

@@ -60,8 +60,15 @@ export default class SavedScreen extends Component {
     }
     )
   };
+  checkEdit=(author)=>{
+    if(author===this.state.user){
+      return true;
+    }
+    return false;
+  };
 
   render() {
+    const { navigation } = this.props;
     return (
         <View style = {styles.container}>
           {
@@ -75,6 +82,11 @@ export default class SavedScreen extends Component {
               <ListItem
                 userId={this.state.user}
                 post={item}
+                canEdit={this.checkEdit(item.author_id)}
+                isLiked={item.isLiked}
+                isSaved={item.isSaved}
+                switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user})}
+                switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
                 handleRefresh={this.handleRefresh}
               />
             )}
