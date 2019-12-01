@@ -494,7 +494,7 @@ module.exports = {
       if(user != null)
       {
         res.status(200).json({
-          message: "Token is available!",
+          message: "get data successful",
           notifications: user.notifications.reverse(),
         });
       }

@@ -93,11 +93,12 @@ export default class NotificationTab extends React.Component {
     this.getListNotification();
   };
   getListNotification = () =>{
-    axios({
-      method: "get",
-      url: "/user/noitificaions/" + this.state.user.idUser,
-    }).then(reponse => {
+    axios.get("/user/notifications/" + this.state.user.idUser)
+    .then(reponse => {
       this.setState({notifications : reponse.data.notifications});
+      console.log(reponse.data.notifications);
+    }).catch(error =>{
+      console.log(error);
     });
   }
   render() {
@@ -112,7 +113,7 @@ export default class NotificationTab extends React.Component {
               notification={item}
             />
           )}
-          keyExtractor={item => item._id}
+          keyExtractor={item => this.state.notifications.indexOf(item).toString()}
         />
       </View>
     );

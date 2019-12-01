@@ -241,7 +241,6 @@ module.exports = {
         
         for( var i = 0; i < author.notifications.length; i++){ 
           let notification =  author.notifications[i];
-          console.log(notification);
           if (notification.user._id.toString() == user._id.toString()) {
            
             author.notifications.splice(i, 1); 
@@ -267,7 +266,7 @@ module.exports = {
         author.notifications.push({
           user : user,
           content : body,
-          time: moment(),
+          time: moment().format("DD/MM/YYYY hh:mm A").toString(),
           title: title
         });
 
