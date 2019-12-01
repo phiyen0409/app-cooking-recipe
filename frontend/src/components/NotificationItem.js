@@ -48,7 +48,7 @@ export default class NotificationItem extends React.Component {
             >
               <Image
                 style={styles.avatar}
-                source={{ uri: notification.avatar }}
+                source={{ uri: notification.user.avatar }}
               />
             </View>
 
@@ -64,7 +64,7 @@ export default class NotificationItem extends React.Component {
               <Text
                 style={{ marginLeft: 5, fontWeight: "bold", color: "#8e1e20" }}
               >
-                {notification.name}
+                {notification.user.name}
               </Text>
               <Text style={{ marginLeft: 5, color: "#555555" }}>
                 {notification.content}

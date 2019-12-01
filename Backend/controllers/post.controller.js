@@ -3,6 +3,7 @@ const Post = require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const ImageHelper = require("../utils/ImageHelper");
+const NotificationHelper = require("../utils/NotificationHelper");
 
 module.exports = {
   index: async (req, res) => {
@@ -228,14 +229,27 @@ module.exports = {
   },
   updateLike: async (req, res) => {
     try {
-      let post = await Post.findById(req.params.postId);
+      let post = await Post.findById(req.params.postId).populate({ path: "author" });
       let user = await User.findById(req.body.userId);
+      let author = post.author;
       if (post.userLiked.includes(user._id)) {
         post.userLiked.remove(user);
         post.totalLike -= 1;
         await post.save();
         user.listLikesPost.remove(post);
         await user.save();
+        
+        for( var i = 0; i < author.notifications.length; i++){ 
+          let notification =  author.notifications[i];
+          console.log(notification);
+          if (notification.user._id.toString() == user._id.toString()) {
+           
+            author.notifications.splice(i, 1); 
+            i--;
+          }
+       }
+        
+        await author.save();
         res.status(201).json({
           message: "Updated unlike"
         });
@@ -245,6 +259,23 @@ module.exports = {
         await post.save();
         user.listLikesPost.push(post);
         await user.save();
+
+        let listTokens = author.tokens;
+        let title ="App Cooking Recipe";
+        let body = user.name + " đã thích bài viết "+ post.title + " của bạn";
+
+        author.notifications.push({
+          user : user,
+          content : body,
+          time: moment(),
+          title: title
+        });
+
+        NotificationHelper.sendNotification(listTokens, title, body, {}, null);
+        await author.save();
+
+       
+
         res.status(201).json({
           message: "Updated like"
         });

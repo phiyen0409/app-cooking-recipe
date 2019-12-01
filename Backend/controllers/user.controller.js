@@ -485,5 +485,27 @@ module.exports = {
     } catch (error) {
       console.log(err);
     }
+  },
+  getNoitificaions : async (req, res) => {
+    try {
+      let id = req.params.id;
+      let user = await User.findById(id);
+
+      if(user != null)
+      {
+        res.status(200).json({
+          message: "Token is available!",
+          notifications: user.notifications.reverse(),
+        });
+      }
+      else{
+        res.status(400).json({
+          message: "User is not exist!",
+        });
+      }
+      
+    } catch (error) {
+      console.log(err);
+    }
   }
 };

@@ -7,7 +7,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  AsyncStorage
+  AsyncStorage,
+  FlatList
 } from "react-native";
 import NotificationItem from "../components/NotificationItem";
 
@@ -78,9 +79,10 @@ export default class NotificationTab extends React.Component {
     });
   };
   _handleNotification = notification => {
-    let { notifications } = thiss.state;
-    notifications.unshift(notification);
-    this.setState({ notifications: notifications });
+    // let { notifications } = thiss.state;
+    // notifications.unshift(notification);
+    // this.setState({ notifications: notifications });
+    this.getListNotification();
   };
   componentDidMount = async () => {
     await this._getUserLogin();
@@ -88,7 +90,16 @@ export default class NotificationTab extends React.Component {
     this._notificationSubscription = Notifications.addListener(
       this._handleNotification
     );
+    this.getListNotification();
   };
+  getListNotification = () =>{
+    axios({
+      method: "get",
+      url: "/user/noitificaions/" + this.state.user.idUser,
+    }).then(reponse => {
+      this.setState({notifications : reponse.data.notifications});
+    });
+  }
   render() {
     return (
       <View style={styles.container}>

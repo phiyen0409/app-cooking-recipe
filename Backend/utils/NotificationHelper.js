@@ -1,10 +1,10 @@
-import Expo from 'expo-server-sdk';
+const { Expo } = require('expo-server-sdk')
 
 // Create a new Expo SDK client
 const expo = new Expo();
 
-const PushNotification = {
-    sendNotification = (listTokens, title, body, data, sound) =>{
+const NotificationHelper = {
+    sendNotification : async(listTokens, title, body, data, sound) =>{
       // Create the messages that you want to send to clents
       let messages = [];
       for (let pushToken of listTokens) {
@@ -22,7 +22,7 @@ const PushNotification = {
           sound: sound ? sound : 'default',
           title: title,
           body: body,
-          data: data,
+          data: data ? data : {},
         })
       }
 
@@ -109,4 +109,4 @@ const PushNotification = {
     },
 }
 
-module.exports = PushNotification;
+module.exports = NotificationHelper;

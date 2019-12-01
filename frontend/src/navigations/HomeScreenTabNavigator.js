@@ -6,7 +6,7 @@ import HomeTab from "../tabs/HomeTab";
 import NotificationTab from "../tabs/NotificationTab";
 import PersonalTab from "../tabs/PersonalTab";
 import AddRecipeTab from "../tabs/AddRecipeTab"
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { AddButton } from "../components/AddButton";
 import HomeRecipeNavigation from "./HomeRecipeNavigation";
 import PersonalRecipeNavigation from "./PersonalRecipeNavigation";
@@ -55,7 +55,7 @@ const HomeScreenTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: "Thông báo",
         tabBarIcon: ({ tintColor }) => (
-          <FontAwesome name="bookmark" size={20} color={tintColor} />
+          <MaterialIcons name="notifications" size={20} color={tintColor} />
         )
       }
     },
