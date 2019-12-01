@@ -67,7 +67,7 @@ export default class NotesScreen extends Component {
           {
           this.state.loading?
           <ActivityIndicator size="large" color="white" />
-          :
+          :this.state.notes.length?
           <FlatList
             onScroll={this.handleScroll} scrollEventThrottle={16}
             data={this.state.notes}
@@ -82,6 +82,10 @@ export default class NotesScreen extends Component {
             onRefresh={()=>this.handleRefresh()}
             refreshing={this.state.refreshing}
           />
+          :
+          <View>
+            <Text style={styles.notiText}>Không có ghi chú nào</Text>
+          </View>
             }
         </View>
     );
@@ -113,5 +117,13 @@ export default class NotesScreen extends Component {
       marginTop: 5,
       paddingRight: 5,
       height: '100%',
+    },
+    notiText:{
+        textAlign: "center",
+        textTransform: "uppercase",
+        fontWeight: "700",
+        alignContent: "center",
+        color: "grey",
+        justifyContent:"center"
     }
 })

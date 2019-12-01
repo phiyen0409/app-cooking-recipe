@@ -74,7 +74,7 @@ export default class SavedScreen extends Component {
           {
           this.state.loading?
           <ActivityIndicator size="large" color="white" />
-          :
+          :this.state.posts.length?
           <FlatList
             onScroll={this.handleScroll} scrollEventThrottle={16}
             data={this.state.posts}
@@ -88,12 +88,17 @@ export default class SavedScreen extends Component {
                 switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user})}
                 switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
                 handleRefresh={this.handleRefresh}
+                savedScreen={true}
               />
             )}
             keyExtractor={item => item._id}
             onRefresh={()=>this.handleRefresh()}
             refreshing={this.state.refreshing}
           />
+          :
+          <View>
+            <Text style={styles.notiText}>Không có công thức nào</Text>
+          </View>
             }
         </View>
     );
@@ -125,5 +130,13 @@ export default class SavedScreen extends Component {
       marginTop: 5,
       paddingRight: 5,
       height: '100%',
-    }
+    },
+    notiText:{
+      textAlign: "center",
+      textTransform: "uppercase",
+      fontWeight: "700",
+      alignContent: "center",
+      color: "grey",
+      justifyContent:"center"
+  }
 })

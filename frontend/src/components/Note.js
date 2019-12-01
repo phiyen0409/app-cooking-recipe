@@ -63,7 +63,7 @@ export default class Note extends React.Component {
           <Text style = {{textAlign: "right", height : '100%'}}>{ingre.ingreWeight}</Text>
             </View>
             <View style = {{flex: 1, padding: 2, alignItems: 'center'}}>
-                <CheckBox value = {checked} onChange = {() => this.checkBox()} style = {{flex: 1, height: '100%'}}></CheckBox>
+                <CheckBox value = {checked} onChange = {() => this.checkBox()} checkedColor="#830707" style = {{flex: 1, height: '100%'}}></CheckBox>
             </View>
 
         </View>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       alignItems: "center",
       padding: 5,
-      backgroundColor: "#fff",
+      backgroundColor: "transparent",
       shadowColor: "#830707",
       shadowOpacity: 0.3,
       shadowRadius: 10,
