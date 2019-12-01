@@ -22,113 +22,66 @@ import Comment from "../components/Comment";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from "axios";
-import Slideshow from 'react-native-image-slider-show';
 
 export default class RecipeScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
-      commentContent:"",
-      post : this.props.navigation.getParam("post"),
+    this.state = {
+      commentContent: "",
+      post: this.props.navigation.getParam("post"),
       loading: false,
       position: 1,
-      interval: null,
-      dataSource: [
-        {
-          title: 'Title 1',
-          caption: 'Caption 1',
-          url: 'https://i.pinimg.com/originals/e6/7a/3d/e67a3dfc08353a0ef5f93cc356d0dacb.jpg',
-        }, {
-          title: 'Title 2',
-          caption: 'Caption 2',
-          url: 'http://placeimg.com/640/480/animals?t=1574956936985',
-        }, {
-          title: 'Title 3',
-          caption: 'Caption 3',
-          url: 'http://placeimg.com/640/480/animals?t=1574957043570',
-        }, {
-          title: 'Title 4',
-          caption: 'Caption 4',
-          url: 'http://placeimg.com/640/480/animals?t=1574958904402',
-        },
-        {
-          title: 'Title 5',
-          caption: 'Caption 5',
-          url: 'http://placeimg.com/640/480/animals?t=1574958904402',
-        },
-      ],
-    }
+      interval: null
+    };
   }
-
-  componentWillMount() {
-    this.setState({
-      interval: setInterval(() => {
-        this.setState({
-          position: this.state.position === this.state.dataSource.length ? 0 : this.state.position + 1
-        });
-      }, 2000)
-    });
-  }
-  
-  componentWillUnmount() {
-    clearInterval(this.state.interval);
-  }  
-
-  //   static navigationOptions = {
-  //     header: null
-  //   };
-  getPost=async()=>{
+  getPost = async () => {
     axios({
-      method:"get",
-      url:"/post/"+this.state.post._id,
-      data:{
-
-      }
-    })
-    .then(result=>{
-      this.setState({
-        post: result.data  ? result.data : [],
-        commentContent:"",
-         loading:false,
-      })
-    })
-    .catch(error => {
-      Alert.alert(error);
-    });
-    }
-  addComment=async()=>{
-    if(this.state.commentContent!==""){
-      this.setState({
-        loading:true,
-      });
-      const userId = this.props.navigation.getParam("userId");
-    axios({
-      method: "post",
-      url: "/post/addcomment/"+this.state.post._id,
-      data: {
-        content: this.state.commentContent,
-        user: userId
-      }
+      method: "get",
+      url: "/post/" + this.state.post._id,
+      data: {}
     })
       .then(result => {
-        Alert.alert(result.data.message);
-        this.getPost();
-        
+        this.setState({
+          post: result.data ? result.data : [],
+          commentContent: "",
+          loading: false
+        });
       })
       .catch(error => {
         Alert.alert(error);
       });
-    }
-    else{
+  };
+  addComment = async () => {
+    if (this.state.commentContent !== "") {
+      this.setState({
+        loading: true
+      });
+      const userId = this.props.navigation.getParam("userId");
+      axios({
+        method: "post",
+        url: "/post/addcomment/" + this.state.post._id,
+        data: {
+          content: this.state.commentContent,
+          user: userId
+        }
+      })
+        .then(result => {
+          Alert.alert(result.data.message);
+          this.getPost();
+        })
+        .catch(error => {
+          Alert.alert(error);
+        });
+    } else {
       Alert.alert("Bạn chưa nhập nội dung");
     }
-  }
+  };
   render() {
     // const post = this.props.navigation.getParam("post");
     // console.log("====================================");
     // console.log(post);
     // console.log("====================================");
-    let post=this.state.post;
+    let post = this.state.post;
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
@@ -138,26 +91,29 @@ export default class RecipeScreen extends React.Component {
         <View style={styles.container}>
           <ScrollView>
             <View style={styles.postContainer}>
-              <View style={styles.viewTitle}>
-                <Text style={styles.title}>{post.title}</Text>
-                <View>
-                  <Text style={(styles.title, styles.author)}>
-                    {post.author}
-                  </Text>
+              <View style={styles.postAbout}>
+                <View style={styles.viewTitle}>
+                  <Text style={styles.title}>{post.title}</Text>
+                  <View>
+                    <Text style={(styles.title, styles.author)}>
+                      {post.author}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.imageView}>
+                  <Image
+                    style={styles.image}
+                    resizeMode="cover"
+                    source={{ uri: post.image }}
+                  />
+                </View>
+                <View style={styles.viewContent}>
+                  <Text style={styles.description}>{post.description}</Text>
                 </View>
               </View>
-              <View style={styles.imageView}>
-                <Image style={styles.image} source={{ uri: post.image }} /> 
-              </View>
-              <View style={styles.viewContent}>
-                <Text style={styles.description}>{post.description}</Text>
-              </View>
             </View>
-
             <View style={styles.postContainer}>
-              <ScrollView>
-                <IngredientListItem ingredients={post.ingredients} />
-              </ScrollView>
+              <IngredientListItem ingredients={post.ingredients} />
             </View>
             <View style={styles.postContainer}>
               <Process stepList={post.detail} />
@@ -181,7 +137,10 @@ export default class RecipeScreen extends React.Component {
                     this.setState({ commentContent: text });
                   }}
                 />
-                <TouchableOpacity style={{ width: "100%", height: "60%" }} onPress={this.addComment}>
+                <TouchableOpacity
+                  style={{ width: "100%", height: "60%" }}
+                  onPress={this.addComment}
+                >
                   <View style={styles.buttonCmt}>
                     <Text style={styles.textButtonCmt}>Gửi</Text>
                   </View>
@@ -190,11 +149,13 @@ export default class RecipeScreen extends React.Component {
             </View>
           </ScrollView>
         </View>
-        {
-          this.state.loading?
-          <ActivityIndicator style={{position:'absolute', top:'50%',left:'50%',zIndex:5}} size="large" color="#830707" />:
-          null
-        }
+        {this.state.loading ? (
+          <ActivityIndicator
+            style={{ position: "absolute", top: "50%", left: "50%", zIndex: 5 }}
+            size="large"
+            color="#830707"
+          />
+        ) : null}
       </KeyboardAwareScrollView>
     );
   }
@@ -205,16 +166,19 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flex: 1,
     alignItems: "stretch",
-    // width: wp('100%'),
-    justifyContent: "center"
-    // paddingTop: 20,
-    // paddingBottom: 70,
+    justifyContent: "center",
+    backgroundColor: "#ffebee"
   },
-
   postContainer: {
     paddingLeft: 5,
     paddingRight: 5,
-    margin: 1
+    marginVertical: 5,
+    marginHorizontal: 1
+  },
+  postAbout:{
+    flex: 1,
+    backgroundColor: "#FFF",
+    borderRadius: 4,
   },
   viewTitle: {
     padding: 5,
@@ -247,51 +211,34 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 12
   },
-
   imageView: {
-    // flex: 1,
+    flex: 1,
+    width: "100%",
     flexDirection: "column",
     justifyContent: "center",
-    // height: hp("30%"),
-    padding: 5,
+    height: hp("30%"),
     alignItems: "center",
     alignSelf: "center",
-    margin: 0,
-    borderWidth: 2,
-    borderTopWidth: 0,
-    borderColor: "#ffebee",
-    borderRadius: 10,
-    shadowColor: "#cdb7b5"
+    shadowColor: "#cdb7b5",
+    marginVertical: 10,
+    padding: 15
   },
-
   image: {
-    flex: 3,
-    flexDirection: "column",
-    // width: 100,
-    // height: hp('75%'),
-    width: wp("60%"),
-    // alignContent: 'center',
-    padding: 5,
-    margin: 5,
-    alignItems: "center",
-    alignSelf: "center"
+    width: "100%",
+    height: "100%",
+    borderRadius: 10
   },
-
   viewContent: {
     flexDirection: "row",
     alignItems: "stretch",
-    marginVertical: 10,
+    marginVertical: 5,
     marginHorizontal: 15,
     padding: 5,
-    borderWidth: 2,
-    borderTopWidth: 0,
-    borderColor: "#ffebee",
-    borderRadius: 10,
     shadowColor: "#cdb7b5"
   },
 
   description: {
-    fontWeight: "300"
+    fontWeight: "500"
   },
 
   viewComment: {
@@ -311,9 +258,8 @@ const styles = StyleSheet.create({
     width: "100%",
     marginRight: 10,
     padding: 10,
-    borderWidth: 2,
-    borderColor: "#ffebee",
-    borderRadius: 10
+    borderRadius: 10,
+    backgroundColor: "#FFF"
   },
   buttonCmt: {
     flex: 1,

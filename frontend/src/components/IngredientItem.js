@@ -1,58 +1,65 @@
 import React from "react";
-import { Image, Text, View, StyleSheet, TouchableOpacity, Alert} from "react-native";
+import {
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert
+} from "react-native";
 // import flatlistIngredient from '../Data/flatlistIngredient';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 
-// export default class IngredientItem extends component {
 export default function IngredientItem(props) {
-    
-  // const {onPress} = props;
-  const {ingredient} = props;
-  // reder(){
+  const { ingredient } = props;
   return (
     <View style={styles.container}>
-       <View
-            style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width:'100%',
-            borderBottomColor: "#830707",
-            borderBottomWidth: 1,
-            // backgroundColor: this.props.index %2 == 0? 'white':'#ECECEC'
-            }}
-        >
-            {/* <View style = {{flex: 4, height: '100%'}}>
-                <Text style = {{textAlign: "left", height : '100%', margin: 5, marginBottom: 2}}>{this.props.item.name}</Text>
-            </View>
-            <View style = {{flex: 1, height: '100%'}}>
-                <Text style = {{textAlign: "right", height : '100%', margin: 5, marginBottom: 2}}>{this.props.item.weight}</Text>
-            </View> */}
-            <View style = {{flex: 4, height: '100%'}}>
-                <Text style = {{textAlign: "left", height : '100%', margin: 5, marginBottom: 2}}>{ingredient.name}</Text>
-            </View>
-            <View style = {{flex: 2, height: '100%'}}>
-                <Text style = {{textAlign: "right", height : '100%', margin: 5, marginBottom: 2}}>{ingredient.weight}</Text>
-            </View>
-
-        </View>
-    </View>)}
+      <View style={styles.ingredientName}>
+        <Text style={styles.ingredientNameText}>{ingredient.name}</Text>
+      </View>
+      <View style={styles.ingredientWeight}>
+        <Text style={styles.ingredientWeightText}>{ingredient.weight}</Text>
+      </View>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      flexDirection: "column",
-      alignItems: "center",
-      padding: 5,
-      backgroundColor: "#fff",
-      shadowColor: "#830707",
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      shadowOffset: { width: 0, height: 0 },
-      marginBottom: 10,
-      borderRadius: 25
-    }
-})
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderBottomColor: "rgba(131, 7, 7, 0.2)",
+    borderBottomWidth: 1,
+    paddingVertical: 3,
+    height: 40,
+    marginVertical: 3,
+    backgroundColor: "#FFF"
+  },
+  ingredientName: {
+    flex: 4,
+    height: "100%",
+    alignContent: "flex-end"
+  },
+  ingredientNameText: {
+    textAlign: "left",
+    height: "100%",
+    marginHorizontal: 5,
+    fontWeight: "600",
+    fontSize: 14,
+    marginTop: 10
+  },
+  ingredientWeight: {
+    flex: 2,
+    height: "100%"
+  },
+  ingredientWeightText: {
+    textAlign: "right",
+    height: "100%",
+    marginHorizontal: 5,
+    color: "rgba(0, 0, 0, 0.3)"
+  }
+});
