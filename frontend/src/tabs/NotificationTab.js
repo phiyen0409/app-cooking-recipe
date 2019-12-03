@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import NotificationItem from "../components/NotificationItem";
 
+import axios from "axios";
+
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
-
-import axios from "axios";
 
 export default class NotificationTab extends React.Component {
   constructor(props) {
@@ -41,6 +41,14 @@ export default class NotificationTab extends React.Component {
   };
   static navigationOptions = {
     header: null
+  };
+  componentDidMount = async () => {
+    await this._getUserLogin();
+    await this.registerForPushNotificationsAsync();
+    this.getListNotification();
+    this._notificationSubscription = Notifications.addListener(
+      this._handleNotification
+    );
   };
   registerForPushNotificationsAsync = async () => {
     const { status: existingStatus } = await Permissions.getAsync(
@@ -79,18 +87,14 @@ export default class NotificationTab extends React.Component {
     });
   };
   _handleNotification = notification => {
-    // let { notifications } = thiss.state;
-    // notifications.unshift(notification);
-    // this.setState({ notifications: notifications });
-    this.getListNotification();
-  };
-  componentDidMount = async () => {
-    await this._getUserLogin();
-    await this.registerForPushNotificationsAsync();
-    this._notificationSubscription = Notifications.addListener(
-      this._handleNotification
-    );
-    this.getListNotification();
+    if(notification.remote)
+    {
+      if (notification.origin == "received") {
+        setTimeout(() => {
+          this.getListNotification();
+        }, 0);
+      }
+    }
   };
   getListNotification = () =>{
     axios.get("/user/notifications/" + this.state.user.idUser)
@@ -102,6 +106,7 @@ export default class NotificationTab extends React.Component {
     });
   }
   render() {
+    const {navigation} = this.props;
     return (
       <View style={styles.container}>
         <FlatList
@@ -111,6 +116,7 @@ export default class NotificationTab extends React.Component {
           renderItem={({ item }) => (
             <NotificationItem
               notification={item}
+              switchRecipeScreen={() => navigation.navigate("Recipe",{postId: item.data.postId, userId:this.state.user.idUser})}
             />
           )}
           keyExtractor={item => this.state.notifications.indexOf(item).toString()}

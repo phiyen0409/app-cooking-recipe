@@ -28,21 +28,23 @@ export default class RecipeScreen extends React.Component {
     super(props);
     this.state = {
       commentContent: "",
-      post: this.props.navigation.getParam("post"),
+      post: this.props.navigation.getParam("post")
+        ? this.props.navigation.getParam("post")
+        : {},
       loading: false,
       position: 1,
       interval: null
     };
   }
-  getPost = async () => {
+  getPost = async (postId) => {
     axios({
       method: "get",
-      url: "/post/" + this.state.post._id,
+      url: "/post/" + postId,
       data: {}
     })
       .then(result => {
         this.setState({
-          post: result.data ? result.data : [],
+          post: result.data ? result.data : {},
           commentContent: "",
           loading: false
         });
@@ -67,7 +69,7 @@ export default class RecipeScreen extends React.Component {
       })
         .then(result => {
           Alert.alert(result.data.message);
-          this.getPost();
+          this.getPost(this.state.post._id);
         })
         .catch(error => {
           Alert.alert(error);
@@ -76,12 +78,26 @@ export default class RecipeScreen extends React.Component {
       Alert.alert("Bạn chưa nhập nội dung");
     }
   };
+  componentDidMount = () => {
+    let postId = this.props.navigation.getParam("postId");
+    console.log("postId " + postId);
+    
+    if(postId != undefined)
+    {
+      this.setState({
+        loading: true
+      });
+      this.getPost(postId);
+    }
+  };
   render() {
     // const post = this.props.navigation.getParam("post");
     // console.log("====================================");
     // console.log(post);
     // console.log("====================================");
     let post = this.state.post;
+    console.log("detail post");
+    console.log(post);
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
@@ -113,10 +129,10 @@ export default class RecipeScreen extends React.Component {
               </View>
             </View>
             <View style={styles.postContainer}>
-              <IngredientListItem ingredients={post.ingredients} />
+              {this.state.loading ? <IngredientListItem ingredients={post.ingredients} /> : <IngredientListItem ingredients={post.ingredients} />}
             </View>
             <View style={styles.postContainer}>
-              <Process stepList={post.detail} />
+              {this.state.loading ? <Process stepList={post.detail} /> : <Process stepList={post.detail} />}
             </View>
             <View style={styles.postContainer}>
               <View style={styles.viewTitle}>
@@ -175,10 +191,10 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 1
   },
-  postAbout:{
+  postAbout: {
     flex: 1,
     backgroundColor: "#FFF",
-    borderRadius: 4,
+    borderRadius: 4
   },
   viewTitle: {
     padding: 5,
