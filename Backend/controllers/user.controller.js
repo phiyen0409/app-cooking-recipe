@@ -322,22 +322,18 @@ module.exports = {
   userProfile: async (req, res) => {
     let id = req.params.id;
     try {
-      let user = await User.findById(id).populate({path:"listPostsCreated"});;
+      let user = await User.findById(id);
       console.log(user);
-      // let postCreated =await User.findById(id).populate({path:"listPostsCreated"});
-      // console.log(postCreated);
-      let totalRecipe = user.listPostsCreated.length;
-      let totalLike = 0;
-      let totalComment = 0;
-      for (let i = 0; i < totalRecipe; i++) {
-        totalLike = totalLike + user.listPostsCreated[i].totalLike;
-        totalComment = totalComment + user.listPostsCreated[i].totalComment;
-      }
       let posts = await Post.find({ author:id,isHide: false })
         .populate({ path: "comments.user" })
         .sort({ createdDate: "desc" });
+        let totalRecipe = posts.length;
+      let totalLike = 0;
+      let totalComment = 0;
       let listResult = [];
       for (let i = 0; i < posts.length; i++) {
+        totalLike = totalLike + posts[i].totalLike;
+        totalComment = totalComment + posts[i].totalComment;
         let date = moment(posts[i].createdDate)
           .format("DD/MM/YYYY hh:mm A")
           .toString();
