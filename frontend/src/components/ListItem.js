@@ -162,6 +162,7 @@ export default class ListItem extends React.Component {
     const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
     const AnimatedFontaws = Animated.createAnimatedComponent(FontAwesome);
     const post = this.props.post;
+    const { navigation } = this.props;
 
     return (
       <View style={[styles.container,{backgroundColor: this.props.canEdit?"#FFFACB":"#FFF"}]}>
@@ -195,10 +196,16 @@ export default class ListItem extends React.Component {
                 <View style={styles.viewTitle}>
                   <Text style={styles.title}>{post.title}</Text>
                 </View>
+                <TouchableOpacity style={{flex:1}}
+                 onPress={()=>navigation.navigate("Profile")}
+                >
                 <View style={styles.author}>
+                  
                   <FontAwesome name="user" size={12} color="#6E6E6E" />
                   <Text style={styles.authorText}>{post.author}</Text>
+                
                 </View>
+                </TouchableOpacity>
                 <Text style={styles.description}>{post.description}</Text>
               </View>
             </View>

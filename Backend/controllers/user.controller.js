@@ -322,68 +322,64 @@ module.exports = {
   userProfile: async (req, res) => {
     let id = req.params.id;
     try {
-      let user = await User.findById(id)
-        .populate({ path: "listPostsCreated", match: { isHide: false } })
-        .populate({
-          path: "listPostsCreated",
-          populate: [{ path: "comments.user" }, { path: "author" }]
-        });
+      let user = await User.findById(id).populate({path:"listPostsCreated"});;
+      console.log(user);
+      // let postCreated =await User.findById(id).populate({path:"listPostsCreated"});
+      // console.log(postCreated);
       let totalRecipe = user.listPostsCreated.length;
       let totalLike = 0;
       let totalComment = 0;
-      let listResult = [];
-      user.listPostsCreated.sort((a, b) => {
-        if (a.createdDate > b.createdDate) {
-          return -1;
-        }
-        if (a.createdDate < b.createdDate) {
-          return 1;
-        }
-        return 0;
-      });
       for (let i = 0; i < totalRecipe; i++) {
         totalLike = totalLike + user.listPostsCreated[i].totalLike;
         totalComment = totalComment + user.listPostsCreated[i].totalComment;
-        let date = moment(user.listPostsCreated[i].createdDate)
+      }
+      let posts = await Post.find({ author:id,isHide: false })
+        .populate({ path: "comments.user" })
+        .sort({ createdDate: "desc" });
+      let listResult = [];
+      for (let i = 0; i < posts.length; i++) {
+        let date = moment(posts[i].createdDate)
           .format("DD/MM/YYYY hh:mm A")
-          .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+          .toString();
         let isLiked;
         let isSaved;
-        if (user.listPostsCreated[i].userLiked.includes(user._id)) {
+        if (posts[i].userLiked.includes(id)) {
           isLiked = true;
         } else {
           isLiked = false;
         }
-        if (user.listPostsSaved.includes(user.listPostsCreated[i]._id)) {
+        if (user.listPostsSaved.includes(posts[i]._id)) {
           isSaved = true;
         } else {
           isSaved = false;
         }
         listResult.push({
-          _id: user.listPostsCreated[i]._id,
-          title: user.listPostsCreated[i].title,
-          description: user.listPostsCreated[i].description,
-          image: user.listPostsCreated[i].image,
-          author: user.listPostsCreated[i].author.name,
-          author_id: user.listPostsCreated[i].author._id,
-          totalLike: user.listPostsCreated[i].totalLike,
-          totalComment: user.listPostsCreated[i].totalComment,
-          totalSaved: user.listPostsCreated[i].totalSaved,
+          _id: posts[i]._id,
+          title: posts[i].title,
+          description: posts[i].description,
+          image: posts[i].image,
+          author: posts[i].author.name,
+          author_id: posts[i].author._id,
+          totalLike: posts[i].totalLike,
+          totalComment: posts[i].totalComment,
+          totalSaved: posts[i].totalSaved,
           createdDate: date,
-          userLiked: user.listPostsCreated[i].userLiked,
-          comments: user.listPostsCreated[i].comments,
-          ingredients: user.listPostsCreated[i].ingredients,
-          detail: user.listPostsCreated[i].detail,
+          userLiked: posts[i].userLiked,
+          comments: posts[i].comments,
+          ingredients: posts[i].ingredients,
+          detail: posts[i].detail,
           isLiked: isLiked,
           isSaved: isSaved
         });
       }
+      console.log(listResult);
       if (user < 1) {
         return res.json({
           message: "No user created"
         });
       } else {
         res.json({
+          user:user,
           posts: listResult,
           totalLike: totalLike,
           totalComment: totalComment,

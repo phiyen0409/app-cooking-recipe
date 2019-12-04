@@ -4,6 +4,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import HomeTab from "../tabs/HomeTab";
 import RecipeScreen from "../screens/RecipeScreen";
 import AddRecipeTab from "../tabs/AddRecipeTab";
+import ProfileScreen from "../tabs/PersonalTab";
 
 const HomeRecipeNavigation = createStackNavigator(
   {
@@ -19,6 +20,9 @@ const HomeRecipeNavigation = createStackNavigator(
     },
     EditRecipe: {
       screen: AddRecipeTab
+    },
+    Profile:{
+      screen: ProfileScreen
     }
   },
   {
