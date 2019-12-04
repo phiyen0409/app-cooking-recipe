@@ -159,10 +159,10 @@ export default class ListItem extends React.Component {
   render() {
     const { switchEditScreen } = this.props;
     const { switchRecipeScreen } = this.props;
+    const { switchProfileScreen } = this.props;
     const AnimatedIcon = Animated.createAnimatedComponent(AntDesign);
     const AnimatedFontaws = Animated.createAnimatedComponent(FontAwesome);
     const post = this.props.post;
-    const { navigation } = this.props;
 
     return (
       <View style={[styles.container,{backgroundColor: this.props.canEdit?"#FFFACB":"#FFF"}]}>
@@ -197,7 +197,7 @@ export default class ListItem extends React.Component {
                   <Text style={styles.title}>{post.title}</Text>
                 </View>
                 <TouchableOpacity style={{flex:1}}
-                 onPress={()=>navigation.navigate("Profile")}
+                 onPress={switchProfileScreen}
                 >
                 <View style={styles.author}>
                   

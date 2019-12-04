@@ -71,7 +71,15 @@ export default class PersonalTab extends React.Component {
   };
   constructor(props) {
     super(props);
+    let authorProf = false;
+    let userId=this.props.navigation.getParam("userId");
+    let author=this.props.navigation.getParam("author");
+    if (this.props.navigation.getParam("authorProfile") === true &&userId!=author) {
+      authorProf = true;
+    }
+    console.log("profile"+authorProf)
     this.state = {
+      authorProf: authorProf,
       user: {},
       posts: [],
       description: props.description,
@@ -91,18 +99,23 @@ export default class PersonalTab extends React.Component {
     };
   }
   getDataAsync = async () => {
+    let id=this.state.authorProf?this.props.navigation.getParam("author"):this.state.user.idUser;
+    console.log("id get data: "+id);
     axios
-      .get("/user/profile/" + this.state.user.idUser)
+      .get("/user/profile/" +id )
       .then(result => {
         console.log("====================================");
         console.log(result.data);
         console.log("====================================");
+        let user=this.state.authorProf?result.data.user:this.state.user;
+        console.log("user: "+user)
         this.setState({
           loadingPost:false,
           refreshing:false,
           posts: result.data.posts
             ? result.data.posts
             : [],
+          user:user,
           totalComment:result.data.totalComment,
           totalRecipe:result.data.totalRecipe,
           totalLike:result.data.totalLike,
@@ -178,11 +191,18 @@ export default class PersonalTab extends React.Component {
     this.setState({ modalVisible: visible });
   }
   componentDidMount() {
-    this.getPermissionAsync();
+    if(!this.state.authorProf){
+      this.getPermissionAsync();
     (async () => {
       await this._getUserLogin();
       await this.getDataAsync();
     })();
+    }
+    else {
+      (async () => {
+        await this.getDataAsync();
+      })();
+    }
   }
   getPermissionAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -254,9 +274,9 @@ export default class PersonalTab extends React.Component {
       }
     }
   };
-  static navigationOptions = {
-    header: null
-  };
+  // static navigationOptions = {
+  //   header: null
+  // };
   logOut= async () => {
     AsyncStorage.removeItem("@auth").then(() =>{
       console.log('====================================');
@@ -295,6 +315,7 @@ export default class PersonalTab extends React.Component {
     let user = this.state.user;
     let posts = this.state.posts;
     const navigation=this.props.navigation;
+    let prof=this.state.authorProf;
     return (
       <View style={styles.container}>
 
@@ -303,28 +324,31 @@ export default class PersonalTab extends React.Component {
           style={styles.profileContainer}
           imageStyle={styles.profileBackground}
         >
+          {prof?null:
             <TouchableOpacity style={styles.logoutView} onPress={() => {
-                  Alert.alert(
-                    "Thông báo",
-                    "Bạn có muốn đăng xuất?",
-                    [
-                      {
-                        text: "OK",
-                        onPress: () => {
-                          this.logOut();
-                        }
-                      },
-                      {
-                        text: "Hủy",
-                        //onPress: () => console.log('Cancel Pressed'),
-                        style: "cancel"
-                      }
-                    ],
-                    { cancelable: false }
-                  );
-                }}>
-            <MaterialCommunityIcons name='logout' size={40} color='white' />
-            </TouchableOpacity>
+              Alert.alert(
+                "Thông báo",
+                "Bạn có muốn đăng xuất?",
+                [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      this.logOut();
+                    }
+                  },
+                  {
+                    text: "Hủy",
+                    //onPress: () => console.log('Cancel Pressed'),
+                    style: "cancel"
+                  }
+                ],
+                { cancelable: false }
+              );
+            }}>
+        <MaterialCommunityIcons name='logout' size={40} color='white' />
+        </TouchableOpacity>
+          }
+            
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ width, marginTop: "15%", marginBottom:"8%" }}
@@ -345,14 +369,17 @@ export default class PersonalTab extends React.Component {
                     style={{ height: "100%", width: 124, borderRadius: 62 }}
                   />
                 </View>
-                <TouchableOpacity
-                  style={styles.updateImage}
-                  onPress={() => {
-                    this.setModalVisible(true);
-                  }}
-                >
-                  <Entypo name="camera" size={30} color={"#000"} />
-                </TouchableOpacity>
+                {prof?null:
+                                  <TouchableOpacity
+                                  style={styles.updateImage}
+                                  onPress={() => {
+                                    this.setModalVisible(true);
+                                  }}
+                                >
+                                  <Entypo name="camera" size={30} color={"#000"} />
+                                </TouchableOpacity>
+                }
+
               </Block>
               <Block style={styles.info}>
                 <Block middle style={styles.nameInfo}>
@@ -417,11 +444,14 @@ export default class PersonalTab extends React.Component {
                     <Text size={12}>Bình luận</Text>
                   </Block>
                 </Block>
-                <Block middle style={{ marginTop: 12, marginBottom: 16 }}>
+                {prof?null:
+                  <Block middle style={{ marginTop: 12, marginBottom: 16 }}>
                   <Block style={styles.divider} />
                 </Block>
+                }
               </Block>
-              <View style={styles.buttonGroup}>
+              {prof?null:
+                <View style={styles.buttonGroup}>
                 <TouchableOpacity
                   onPress={() => {
                     this.setUpdateProfileVisible(true);
@@ -446,12 +476,13 @@ export default class PersonalTab extends React.Component {
                   </View>
                 </TouchableOpacity>
               </View>
+              }
               <View style={styles.recipesContainer}>
                 <Text style={styles.recipesTitle}>Công thức</Text>
                 <Block middle style={{ marginTop: 12, marginBottom: 16 }}>
                   <Block style={styles.divider} />
                 </Block>
-                <View style={styles.listRecipes}>
+                <View style={[styles.listRecipes,{paddingBottom:prof?90:20}]}>
                   {
                     this.state.loadingPost?
                     <ActivityIndicator size="large" color="#830707" />
@@ -463,7 +494,7 @@ export default class PersonalTab extends React.Component {
                         key={key}
                         userId={this.state.user.idUser}
                         post={item}
-                        canEdit={true}
+                        canEdit={prof?false:true}
                         handleRefresh={this.handleRefresh}
                         isLiked={item.isLiked}
                         isSaved={item.isSaved}
@@ -758,7 +789,7 @@ const styles = StyleSheet.create({
     color: "#830707"
   },
   listRecipes:{
-    paddingBottom:20,
+    // paddingBottom:20,
   },
   updateProfilePopup: {
     backgroundColor: "white",

@@ -33,7 +33,8 @@ export default class RecipeScreen extends React.Component {
         : {},
       loading: false,
       position: 1,
-      interval: null
+      interval: null,
+      userId:this.props.navigation.getParam("userId")
     };
   }
   getPost = async (postId) => {
@@ -96,6 +97,7 @@ export default class RecipeScreen extends React.Component {
     // console.log(post);
     // console.log("====================================");
     let post = this.state.post;
+    const navigation=this.props.navigation;
     console.log("detail post");
     console.log(post);
     return (
@@ -110,11 +112,15 @@ export default class RecipeScreen extends React.Component {
               <View style={styles.postAbout}>
                 <View style={styles.viewTitle}>
                   <Text style={styles.title}>{post.title}</Text>
+                  <TouchableOpacity
+                    onPress={()=>navigation.navigate("Profile",{author: post.author_id, authorProfile: true,userId:this.state.userId})}
+                  >
                   <View>
                     <Text style={(styles.title, styles.author)}>
                       {post.author}
                     </Text>
                   </View>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.imageView}>
                   <Image
