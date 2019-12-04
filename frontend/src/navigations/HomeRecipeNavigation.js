@@ -16,7 +16,7 @@ const HomeRecipeNavigation = createStackNavigator(
 
     },
     Recipe: {
-      screen: RecipeScreen
+      screen: RecipeScreen,
     },
     EditRecipe: {
       screen: AddRecipeTab

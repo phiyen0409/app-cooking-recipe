@@ -3,7 +3,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import TrendingTab from "../tabs/TrendingTab";
 import HomeTab from "../tabs/HomeTab";
-import NotificationTab from "../tabs/NotificationTab";
+import NotificationRecipeNavigation from "./NotificationRecipeNavigation";
 import PersonalTab from "../tabs/PersonalTab";
 import AddRecipeTab from "../tabs/AddRecipeTab"
 import { FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
@@ -13,7 +13,7 @@ import PersonalRecipeNavigation from "./PersonalRecipeNavigation";
 
 const TrendingTabStack = createStackNavigator({ TrendingTab });
 const HomeTabStack = createStackNavigator({ HomeRecipeNavigation });
-const NotificationTabStack = createStackNavigator({ NotificationTab });
+const NotificationTabStack = createStackNavigator({ NotificationRecipeNavigation });
 const PersonalTabStack = createStackNavigator({ PersonalRecipeNavigation });
 const AddRecipeTabStack=createStackNavigator({AddRecipeTab});
 

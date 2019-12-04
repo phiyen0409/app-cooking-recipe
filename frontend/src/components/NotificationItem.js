@@ -26,7 +26,7 @@ export default class NotificationItem extends React.Component {
     let {notification} = this.props;
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.viewContent}>
+        <TouchableOpacity onPress={this.props.switchRecipeScreen} style={styles.viewContent}>
           <View
             style={{
               flex: 4,
@@ -67,7 +67,7 @@ export default class NotificationItem extends React.Component {
                 {notification.user.name}
               </Text>
               <Text style={{ marginLeft: 5, color: "#555555" }}>
-                {notification.content}
+                {notification.body}
               </Text>
             </View>
           </View>
