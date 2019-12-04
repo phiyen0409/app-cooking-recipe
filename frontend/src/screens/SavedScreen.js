@@ -14,15 +14,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import NoteList from "../components/NoteList";
+import ListItem from "../components/ListItem";
 import axios from "axios";
 
-export default class NotesScreen extends Component {
+export default class SavedScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       user: this.props.navigation.getParam("userId"),
-      notes: [],
+      posts: [],
       refreshing:false,
       loading:true,
     };
@@ -35,14 +35,14 @@ export default class NotesScreen extends Component {
   getDataAsync = async () => {
     axios({
       method: "get",
-      url: "/user/notes/"+this.state.user,
+      url: "/user/savedpost/"+this.state.user,
       data: {
       }
     })
       .then(result => {
         console.log("Result: "+result.data);
         this.setState({
-          notes: result.data  ? result.data : [],
+          posts: result.data  ? result.data : [],
           refreshing:false,
           loading:false
         });
@@ -60,22 +60,35 @@ export default class NotesScreen extends Component {
     }
     )
   };
+  checkEdit=(author)=>{
+    if(author===this.state.user){
+      return true;
+    }
+    return false;
+  };
 
   render() {
+    const { navigation } = this.props;
     return (
         <View style = {styles.container}>
           {
           this.state.loading?
           <ActivityIndicator size="large" color="white" />
-          :this.state.notes.length?
+          :this.state.posts.length?
           <FlatList
             onScroll={this.handleScroll} scrollEventThrottle={16}
-            data={this.state.notes}
+            data={this.state.posts}
             renderItem={({ item }) => (
-              <NoteList
+              <ListItem
                 userId={this.state.user}
-                note={item}
+                post={item}
+                canEdit={this.checkEdit(item.author_id)}
+                isLiked={item.isLiked}
+                isSaved={item.isSaved}
+                switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user})}
+                switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
                 handleRefresh={this.handleRefresh}
+                savedScreen={true}
               />
             )}
             keyExtractor={item => item._id}
@@ -84,7 +97,7 @@ export default class NotesScreen extends Component {
           />
           :
           <View>
-            <Text style={styles.notiText}>Không có ghi chú nào</Text>
+            <Text style={styles.notiText}>Không có công thức nào</Text>
           </View>
             }
         </View>
@@ -119,11 +132,11 @@ export default class NotesScreen extends Component {
       height: '100%',
     },
     notiText:{
-        textAlign: "center",
-        textTransform: "uppercase",
-        fontWeight: "700",
-        alignContent: "center",
-        color: "grey",
-        justifyContent:"center"
-    }
+      textAlign: "center",
+      textTransform: "uppercase",
+      fontWeight: "700",
+      alignContent: "center",
+      color: "grey",
+      justifyContent:"center"
+  }
 })

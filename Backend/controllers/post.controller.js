@@ -3,6 +3,7 @@ const Post = require("../models/post.model");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const ImageHelper = require("../utils/ImageHelper");
+const NotificationHelper = require("../utils/NotificationHelper");
 
 module.exports = {
   index: async (req, res) => {
@@ -78,13 +79,55 @@ module.exports = {
   find: async (req, res) => {
     let id = req.params.id;
     try {
-      let post = await Post.findById(id).populate({ path: "comments.user" });
+      let posts = await Post.find({ _id: id, isHide: false })
+        .populate({ path: "author" })
+        .populate({ path: "comments.user" });
+
+      let post = posts[0];
+
       if (post < 1) {
         return res.json({
           message: "No post created"
         });
       } else {
-        res.json(post);
+        console.log(post);
+        let date = moment(post.createdDate)
+          .format("DD/MM/YYYY hh:mm A")
+          .toString();
+        console.log(date);
+        // let isLiked;
+        // let isSaved;
+        // if (post.userLiked.includes(userId)) {
+        //   isLiked = true;
+        // } else {
+        //   isLiked = false;
+        // }
+        // if (user.listPostsSaved.includes(post._id)) {
+        //   isSaved = true;
+        // } else {
+        //   isSaved = false;
+        // }
+        // console.log(post);
+        let data = {
+          _id: post._id,
+          title: post.title,
+          description: post.description,
+          image: post.image,
+          author: post.author.name,
+          author_id: post.author._id,
+          totalLike: post.totalLike,
+          totalComment: post.totalComment,
+          totalSaved: post.totalSaved,
+          createdDate: date,
+          userLiked: post.userLiked,
+          comments: post.comments,
+          ingredients: post.ingredients,
+          detail: post.detail,
+        };
+        console.log(data);
+        res.json(
+          data
+        );
       }
     } catch (err) {
       res.json(err);
@@ -122,14 +165,14 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-      let image;
+      let { image } = req.body;
       let { title } = req.body;
       let { description } = req.body;
       let { author } = req.body;
       let createdDate = moment();
       let { ingredients } = req.body;
       let { detail } = req.body;
-      if (req.body.image === undefined) {
+      if (image === undefined) {
         image = "";
       }
 
@@ -172,12 +215,12 @@ module.exports = {
           message: "No post"
         });
       }
-      let image;
+      let { image } = req.body;
       let { title } = req.body;
       let { description } = req.body;
       let { ingredients } = req.body;
       let { detail } = req.body;
-      if (req.body.image === undefined) {
+      if (image === undefined) {
         image = "";
       } else if (
         req.body.image.includes(
@@ -190,9 +233,12 @@ module.exports = {
       for (let i = 0; i < detail.length; i++) {
         if (detail[i].image === undefined) {
           detail[i].image = "";
-        } 
-        else if(req.body.detail[i].image.includes("https://cookingapp1.herokuapp.com/public/uploads/")){
-          detail[i].image=req.body.detail[i].image;
+        } else if (
+          req.body.detail[i].image.includes(
+            "https://cookingapp1.herokuapp.com/public/uploads/"
+          )
+        ) {
+          detail[i].image = req.body.detail[i].image;
         }
       }
       post.title = title;
@@ -228,14 +274,27 @@ module.exports = {
   },
   updateLike: async (req, res) => {
     try {
-      let post = await Post.findById(req.params.postId);
+      let post = await Post.findById(req.params.postId).populate({
+        path: "author"
+      });
       let user = await User.findById(req.body.userId);
+      let author = post.author;
       if (post.userLiked.includes(user._id)) {
         post.userLiked.remove(user);
         post.totalLike -= 1;
         await post.save();
         user.listLikesPost.remove(post);
         await user.save();
+
+        for (var i = 0; i < author.notifications.length; i++) {
+          let notification = author.notifications[i];
+          if (notification.user._id.toString() == user._id.toString()) {
+            author.notifications.splice(i, 1);
+            i--;
+          }
+        }
+
+        await author.save();
         res.status(201).json({
           message: "Updated unlike"
         });
@@ -245,6 +304,40 @@ module.exports = {
         await post.save();
         user.listLikesPost.push(post);
         await user.save();
+
+        if (user._id.toString() != author._id.toString()) {
+          let listTokens = author.tokens;
+          let title = "App Cooking Recipe";
+          let body =
+            user.name + " đã thích bài viết " + post.title + " của bạn";
+
+          let date = new Date(
+            new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+          );
+          date = moment(date).format("DD/MM/YYYY hh:mm A");
+          
+          let data = {
+            postId : req.params.postId
+          }
+
+          author.notifications.push({
+            user: user,
+            body: body,
+            time: date,
+            title: title,
+            data: data,
+          });
+
+          NotificationHelper.sendNotification(
+            listTokens,
+            title,
+            body,
+            data,
+            null
+          );
+          await author.save();
+        }
+
         res.status(201).json({
           message: "Updated like"
         });

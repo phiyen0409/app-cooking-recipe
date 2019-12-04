@@ -1,16 +1,14 @@
 import React from "react-native";
 import { createStackNavigator } from "react-navigation-stack";
 
-import PersonalTab from "../tabs/PersonalTab";
 import RecipeScreen from "../screens/RecipeScreen";
 import AddRecipeTab from "../tabs/AddRecipeTab";
-import NoteScreen from "../screens/NotesScreen";
 import SavedScreen from "../screens/SavedScreen";
 
-const PersonalRecipeNavigation = createStackNavigator(
+const SavedRecipeNavigation = createStackNavigator(
   {
-    Personal: {
-      screen: PersonalTab,
+    Saved: {
+      screen: SavedScreen,
       navigationOptions:{
         header: null,
       }
@@ -22,12 +20,6 @@ const PersonalRecipeNavigation = createStackNavigator(
     EditRecipe: {
       screen: AddRecipeTab
     },
-    Notes:{
-      screen: NoteScreen
-    },
-    Saved:{
-      screen:SavedScreen
-    }
   },
   
   {
@@ -37,4 +29,4 @@ const PersonalRecipeNavigation = createStackNavigator(
   }
 );
 
-export default PersonalRecipeNavigation;
+export default SavedRecipeNavigation;

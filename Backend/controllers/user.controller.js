@@ -91,7 +91,7 @@ module.exports = {
     let { name } = req.body;
     let birthday = moment(req.body.birthday, "DD/MM/YYYY").format("DD/MM/YYYY");
     let { phone } = req.body;
-    
+
     user.name = name;
     user.birthday = birthday;
     user.phone = phone;
@@ -132,21 +132,19 @@ module.exports = {
       let { email } = req.body.user;
       console.log(email);
       user = await User.findOne({ email: email });
-      if(!user){
-        let newUser= new User({
+      if (!user) {
+        let newUser = new User({
           name: req.body.user.name,
           email: req.body.user.email,
           avatar: req.body.user.photoUrl
         });
-        newUser.save()
-        .then(result=>{
+        newUser.save().then(result => {
           return res.json({
             message: "New user created!",
             data: result
+          });
         });
-      });
-      }
-      else {
+      } else {
         res.json(user);
       }
     } catch (err) {
@@ -189,7 +187,7 @@ module.exports = {
         };
         ingreNote.push(ingreItem);
       }
-      let note = { post: post._id,listIngre: ingreNote };
+      let note = { post: post._id, listIngre: ingreNote };
       user.listNotes.push(note);
       await user.save();
       res.status(201).json({
@@ -199,9 +197,11 @@ module.exports = {
       console.log(err);
     }
   },
-  getNote:async(req, res)=>{
+  getNote: async (req, res) => {
     try {
-      let user = await User.findById(req.params.userId).populate({ path: "listNotes.post" });
+      let user = await User.findById(req.params.userId).populate({
+        path: "listNotes.post"
+      });
       let ingreNote = user.listNotes;
       if (ingreNote < 1) {
         return res.json({
@@ -214,9 +214,44 @@ module.exports = {
       console.log(err);
     }
   },
+  checkNote: async (req, res) => {
+    try {
+      let { userId } = req.body;
+      let { noteId } = req.body;
+      let { ingreId } = req.body;
+      let user = await User.findById(userId);
+      let flag;
+      for (let i = 0; i < user.listNotes.length; i++) {
+        if (user.listNotes[i]._id == noteId) {
+          let note = user.listNotes[i];
+          for (let j = 0; j < note.listIngre.length; j++) {
+            if (note.listIngre[j]._id == ingreId) {
+              flag = note.listIngre[j].ingreCheck;
+              break;
+            }
+          }
+        }
+      }
+      await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $set: {
+            "listNotes.$[a].listIngre.$[b].ingreCheck": flag ? false : true
+          }
+        },
+        { arrayFilters: [{ "a._id": noteId }, { "b._id": ingreId }] }
+      );
+
+      res.status(201).json({
+        message: "updated check note"
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
   deleteNote: async (req, res) => {
     try {
-      let user = await User.findById(req.params.userId);
+      let user = await User.findById(req.body.userId);
       let { noteId } = req.body;
       user.listNotes.remove({ _id: noteId });
       await user.save();
@@ -263,15 +298,17 @@ module.exports = {
         return res.status(400).json({ message: "No file received" });
       } else {
         let callBack;
-        let fileName = await ImageHelper.saveImageBase64("./public/uploads",req.body.avatar);
+        let fileName = await ImageHelper.saveImageBase64(
+          "./public/uploads",
+          req.body.avatar
+        );
         let user = await User.findById(req.params.userId);
         console.log(fileName);
         user.avatar = fileName;
-        user.save()
-          .then(result=>{
-            return res.json({
-              message: "File is uploaded successfully!",
-              data: result
+        user.save().then(result => {
+          return res.json({
+            message: "File is uploaded successfully!",
+            data: result
           });
         });
       }
@@ -285,34 +322,190 @@ module.exports = {
   userProfile: async (req, res) => {
     let id = req.params.id;
     try {
-      let user = await User.findById(id).populate({"path":'listPostsCreated',"match":{"isHide":false}});
-      let totalRecipe=user.listPostsCreated.length;
-      let totalLike=0;
-      for(let i=0;i<totalRecipe;i++){
-        totalLike=totalLike+user.listPostsCreated[i].totalLike;
-      }
-      let totalComment=0;
-      for(let i=0;i<totalRecipe;i++){
-        totalComment=totalComment+user.listPostsCreated[i].totalComment;
-      }
-      user.listPostsCreated.sort((a,b)=>{
-        if(a.createdDate > b.createdDate){
+      let user = await User.findById(id)
+        .populate({ path: "listPostsCreated", match: { isHide: false } })
+        .populate({
+          path: "listPostsCreated",
+          populate: [{ path: "comments.user" }, { path: "author" }]
+        });
+      let totalRecipe = user.listPostsCreated.length;
+      let totalLike = 0;
+      let totalComment = 0;
+      let listResult = [];
+      user.listPostsCreated.sort((a, b) => {
+        if (a.createdDate > b.createdDate) {
           return -1;
         }
-        if (a.createdDate < b.createdDate){
+        if (a.createdDate < b.createdDate) {
           return 1;
         }
         return 0;
       });
+      for (let i = 0; i < totalRecipe; i++) {
+        totalLike = totalLike + user.listPostsCreated[i].totalLike;
+        totalComment = totalComment + user.listPostsCreated[i].totalComment;
+        let date = moment(user.listPostsCreated[i].createdDate)
+          .format("DD/MM/YYYY hh:mm A")
+          .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+        let isLiked;
+        let isSaved;
+        if (user.listPostsCreated[i].userLiked.includes(user._id)) {
+          isLiked = true;
+        } else {
+          isLiked = false;
+        }
+        if (user.listPostsSaved.includes(user.listPostsCreated[i]._id)) {
+          isSaved = true;
+        } else {
+          isSaved = false;
+        }
+        listResult.push({
+          _id: user.listPostsCreated[i]._id,
+          title: user.listPostsCreated[i].title,
+          description: user.listPostsCreated[i].description,
+          image: user.listPostsCreated[i].image,
+          author: user.listPostsCreated[i].author.name,
+          author_id: user.listPostsCreated[i].author._id,
+          totalLike: user.listPostsCreated[i].totalLike,
+          totalComment: user.listPostsCreated[i].totalComment,
+          totalSaved: user.listPostsCreated[i].totalSaved,
+          createdDate: date,
+          userLiked: user.listPostsCreated[i].userLiked,
+          comments: user.listPostsCreated[i].comments,
+          ingredients: user.listPostsCreated[i].ingredients,
+          detail: user.listPostsCreated[i].detail,
+          isLiked: isLiked,
+          isSaved: isSaved
+        });
+      }
       if (user < 1) {
         return res.json({
           message: "No user created"
         });
       } else {
-        res.json({user:user,totalLike:totalLike,totalComment:totalComment,totalRecipe:totalRecipe});
+        res.json({
+          posts: listResult,
+          totalLike: totalLike,
+          totalComment: totalComment,
+          totalRecipe: totalRecipe
+        });
       }
     } catch (err) {
       res.json(err);
     }
   },
+  getSavedPost: async (req, res) => {
+    try {
+      let id = req.params.id;
+      let user = await User.findById(id)
+        .populate({ path: "listPostsSaved", match: { isHide: false } })
+        .populate({
+          path: "listPostsSaved",
+          populate: [{ path: "comments.user" }, { path: "author" }]
+        });
+      let listResult = [];
+      user.listPostsSaved.sort((a, b) => {
+        if (a.createdDate > b.createdDate) {
+          return -1;
+        }
+        if (a.createdDate < b.createdDate) {
+          return 1;
+        }
+        return 0;
+      });
+      for (let i = 0; i < user.listPostsSaved.length; i++) {
+        let date = moment(user.listPostsSaved[i].createdDate)
+          .format("DD/MM/YYYY hh:mm A")
+          .toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+        let isLiked;
+        let isSaved;
+        if (user.listPostsSaved[i].userLiked.includes(user._id)) {
+          isLiked = true;
+        } else {
+          isLiked = false;
+        }
+        listResult.push({
+          _id: user.listPostsSaved[i]._id,
+          title: user.listPostsSaved[i].title,
+          description: user.listPostsSaved[i].description,
+          image: user.listPostsSaved[i].image,
+          author: user.listPostsSaved[i].author.name,
+          author_id: user.listPostsSaved[i].author._id,
+          totalLike: user.listPostsSaved[i].totalLike,
+          totalComment: user.listPostsSaved[i].totalComment,
+          totalSaved: user.listPostsSaved[i].totalSaved,
+          createdDate: date,
+          userLiked: user.listPostsSaved[i].userLiked,
+          comments: user.listPostsSaved[i].comments,
+          ingredients: user.listPostsSaved[i].ingredients,
+          detail: user.listPostsSaved[i].detail,
+          isLiked: isLiked,
+          isSaved: true
+        });
+      }
+      if (listResult < 1) {
+        return res.json({
+          message: "No post saved"
+        });
+      } else {
+        res.json(listResult);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  pushToken: async (req, res) => {
+    try {
+      let id = req.params.id;
+      let token = req.body.token;
+      let user = await User.findById(id);
+
+      if (!user.tokens.includes(token)) {
+        user.tokens.push(token);
+        user
+          .save()
+          .then(result => {
+            console.log(result);
+            res.status(201).json({
+              message: "update token successful"
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            res.status(500).json({
+              error: err
+            });
+          });
+      }
+      else{
+        res.status(201).json({
+          message: "Token is available!"
+        });
+      }
+    } catch (error) {
+      console.log(err);
+    }
+  },
+  getNoitificaions : async (req, res) => {
+    try {
+      let id = req.params.id;
+      let user = await User.findById(id);
+
+      if(user != null)
+      {
+        res.status(200).json({
+          message: "get data successful",
+          notifications: user.notifications.reverse(),
+        });
+      }
+      else{
+        res.status(400).json({
+          message: "User is not exist!",
+        });
+      }
+      
+    } catch (error) {
+      console.log(err);
+    }
+  }
 };

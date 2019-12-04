@@ -5,25 +5,43 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
+import axios from "axios";
 
 // export default class IngredientItem extends component {
 export default class Note extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
-      check: false,
+      checked:this.props.ingre.ingreCheck,
       ingre:this.props.ingre
     }
   }
 
   checkBox(){
-    this.setState({
-      check:!this.state.check
+    axios({
+      method: "put",
+      url: "user/checknote",
+      data: {
+        userId: this.props.userId,
+        noteId: this.props.noteId,
+        ingreId:this.state.ingre._id
+      }
     })
+      .then(result => {})
+      .catch(error => {
+        Alert.alert(error);
+        this.setState({
+          checked: !this.state.checked
+        });
+      });
+    this.setState({
+      checked: !this.state.checked
+    });
   }
   
   render(){
     const {ingre}=this.state;
+    const {checked}=this.state;
   return (
     <View style={styles.container}>
        <View
@@ -45,7 +63,7 @@ export default class Note extends React.Component {
           <Text style = {{textAlign: "right", height : '100%'}}>{ingre.ingreWeight}</Text>
             </View>
             <View style = {{flex: 1, padding: 2, alignItems: 'center'}}>
-                <CheckBox value = {this.state.check} onChange = {() => this.checkBox()} style = {{flex: 1, height: '100%'}}></CheckBox>
+                <CheckBox value = {checked} onChange = {() => this.checkBox()} checkedColor="#830707" style = {{flex: 1, height: '100%'}}></CheckBox>
             </View>
 
         </View>
@@ -58,7 +76,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       alignItems: "center",
       padding: 5,
-      backgroundColor: "#fff",
+      backgroundColor: "transparent",
       shadowColor: "#830707",
       shadowOpacity: 0.3,
       shadowRadius: 10,

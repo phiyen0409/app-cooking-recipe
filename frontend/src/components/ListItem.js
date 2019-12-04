@@ -86,7 +86,11 @@ export default class ListItem extends React.Component {
         postId: this.props.post._id
       }
     })
-      .then(result => {})
+      .then(result => {
+        if (this.props.savedScreen==true){
+          this.props.handleRefresh();
+        }
+      })
       .catch(error => {
         Alert.alert(error);
         this.setState({

@@ -16,17 +16,45 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import Note from "./Note";
-
+import axios from "axios";
 export default class NoteList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
-      id: this.props.note._id
+      id: this.props.note._id,
+      userId:this.props.userId,
+      loadMore: false
     };
   }
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
+  }
+  deleteNote(){
+    this.setState({ modalVisible: false });
+    axios({
+      method: "delete",
+      url: "user/deletenote",
+      data: {
+        userId:this.state.userId,
+        noteId: this.state.id
+      }
+    })
+      .then(result => {
+        Alert.alert("Xóa thành công");
+        this.props.handleRefresh();
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
+  }
+  setLoadMore() {
+    if (this.state.loadMore==true){
+      this.setState({ loadMore: false });
+    }
+    else{
+      this.setState({ loadMore: true });
+    }
   }
 
   render() {
@@ -39,17 +67,35 @@ export default class NoteList extends Component {
         }}>
             <Entypo name='menu' size={25} color="#830707" />
         </TouchableOpacity>
+        <View style={styles.paperclip}>
+        <FontAwesome name='paperclip' size={25} color="grey" />
+        </View>
         <View style={styles.viewTitle}>
       <Text style={styles.title}>{note.post.title}</Text>
         </View>
+        {this.state.loadMore?          
         <View style={styles.content}>
-        <FlatList
-            style={styles.dataWrapper}
-            data={note.listIngre}
-            renderItem={({ item }) => <Note ingre={item} />}
-            keyExtractor={item => `${item._id}`}
-          />
-        </View>
+          <FlatList
+              style={styles.dataWrapper}
+              data={note.listIngre}
+              renderItem={({ item }) => <Note ingre={item} noteId={this.state.id} userId={this.state.userId} />}
+              keyExtractor={item => `${item._id}`}
+            />
+          </View>:null}
+
+            <TouchableOpacity onPress={()=>{this.setLoadMore()}}>
+                {
+                  this.state.loadMore?
+                  <View style={styles.loadView}>
+                    <AntDesign name='up' size={20} color="#830707" />
+                  </View>
+                  :<View style={styles.loadView}>
+                    <AntDesign name='down' size={20} color="#830707" />
+                  </View>
+                }
+            </TouchableOpacity>
+
+
         <Modal
           animationType="fade"
           transparent={true}
@@ -81,7 +127,7 @@ export default class NoteList extends Component {
                       {
                         text: "OK",
                         onPress: () => {
-                          this.setModalVisible(false);
+                          this.deleteNote();
                         }
                       },
                       {
@@ -114,7 +160,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFACB",
     // height: theme.SIZES.BASE *15,
     padding: 15,
     borderRadius: 25,
@@ -128,36 +174,10 @@ const styles = StyleSheet.create({
     // paddingBottom: 70,
   },
 
-  // viewTitle: {
-  //   flex: 1,
-  //   flexDirection: "row",
-  //   // maxHeight: 50,
-  //   width: "90%",
-  //   borderWidth: 1,
-  //   borderColor: 'green',
-  //   // height: '30%',
-  //   marginTop: 0,
-  //   // alignSelf: "center"
-  //   // backgroundColor: '#cdb7b5',
-  // },
-
-  // title: {
-  //   textAlign: "center",
-  //   textTransform: "uppercase",
-  //   marginBottom: 5,
-  //   fontWeight: "700",
-  //   marginLeft: 15,
-  //   marginRight: 15,
-  //   alignContent: "center",
-  //   color: "#7f0000",
-  //   marginBottom: 30,
-  //   height: '100%'
-  // },
-
   viewTitle: {
     flex: 1,
     flexDirection: "column",
-    maxHeight: 50,
+    maxHeight: 30,
     width: "100%",
     marginTop: 0,
     alignSelf: "center",
@@ -189,11 +209,21 @@ const styles = StyleSheet.create({
     // paddingLeft: 5,
     // paddingRight: 5,
   },
+  paperclip:{
+    position:'absolute',
+    zIndex:3,
+    top:1,
+    left:-1
+  },
   menuView:{
     position:'absolute',
     zIndex:3,
     top:5,
     right:7
+  },
+  loadView:{
+    justifyContent:"center",
+    alignItems:"center"
   },
   containerModal: {
     position: "absolute",

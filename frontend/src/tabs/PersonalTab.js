@@ -100,8 +100,8 @@ export default class PersonalTab extends React.Component {
         this.setState({
           loadingPost:false,
           refreshing:false,
-          posts: result.data.user.listPostsCreated
-            ? result.data.user.listPostsCreated
+          posts: result.data.posts
+            ? result.data.posts
             : [],
           totalComment:result.data.totalComment,
           totalRecipe:result.data.totalRecipe,
@@ -438,7 +438,9 @@ export default class PersonalTab extends React.Component {
                     <Image source={noteButton} style={styles.imgButton} />
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                 onPress={()=>navigation.navigate("Saved",{userId:this.state.user.idUser})}
+                >
                   <View style={styles.buttonBlock}>
                     <Image source={savedButton} style={styles.imgButton} />
                   </View>
