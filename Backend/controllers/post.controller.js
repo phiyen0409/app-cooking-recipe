@@ -352,8 +352,8 @@ module.exports = {
         path: "author"
       });
       let author = post.author;
-      let user = await User.findById(req.body.userId);
       let { userId } = req.body;
+      let user = await User.findById(req.body.userId);
       let { content } = req.body;
       let date = new Date(
         new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
