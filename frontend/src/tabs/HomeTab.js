@@ -11,6 +11,7 @@ import {
   FlatList,
   ActivityIndicator
 } from "react-native";
+import { SearchBar } from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -29,11 +30,15 @@ export default class HomeTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // loading: false,
+      data: [],
+      error: null,
       user: {},
       posts: [],
       refreshing:false,
       loading:true,
     };
+    this.arrayholder = [];
   }
   _getUserLogin = async () => {
     try {
@@ -89,10 +94,38 @@ export default class HomeTab extends React.Component {
     }
     return false;
   };
+
+  searchFilterFunction = text => {
+    this.setState({
+      value: text,
+    });
+    const newData = this.arrayholder.filter(item => {
+      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
+      const textData = text.toUpperCase();
+
+      return itemData.indexOf(textData) > -1;
+    });
+    this.setState({
+      data: newData,
+    });
+  }
+
+  renderHeader = () => {
+    return (
+      <SearchBar
+        placeholder="Tên món..."
+        lightTheme
+        round
+        onChangeText={text => this.searchFilterFunction(text)}
+        autoCorrect={false}
+        value={this.state.value}
+      />
+    );
+  };
   
   render() {
     const { navigation } = this.props;
-
+    
     return (
       <View style={styles.container}>
         {
@@ -118,6 +151,7 @@ export default class HomeTab extends React.Component {
             keyExtractor={item => item._id}
             onRefresh={()=>this.handleRefresh()}
             refreshing={this.state.refreshing}
+            ListHeaderComponent = {this.renderHeader}
           />
             }
       </View>
