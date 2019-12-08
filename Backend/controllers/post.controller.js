@@ -348,17 +348,53 @@ module.exports = {
   },
   addComment: async (req, res) => {
     try {
-      let post = await Post.findById(req.params.postId);
-      let { user } = req.body;
+      let post = await Post.findById(req.params.postId).populate({
+        path: "author"
+      });
+      let author = post.author;
+      let { userId } = req.body;
+      let user = await User.findById(req.body.userId);
       let { content } = req.body;
       let date = new Date(
         new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
       );
       date = moment(date).format("DD/MM/YYYY hh:mm A");
-      let comment = { user: user, content: content, date: date };
+      let comment = { user: userId, content: content, date: date };
       post.comments.push(comment);
       post.totalComment += 1;
       await post.save();
+      if (user._id.toString() != author._id.toString()) {
+        let listTokens = author.tokens;
+        let title = "App Cooking Recipe";
+        let body =
+          user.name + " đã bình luận bài viết " + post.title + " của bạn";
+
+        let date = new Date(
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+        );
+        date = moment(date).format("DD/MM/YYYY hh:mm A");
+        
+        let data = {
+          postId : req.params.postId
+        }
+
+        author.notifications.push({
+          user: user,
+          body: body,
+          time: date,
+          title: title,
+          data: data,
+        });
+
+        NotificationHelper.sendNotification(
+          listTokens,
+          title,
+          body,
+          data,
+          null
+        );
+        await author.save();
+      }
       res.status(201).json({
         message: "Comment added"
       });

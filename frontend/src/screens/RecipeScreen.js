@@ -22,6 +22,8 @@ import Comment from "../components/Comment";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from "axios";
+import IngredientItem from "../components/IngredientItem";
+import Step from "../components/Step";
 
 export default class RecipeScreen extends React.Component {
   constructor(props) {
@@ -65,7 +67,7 @@ export default class RecipeScreen extends React.Component {
         url: "/post/addcomment/" + this.state.post._id,
         data: {
           content: this.state.commentContent,
-          user: userId
+          userId: userId
         }
       })
         .then(result => {
@@ -135,10 +137,73 @@ export default class RecipeScreen extends React.Component {
               </View>
             </View>
             <View style={styles.postContainer}>
-              {this.state.loading ? <IngredientListItem ingredients={post.ingredients} /> : <IngredientListItem ingredients={post.ingredients} />}
+              {this.state.loading ?
+                    <View style={styles.ingreContainer}>
+                    <View style={styles.viewIngreTitle}>
+                      <Text style={styles.ingreTitle}>Thành phần nguyên liệu</Text>
+                    </View>
+                    <View style={styles.ingreContent}>
+                      <FlatList
+                        style={styles.dataWrapper}
+                        data={post.ingredients}
+                        renderItem={({ item, index }) => (
+                          <IngredientItem ingredient={item} index={index} />
+                        )}
+                        keyExtractor={item => `${item._id}`}
+                      />
+                    </View>
+                  </View>
+              //  <IngredientListItem ingredients={post.ingredients} /> 
+               : 
+              //  <IngredientListItem ingredients={post.ingredients} />}
+              <View style={styles.ingreContainer}>
+              <View style={styles.viewIngreTitle}>
+                <Text style={styles.ingreTitle}>Thành phần nguyên liệu</Text>
+              </View>
+              <View style={styles.ingreContent}>
+                <FlatList
+                  style={styles.dataWrapper}
+                  data={post.ingredients}
+                  renderItem={({ item, index }) => (
+                    <IngredientItem ingredient={item} index={index} />
+                  )}
+                  keyExtractor={item => `${item._id}`}
+                />
+              </View>
+            </View>}
             </View>
             <View style={styles.postContainer}>
-              {this.state.loading ? <Process stepList={post.detail} /> : <Process stepList={post.detail} />}
+              {this.state.loading ? 
+              //<Process stepList={post.detail} /> 
+              <View style={styles.detailContainer}>
+        <View style={styles.viewDetailTitle}>
+          <Text style={styles.detailTitle}>Quy trình thực hiện</Text>
+        </View>
+        <View style={styles.detailContent}>
+          <FlatList
+            style={styles.dataWrapper}
+            data={post.detail}
+            renderItem={({ item }) => <Step step={item} />}
+            keyExtractor={item => `${item._id}`}
+          />
+        </View>
+      </View>
+              : 
+              //<Process stepList={post.detail} />
+              <View style={styles.detailContainer}>
+        <View style={styles.viewDetailTitle}>
+          <Text style={styles.detailTitle}>Quy trình thực hiện</Text>
+        </View>
+        <View style={styles.detailContent}>
+          <FlatList
+            style={styles.dataWrapper}
+            data={post.detail}
+            renderItem={({ item }) => <Step step={item} />}
+            keyExtractor={item => `${item._id}`}
+          />
+        </View>
+      </View>
+              }
             </View>
             <View style={styles.postContainer}>
               <View style={styles.viewTitle}>
@@ -262,7 +327,92 @@ const styles = StyleSheet.create({
   description: {
     fontWeight: "500"
   },
+  ingreContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 4
+    // margin: 5,
+    // paddingLeft: 40,
+    // paddingRight: 40,
+    // paddingBottom: 70,
+  },
 
+  viewIngreTitle: {
+    flex: 1,
+    flexDirection: "column",
+    maxHeight: 50,
+    width: "100%",
+    marginTop: 0,
+    alignSelf: "center"
+    // backgroundColor: '#cdb7b5',
+  },
+
+  ingreTitle: {
+    textAlign: "center",
+    textTransform: "uppercase",
+    marginBottom: 5,
+    fontWeight: "700",
+    marginLeft: 15,
+    marginRight: 15,
+    alignContent: "center",
+    color: "#7f0000",
+    marginBottom: 30
+  },
+
+  ingreContent: {
+    alignContent: "center",
+    width: wp("90%"),
+    flex: 4,
+    flexDirection: "column",
+    // alignItems: 'stretch',
+    marginBottom: 10
+    // paddingLeft: 5,
+    // paddingRight: 5,
+  },
+  detailContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    // margin: 5,
+    padding: 15,
+    borderRadius: 4,
+  },
+
+  viewDetailTitle: {
+    flex: 1,
+    flexDirection: "column",
+    maxHeight: 50,
+    width: "100%",
+    marginTop: 0,
+    alignSelf: "center"
+    // backgroundColor: '#cdb7b5',
+  },
+
+  detailTitle: {
+    textAlign: "center",
+    textTransform: "uppercase",
+    marginBottom: 10,
+    fontWeight: "700",
+    marginLeft: 15,
+    marginRight: 15,
+    alignContent: "center",
+    color: "#7f0000"
+  },
+  detailContent: {
+    alignContent: "center",
+    width: wp("90%"),
+    flex: 4,
+    flexDirection: "column",
+    // alignItems: 'stretch',
+    marginBottom: 10
+    // paddingLeft: 5,
+    // paddingRight: 5,
+  },
+  dataWrapper: { marginTop: -1 },
   viewComment: {
     flexDirection: "row",
     alignItems: "center",
