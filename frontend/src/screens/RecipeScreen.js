@@ -65,7 +65,7 @@ export default class RecipeScreen extends React.Component {
         url: "/post/addcomment/" + this.state.post._id,
         data: {
           content: this.state.commentContent,
-          user: userId
+          userId: userId
         }
       })
         .then(result => {
