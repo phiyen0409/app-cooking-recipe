@@ -31,7 +31,6 @@ export default class Step extends Component {
         };
       })
     };
-    this.arrayholder = [];
   }
   selectedImage = key => {
     let listImage = this.props.step.images.map(function(val, index) {
