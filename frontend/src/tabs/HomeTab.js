@@ -100,10 +100,10 @@ export default class HomeTab extends React.Component {
       value: text,
     });
     const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
+      const itemData = `${item.post.title.toUpperCase()}`;
       const textData = text.toUpperCase();
 
-      return itemData.indexOf(textData) > -1;
+      // return itemData.indexOf(textData);
     });
     this.setState({
       data: newData,
@@ -113,15 +113,35 @@ export default class HomeTab extends React.Component {
   renderHeader = () => {
     return (
       <SearchBar
-        placeholder="Tên món..."
+        placeholder="Search"
         lightTheme
-        round
+        
+        // round
+        searchIcon = {style={color: 'white'}}
+        clearIcon = {style={color: 'white'}}
+        inputContainerStyle = {{backgroundColor: '#af4448'}}
+        inputStyle={{backgroundColor: '#af4448', fontSize: 16, color: 'white'}}
+        containerStyle = {{backgroundColor: '#ef9a9a', marginBottom: 30, borderWidth: 0}}
+        placeholderTextColor = 'white'
         onChangeText={text => this.searchFilterFunction(text)}
         autoCorrect={false}
         value={this.state.value}
       />
     );
   };
+
+  // renderSeparator = () => {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: 1,
+  //         width: '86%',
+  //         backgroundColor: '#CED0CE',
+  //         marginLeft: '14%',
+  //       }}
+  //     />
+  //   );
+  // };
   
   render() {
     const { navigation } = this.props;
@@ -151,6 +171,7 @@ export default class HomeTab extends React.Component {
             keyExtractor={item => item._id}
             onRefresh={()=>this.handleRefresh()}
             refreshing={this.state.refreshing}
+            // ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent = {this.renderHeader}
           />
             }
@@ -162,7 +183,7 @@ export default class HomeTab extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    paddingTop: 35,
+    paddingTop: 20,
     paddingBottom: 20,
 
     flex: 1,
