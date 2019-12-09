@@ -357,8 +357,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
-    marginBottom: 15,
-    borderRadius: 25,
+    marginBottom: 10,
+    borderRadius: 10,
     borderColor:'#ffcdd2',
     borderWidth:1,
   },
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 64,
-    borderRadius: 12
+    borderRadius: 10
   },
   title: {
     flex: 1,
