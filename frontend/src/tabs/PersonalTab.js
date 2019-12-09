@@ -444,13 +444,21 @@ export default class PersonalTab extends React.Component {
                     <Text size={12}>Bình luận</Text>
                   </Block>
                 </Block>
-                {prof?null:
                   <Block middle style={{ marginTop: 12, marginBottom: 16 }}>
                   <Block style={styles.divider} />
                 </Block>
-                }
+                
               </Block>
-              {prof?null:
+              {prof?
+              <View style={{justifyContent: "center",alignItems: "center",}}>
+                                <TouchableOpacity>
+                  <View style={styles.viewFollow}>
+                  <FontAwesome style={{marginLeft:10}} name='plus' size={10} color='white' />
+                  <Text style={styles.followText}>Theo dõi</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              :
                 <View style={styles.buttonGroup}>
                 <TouchableOpacity
                   onPress={() => {
@@ -741,6 +749,24 @@ const styles = StyleSheet.create({
     width: "90%",
     borderWidth: 1,
     borderColor: "#E9ECEF"
+  },
+  viewFollow:{
+    backgroundColor: "#830707",
+    borderRadius: 15,
+    // marginBottom: 10,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection:'row',
+  },
+  followText: {
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    fontSize: 10,
+    //marginLeft: 15,
+    color: "#fff",
+    marginLeft:5,
+    marginRight:10
   },
   buttonView: {
     width: "100%",

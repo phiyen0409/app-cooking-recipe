@@ -25,6 +25,8 @@ const UserSchema=new Schema({
     listPostsSaved: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
     tokens: [],
     notifications: [],
+    following: [{type: mongoose.Schema.Types.ObjectId, ref: 'Users'}],
+    follower: [{type: mongoose.Schema.Types.ObjectId, ref: 'Users'}],
 });
 const User = mongoose.model('Users',UserSchema);
 

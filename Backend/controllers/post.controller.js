@@ -35,6 +35,7 @@ module.exports = {
           .toString();
         let isLiked;
         let isSaved;
+        let isFollow;
         if (posts[i].userLiked.includes(userId)) {
           isLiked = true;
         } else {
@@ -44,6 +45,11 @@ module.exports = {
           isSaved = true;
         } else {
           isSaved = false;
+        }
+        if(user.following.includes(posts[i].author._id)){
+          isFollow = true;
+        } else {
+          isFollow = false;
         }
         listResult.push({
           _id: posts[i]._id,
@@ -61,7 +67,8 @@ module.exports = {
           ingredients: posts[i].ingredients,
           detail: posts[i].detail,
           isLiked: isLiked,
-          isSaved: isSaved
+          isSaved: isSaved,
+          isFollow:isFollow
         });
         console.log(listResult);
       }
@@ -115,6 +122,7 @@ module.exports = {
           image: post.image,
           author: post.author.name,
           author_id: post.author._id,
+          authorFollower:post.author.follower,
           totalLike: post.totalLike,
           totalComment: post.totalComment,
           totalSaved: post.totalSaved,
@@ -313,6 +321,7 @@ module.exports = {
             time: date,
             title: title,
             data: data,
+            type:"post"
           });
 
           NotificationHelper.sendNotification(
@@ -371,6 +380,7 @@ module.exports = {
           time: date,
           title: title,
           data: data,
+          type:"post"
         });
 
         NotificationHelper.sendNotification(

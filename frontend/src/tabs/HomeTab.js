@@ -32,12 +32,12 @@ export default class HomeTab extends React.Component {
     super(props);
     this.state = {
       // loading: false,
-      data: [],
       error: null,
       user: {},
       posts: [],
       refreshing:false,
       loading:true,
+      valueSearch:""
     };
     this.arrayholder = [];
   }
@@ -74,6 +74,7 @@ export default class HomeTab extends React.Component {
           refreshing:false,
           loading:false
         });
+        this.arrayholder = result.data;
         //console.log(result);
       })
       .catch(error => {
@@ -95,26 +96,26 @@ export default class HomeTab extends React.Component {
     }
     return false;
   };
-
   searchFilterFunction = text => {
     this.setState({
-      value: text,
+      valueSearch: text,
     });
+
     const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.post.title.toUpperCase()}`;
+      const itemData = `${item.title.toUpperCase()} ${item.author.toUpperCase()}`;
       const textData = text.toUpperCase();
 
-      // return itemData.indexOf(textData);
+      return itemData.indexOf(textData) > -1;
     });
     this.setState({
-      data: newData,
+      posts: newData,
     });
   }
 
   renderHeader = () => {
     return (
       <SearchBar
-        placeholder="Search"
+        placeholder="Tìm công thức, tác giả..."
         lightTheme
         
         // round
@@ -122,11 +123,11 @@ export default class HomeTab extends React.Component {
         clearIcon = {style={color: 'white'}}
         inputContainerStyle = {{backgroundColor: '#af4448'}}
         inputStyle={{backgroundColor: '#af4448', fontSize: 16, color: 'white'}}
-        containerStyle = {{backgroundColor: '#ef9a9a', marginBottom: 30, borderWidth: 0}}
-        placeholderTextColor = 'white'
+        containerStyle = {{backgroundColor: '#ef9a9a', marginBottom: 20, borderWidth: 0, borderRadius:10}}
+        placeholderTextColor = '#FAFAFA'
         onChangeText={text => this.searchFilterFunction(text)}
         autoCorrect={false}
-        value={this.state.value}
+        value={this.state.valueSearch}
       />
     );
   };
@@ -202,8 +203,8 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "center",
     backgroundColor: "#ffcdd2",
-    paddingLeft: 10,
-    paddingRight: 10
+    paddingLeft: 5,
+    paddingRight: 5
 
     // backgroundColor: '#fff',
   },
