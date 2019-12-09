@@ -22,6 +22,7 @@ import AvatarImage from "../../assets/Image/avatar.png";
 import theme from "../../constant/theme";
 import uploadImage from "../../assets/Image/blog.png";
 import PTRView from 'react-native-pull-to-refresh';
+import NavigationService from '../navigations/NavigationService'; 
 
 export default class HomeTab extends React.Component {
   static navigationOptions = {
@@ -142,7 +143,18 @@ export default class HomeTab extends React.Component {
   //     />
   //   );
   // };
-  
+  switchProfileScreen = (item) =>{
+    if(item.author_id == this.state.user.idUser)
+    {
+      NavigationService.navigate(
+        "Personal",
+        {}
+      );
+    }
+    else{
+      navigation.navigate("Profile",{author: item.author_id, authorProfile: true, userId:this.state.user.idUser});
+    }
+  }
   render() {
     const { navigation } = this.props;
     
@@ -162,7 +174,7 @@ export default class HomeTab extends React.Component {
                 canEdit={this.checkEdit(item.author_id)}
                 switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
                 switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
-                switchProfileScreen={() => navigation.navigate("Profile",{author: item.author_id, authorProfile: true,userId:this.state.user.idUser})}
+                switchProfileScreen={() => this.switchProfileScreen(item)}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
                 handleRefresh={this.handleRefresh}

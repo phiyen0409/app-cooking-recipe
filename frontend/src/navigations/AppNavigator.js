@@ -4,7 +4,7 @@ import {
   createSwitchNavigator
   } from "react-navigation";
 
-import HomeScreen from '../screens/HomeScreen';
+import LoginNavigator from '../navigations/LoginNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreenTabNavigator from "./HomeScreenTabNavigator";
 
@@ -12,7 +12,7 @@ const AppNavigator = (signedIn = false) => {
     return createSwitchNavigator(
       {
         Login:{
-            screen: LoginScreen
+            screen: LoginNavigator
         },
         Home:{
             screen: HomeScreenTabNavigator

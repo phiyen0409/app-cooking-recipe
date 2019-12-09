@@ -222,23 +222,10 @@ module.exports = {
       let { detail } = req.body;
       if (image === undefined) {
         image = "";
-      } else if (
-        req.body.image.includes(
-          "https://cookingapp1.herokuapp.com/public/uploads/"
-        )
-      ) {
-        image = req.body.image;
       }
-
       for (let i = 0; i < detail.length; i++) {
         if (detail[i].image === undefined) {
           detail[i].image = "";
-        } else if (
-          req.body.detail[i].image.includes(
-            "https://cookingapp1.herokuapp.com/public/uploads/"
-          )
-        ) {
-          detail[i].image = req.body.detail[i].image;
         }
       }
       post.title = title;
