@@ -108,6 +108,7 @@ class LoginScreen extends React.Component {
     this.setState({ email });
   };
   submit = () => {
+    console.log("hi");
     axios({
       method: "post",
       url: "/user/login/app",
@@ -135,6 +136,7 @@ class LoginScreen extends React.Component {
       })
       .catch(error => {
         console.log(error);
+
       });
   };
 
@@ -152,7 +154,7 @@ class LoginScreen extends React.Component {
         <Form
           style={styles.inputContainer}
           ref="form"
-          onSubmit={this.handleSubmit}
+          onSubmit={this.submit}
         >
           <View style={styles.input}>
             <TextValidator

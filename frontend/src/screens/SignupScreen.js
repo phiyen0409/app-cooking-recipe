@@ -112,7 +112,7 @@ export default class SignupScreen extends React.Component {
           <Form
             style={styles.inputContainer}
             ref="form"
-            onSubmit={this.handleSubmit}
+            onSubmit={this.submit}
           >
             <View style={styles.input}>
               <TextValidator
