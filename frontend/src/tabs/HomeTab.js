@@ -95,7 +95,6 @@ export default class HomeTab extends React.Component {
     }
     return false;
   };
-
   searchFilterFunction = text => {
     this.setState({
       valueSearch: text,

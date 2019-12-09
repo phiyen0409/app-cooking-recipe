@@ -21,5 +21,6 @@ router.route('/login').post(UserController.login);
 router.route('/savedpost/:id').get(UserController.getSavedPost);
 router.route('/push-token/:id').put(UserController.pushToken);
 router.route('/notifications/:id').get(UserController.getNoitificaions);
+router.route('/follow').post(UserController.updateFollow);
 
 module.exports = router;

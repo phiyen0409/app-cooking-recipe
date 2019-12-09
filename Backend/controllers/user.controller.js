@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const upload = require("../utils/upload");
 const ImageHelper = require("../utils/ImageHelper");
+const NotificationHelper = require("../utils/NotificationHelper");
 
 module.exports = {
   index: async (req, res) => {
@@ -496,8 +497,66 @@ module.exports = {
         });
       }
       
-    } catch (error) {
+    } catch (err) {
       console.log(err);
     }
-  }
+  },
+  updateFollow:async (req, res) => {
+    try {
+      let userId = req.body.userId;
+      console.log(userId);
+      let authorId=req.body.authorId;
+      console.log(authorId);
+      let author = await User.findById(authorId);
+      let user = await User.findById(userId);
+      console.log(user);
+      console.log(author);
+      if (user.following.includes(author._id)) {
+        user.following.remove(author);
+        author.follower.remove(user);
+        await author.save();
+        await user.save();
+        res.status(201).json({
+          message: "Updated unfollow"
+        });
+      } else {
+        author.follower.push(user);
+        user.following.push(author);
+        await user.save();
+
+          let listTokens = author.tokens;
+          let title = "App Cooking Recipe";
+          let body =
+            user.name + " đã theo dõi bạn";
+
+          let date = new Date(
+            new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+          );
+          date = moment(date).format("DD/MM/YYYY hh:mm A");
+          author.notifications.push({
+            user: user,
+            body: body,
+            time: date,
+            title: title,
+            type:"follow"
+          });
+
+          NotificationHelper.sendNotification(
+            listTokens,
+            title,
+            body,
+            data,
+            null
+          );
+          await author.save();
+
+        res.status(201).json({
+          message: "Updated follow"
+        });
+      }
+      
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };
