@@ -163,7 +163,7 @@ export default class HomeTab extends React.Component {
                 canEdit={this.checkEdit(item.author_id)}
                 switchRecipeScreen={() => navigation.navigate("Recipe",{post: item,userId:this.state.user.idUser})}
                 switchEditScreen={() => navigation.navigate("EditRecipe",{post: item, edit: true})}
-                switchProfileScreen={() => navigation.navigate("Profile",{author: item.author_id, authorProfile: true,userId:this.state.user.idUser})}
+                switchProfileScreen={() => navigation.navigate("Profile",{author: item.author_id, authorProfile: true,userId:this.state.user.idUser,isFollow:item.isFollow})}
                 isLiked={item.isLiked}
                 isSaved={item.isSaved}
                 handleRefresh={this.handleRefresh}

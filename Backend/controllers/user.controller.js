@@ -523,7 +523,7 @@ module.exports = {
         author.follower.push(user);
         user.following.push(author);
         await user.save();
-
+        await author.save();
           let listTokens = author.tokens;
           let title = "App Cooking Recipe";
           let body =

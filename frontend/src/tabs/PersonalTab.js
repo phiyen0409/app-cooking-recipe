@@ -96,6 +96,7 @@ export default class PersonalTab extends React.Component {
       totalLike:0,
       totalComment:0,
       totalRecipe:0,
+      isFollow:authorProf?this.props.navigation.getParam("isFollow"):null
     };
   }
   getDataAsync = async () => {
@@ -310,6 +311,30 @@ export default class PersonalTab extends React.Component {
     }
     )
   };
+  updateFollow=()=>{
+    this.setState({
+      isFollow: !this.state.isFollow
+    });
+    let userId=this.props.navigation.getParam("userId");
+    let author=this.props.navigation.getParam("author");
+    axios({
+      method: "post",
+      url: "/user/follow",
+      data: {
+        userId: userId,
+        authorId: author,
+      }
+    })
+      .then(result => {
+        // Alert.alert("Cập nhật xong!");
+        // this.setState({
+        //   isFollow: true
+        // });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   render() {
     let user = this.state.user;
@@ -450,8 +475,41 @@ export default class PersonalTab extends React.Component {
                 
               </Block>
               {prof?
+              this.state.isFollow?
               <View style={{justifyContent: "center",alignItems: "center",}}>
-                                <TouchableOpacity>
+              <TouchableOpacity 
+              onPress={() => {
+                Alert.alert(
+                  "Thông báo",
+                  "Bạn có muốn hủy theo dõi?",
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        this.updateFollow();
+                      }
+                    },
+                    {
+                      text: "Hủy",
+                      //onPress: () => console.log('Cancel Pressed'),
+                      style: "cancel"
+                    }
+                  ],
+                  { cancelable: false }
+                );
+              }}>
+<View style={styles.viewFollow}>
+<FontAwesome style={{marginLeft:10}} name='check' size={10} color='white' />
+<Text style={styles.followText}>Đang theo dõi</Text>
+</View>
+</TouchableOpacity>
+</View>
+              :
+              <View style={{justifyContent: "center",alignItems: "center",}}>
+                                <TouchableOpacity onPress={() => {
+                                    this.updateFollow();
+                                    console.log("Theo dõi");
+                                  }}>
                   <View style={styles.viewFollow}>
                   <FontAwesome style={{marginLeft:10}} name='plus' size={10} color='white' />
                   <Text style={styles.followText}>Theo dõi</Text>

@@ -26,7 +26,11 @@ export default class NotificationItem extends React.Component {
     let {notification} = this.props;
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.props.switchRecipeScreen} style={styles.viewContent}>
+        <TouchableOpacity 
+        onPress={()=>{
+          if (notification.type!="follow"){this.props.switchRecipeScreen();}
+        }} 
+        style={styles.viewContent}>
           <View
             style={{
               flex: 4,
