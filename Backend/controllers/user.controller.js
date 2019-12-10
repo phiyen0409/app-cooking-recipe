@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const upload = require("../utils/upload");
 const ImageHelper = require("../utils/ImageHelper");
-var bcrypt = require('bcryptjs');
+var bcrypt = require("bcryptjs");
 const NotificationHelper = require("../utils/NotificationHelper");
 
 module.exports = {
@@ -55,14 +55,15 @@ module.exports = {
   create: async (req, res) => {
     let email = req.body.email;
     let user = await User.findOne({ email: email });
-    if(user){
+    if (user) {
       return res.status(400).json({
         message: "Email exist"
       });
     }
     let name = req.body.name;
     let birthday = moment(req.body.birthday, "DD/MM/YYYY").format("DD/MM/YYYY");
-    let avatar = "http://cookingapp.eastasia.cloudapp.azure.com:3000/public/uploads/2ce6c830-1abb-11ea-aa97-ed4afb271ebe.png";
+    let avatar =
+      "http://cookingapp.eastasia.cloudapp.azure.com:3000/public/uploads/2ce6c830-1abb-11ea-aa97-ed4afb271ebe.png";
     let phone = req.body.phone;
     let password = req.body.password;
     user = new User({
@@ -71,7 +72,7 @@ module.exports = {
       avatar: avatar,
       phone: phone,
       email: email,
-      password:  bcrypt.hashSync(password, 8),
+      password: bcrypt.hashSync(password, 8)
     });
     user
       .save()
@@ -166,9 +167,9 @@ module.exports = {
       console.log(email);
       user = await User.findOne({ email: email });
       if (user) {
-        if(bcrypt.compareSync(password, user.password)){
+        if (bcrypt.compareSync(password, user.password)) {
           res.json(user);
-        }else {
+        } else {
           res.status(400).json({
             message: "Password incorrect"
           });
@@ -355,10 +356,10 @@ module.exports = {
     try {
       let user = await User.findById(id);
       console.log(user);
-      let posts = await Post.find({ author:id,isHide: false })
+      let posts = await Post.find({ author: id, isHide: false })
         .populate({ path: "comments.user" })
         .sort({ createdDate: "desc" });
-        let totalRecipe = posts.length;
+      let totalRecipe = posts.length;
       let totalLike = 0;
       let totalComment = 0;
       let listResult = [];
@@ -406,7 +407,7 @@ module.exports = {
         });
       } else {
         res.json({
-          user:user,
+          user: user,
           posts: listResult,
           totalLike: totalLike,
           totalComment: totalComment,
@@ -499,8 +500,7 @@ module.exports = {
               error: err
             });
           });
-      }
-      else{
+      } else {
         res.status(201).json({
           message: "Token is available!"
         });
@@ -509,33 +509,30 @@ module.exports = {
       console.log(err);
     }
   },
-  getNoitificaions : async (req, res) => {
+  getNoitificaions: async (req, res) => {
     try {
       let id = req.params.id;
       let user = await User.findById(id);
 
-      if(user != null)
-      {
+      if (user != null) {
         res.status(200).json({
           message: "get data successful",
-          notifications: user.notifications.reverse(),
+          notifications: user.notifications.reverse()
         });
-      }
-      else{
+      } else {
         res.status(400).json({
-          message: "User is not exist!",
+          message: "User is not exist!"
         });
       }
-      
     } catch (err) {
       console.log(err);
     }
   },
-  updateFollow:async (req, res) => {
+  updateFollow: async (req, res) => {
     try {
       let userId = req.body.userId;
       console.log(userId);
-      let authorId=req.body.authorId;
+      let authorId = req.body.authorId;
       console.log(authorId);
       let author = await User.findById(authorId);
       let user = await User.findById(userId);
@@ -553,40 +550,39 @@ module.exports = {
         author.follower.push(user);
         user.following.push(author);
         await user.save();
+        let listTokens = author.tokens;
+        let title = "App Cooking Recipe";
+        let body = user.name + " đã theo dõi bạn";
+
+        let date = new Date(
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+        );
+        date = moment(date).format("DD/MM/YYYY hh:mm A");
+        author.notifications.push({
+          user: user,
+          body: body,
+          time: date,
+          title: title,
+          type: "follow"
+        });
+        let data = {
+          authorId : authorId
+        }
+        NotificationHelper.sendNotification(
+          listTokens,
+          title,
+          body,
+          data,
+          null
+        );
         await author.save();
-          let listTokens = author.tokens;
-          let title = "App Cooking Recipe";
-          let body =
-            user.name + " đã theo dõi bạn";
-
-          let date = new Date(
-            new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
-          );
-          date = moment(date).format("DD/MM/YYYY hh:mm A");
-          author.notifications.push({
-            user: user,
-            body: body,
-            time: date,
-            title: title,
-            type:"follow"
-          });
-
-          NotificationHelper.sendNotification(
-            listTokens,
-            title,
-            body,
-            data,
-            null
-          );
-          await author.save();
 
         res.status(201).json({
           message: "Updated follow"
         });
       }
-      
     } catch (err) {
       console.log(err);
     }
-  },
+  }
 };
