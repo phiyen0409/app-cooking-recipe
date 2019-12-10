@@ -46,7 +46,7 @@ module.exports = {
         } else {
           isSaved = false;
         }
-        if(user.following.includes(posts[i].author._id)){
+        if (user.following.includes(posts[i].author._id)) {
           isFollow = true;
         } else {
           isFollow = false;
@@ -68,7 +68,74 @@ module.exports = {
           detail: posts[i].detail,
           isLiked: isLiked,
           isSaved: isSaved,
-          isFollow:isFollow
+          isFollow: isFollow
+        });
+        console.log(listResult);
+      }
+      if (posts < 1) {
+        return res.json({
+          message: "No post created"
+        });
+      } else {
+        res.json(listResult);
+      }
+    } catch (err) {
+      res.json(err);
+    }
+  },
+  listPostTrending: async (req, res) => {
+    try {
+      let posts = await Post.find({ isHide: false })
+        .populate({ path: "author" })
+        .populate({ path: "comments.user" })
+        .sort({ createdDate: "desc" });
+
+      let { userId } = req.params;
+      let user = await User.findById(userId);
+      let listResult = [];
+      for (let i = 0; i < posts.length; i++) {
+        if(!user.following.includes(posts[i].author._id)){
+          continue;
+        }
+        let date = moment(posts[i].createdDate)
+          .format("DD/MM/YYYY hh:mm A")
+          .toString();
+        let isLiked;
+        let isSaved;
+        let isFollow;
+        if (posts[i].userLiked.includes(userId)) {
+          isLiked = true;
+        } else {
+          isLiked = false;
+        }
+        if (user.listPostsSaved.includes(posts[i]._id)) {
+          isSaved = true;
+        } else {
+          isSaved = false;
+        }
+        if (user.following.includes(posts[i].author._id)) {
+          isFollow = true;
+        } else {
+          isFollow = false;
+        }
+        listResult.push({
+          _id: posts[i]._id,
+          title: posts[i].title,
+          description: posts[i].description,
+          image: posts[i].image,
+          author: posts[i].author.name,
+          author_id: posts[i].author._id,
+          totalLike: posts[i].totalLike,
+          totalComment: posts[i].totalComment,
+          totalSaved: posts[i].totalSaved,
+          createdDate: date,
+          userLiked: posts[i].userLiked,
+          comments: posts[i].comments,
+          ingredients: posts[i].ingredients,
+          detail: posts[i].detail,
+          isLiked: isLiked,
+          isSaved: isSaved,
+          isFollow: isFollow
         });
         console.log(listResult);
       }
@@ -122,7 +189,7 @@ module.exports = {
           image: post.image,
           author: post.author.name,
           author_id: post.author._id,
-          authorFollower:post.author.follower,
+          authorFollower: post.author.follower,
           totalLike: post.totalLike,
           totalComment: post.totalComment,
           totalSaved: post.totalSaved,
@@ -130,12 +197,10 @@ module.exports = {
           userLiked: post.userLiked,
           comments: post.comments,
           ingredients: post.ingredients,
-          detail: post.detail,
+          detail: post.detail
         };
         console.log(data);
-        res.json(
-          data
-        );
+        res.json(data);
       }
     } catch (err) {
       res.json(err);
@@ -202,25 +267,24 @@ module.exports = {
         detail: detail
       });
       // let user= await User.findById(author).populate('listPostsCreated');
-      let user = await User.findById(author).populate('follower');
+      let user = await User.findById(author).populate("follower");
       // post.author=user;
       await post.save();
       user.listPostsCreated.push(post);
       await user.save();
-      let listTokens=[];
+      let listTokens = [];
       let notiTitle = "App Cooking Recipe";
-          let body =
-            user.name + " đã đăng 1 bài viết mới";
+      let body = user.name + " đã đăng 1 bài viết mới";
 
-          let date = new Date(
-            new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
-          );
-          date = moment(date).format("DD/MM/YYYY hh:mm A");
-          
-          let data = {
-            postId : post._id
-          }
-      for(let i=0;i<user.follower.length;i++){
+      let date = new Date(
+        new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+      );
+      date = moment(date).format("DD/MM/YYYY hh:mm A");
+
+      let data = {
+        postId: post._id
+      };
+      for (let i = 0; i < user.follower.length; i++) {
         listTokens.concat(user.follower[i].tokens);
         user.follower[i].notifications.push({
           user: user,
@@ -228,7 +292,7 @@ module.exports = {
           time: date,
           title: notiTitle,
           data: data,
-          type:"post"
+          type: "post"
         });
         await user.follower[i].save();
       }
@@ -342,10 +406,10 @@ module.exports = {
             new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
           );
           date = moment(date).format("DD/MM/YYYY hh:mm A");
-          
+
           let data = {
-            postId : req.params.postId
-          }
+            postId: req.params.postId
+          };
 
           author.notifications.push({
             user: user,
@@ -353,7 +417,7 @@ module.exports = {
             time: date,
             title: title,
             data: data,
-            type:"post"
+            type: "post"
           });
 
           NotificationHelper.sendNotification(
@@ -401,10 +465,10 @@ module.exports = {
           new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
         );
         date = moment(date).format("DD/MM/YYYY hh:mm A");
-        
+
         let data = {
-          postId : req.params.postId
-        }
+          postId: req.params.postId
+        };
 
         author.notifications.push({
           user: user,
@@ -412,7 +476,7 @@ module.exports = {
           time: date,
           title: title,
           data: data,
-          type:"post"
+          type: "post"
         });
 
         NotificationHelper.sendNotification(

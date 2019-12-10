@@ -1,17 +1,15 @@
 import React from "react";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import TrendingTab from "../tabs/TrendingTab";
-import HomeTab from "../tabs/HomeTab";
+import TrendingRecipeNavigation from "./TrendingRecipeNavigation";
 import NotificationRecipeNavigation from "./NotificationRecipeNavigation";
-import PersonalTab from "../tabs/PersonalTab";
 import AddRecipeTab from "../tabs/AddRecipeTab"
 import { FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { AddButton } from "../components/AddButton";
 import HomeRecipeNavigation from "./HomeRecipeNavigation";
 import PersonalRecipeNavigation from "./PersonalRecipeNavigation";
 
-const TrendingTabStack = createStackNavigator({ TrendingTab });
+const TrendingTabStack = createStackNavigator({ TrendingRecipeNavigation });
 const HomeTabStack = createStackNavigator({ HomeRecipeNavigation });
 const NotificationTabStack = createStackNavigator({ NotificationRecipeNavigation });
 const PersonalTabStack = createStackNavigator({ PersonalRecipeNavigation });

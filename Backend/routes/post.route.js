@@ -4,6 +4,7 @@ const PostController=require('../controllers/post.controller');
 
 router.route('/').get(PostController.index);
 router.route('/postsorted/:userId').get(PostController.listPostSorted);
+router.route('/trending/:userId').get(PostController.listPostTrending);
 router.route('/:id').get(PostController.find);
 router.route('/create').post(PostController.create);
 router.route('/addcomment/:postId').post(PostController.addComment);
