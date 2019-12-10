@@ -202,11 +202,43 @@ module.exports = {
         detail: detail
       });
       // let user= await User.findById(author).populate('listPostsCreated');
-      let user = await User.findById(author);
+      let user = await User.findById(author).populate('follower');
       // post.author=user;
       await post.save();
       user.listPostsCreated.push(post);
       await user.save();
+      let listTokens=[];
+      let notiTitle = "App Cooking Recipe";
+          let body =
+            user.name + " đã đăng 1 bài viết mới";
+
+          let date = new Date(
+            new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+          );
+          date = moment(date).format("DD/MM/YYYY hh:mm A");
+          
+          let data = {
+            postId : post._id
+          }
+      for(let i=0;i<user.follower.length;i++){
+        listTokens.concat(user.follower[i].tokens);
+        user.follower[i].notifications.push({
+          user: user,
+          body: body,
+          time: date,
+          title: notiTitle,
+          data: data,
+          type:"post"
+        });
+        await user.follower[i].save();
+      }
+      NotificationHelper.sendNotification(
+        listTokens,
+        notiTitle,
+        body,
+        data,
+        null
+      );
       res.status(201).json({
         message: "Post created"
       });

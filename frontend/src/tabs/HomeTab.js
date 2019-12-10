@@ -145,6 +145,7 @@ export default class HomeTab extends React.Component {
   //   );
   // };
   switchProfileScreen = (item) =>{
+    const { navigation } = this.props;
     if(item.author_id == this.state.user.idUser)
     {
       NavigationService.navigate(
