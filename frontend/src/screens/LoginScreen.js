@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Button,
   AsyncStorage,
-  TextInput
+  TextInput,
+  Alert
 } from "react-native";
 import LogoImage from "../../assets/Image/logo2.png";
 import googleImage from "../../assets/Image/google.png";
@@ -108,7 +109,6 @@ class LoginScreen extends React.Component {
     this.setState({ email });
   };
   submit = () => {
-    console.log("hi");
     axios({
       method: "post",
       url: "/user/login/app",
@@ -125,7 +125,7 @@ class LoginScreen extends React.Component {
           name: user.name,
           email: user.email,
           avatar: user.avatar
-        });
+        })
 
         AsyncStorage.setItem("@auth", JSON.stringify(this.state)).then(
           result => {
@@ -134,9 +134,8 @@ class LoginScreen extends React.Component {
           }
         );
       })
-      .catch(error => {
-        console.log(error);
-
+      .catch((error) => {
+        Alert.alert(error.response.data.message);
       });
   };
 
@@ -151,11 +150,7 @@ class LoginScreen extends React.Component {
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={LogoImage} />
         </View>
-        <Form
-          style={styles.inputContainer}
-          ref="form"
-          onSubmit={this.submit}
-        >
+        <Form style={styles.inputContainer} ref="form" onSubmit={this.submit}>
           <View style={styles.input}>
             <TextValidator
               style={styles.inputText}
