@@ -558,6 +558,9 @@ module.exports = {
           new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
         );
         date = moment(date).format("DD/MM/YYYY hh:mm A");
+        let data = {
+          userId : userId
+        }
         author.notifications.push({
           user: user,
           body: body,
@@ -565,9 +568,6 @@ module.exports = {
           title: title,
           type: "follow"
         });
-        let data = {
-          authorId : authorId
-        }
         NotificationHelper.sendNotification(
           listTokens,
           title,

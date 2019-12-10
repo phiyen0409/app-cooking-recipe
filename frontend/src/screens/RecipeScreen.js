@@ -209,11 +209,6 @@ export default class RecipeScreen extends React.Component {
               <View style={styles.viewTitle}>
                 <Text style={styles.title}>Bình luận</Text>
               </View>
-              <FlatList
-                data={post.comments}
-                renderItem={({ item }) => <Comment comment={item} />}
-                keyExtractor={item => item._id}
-              />
               <View style={styles.viewComment}>
                 <TextInput
                   style={styles.textInputCmt}
@@ -233,6 +228,11 @@ export default class RecipeScreen extends React.Component {
                   </View>
                 </TouchableOpacity>
               </View>
+              <FlatList
+                data={post.comments}
+                renderItem={({ item }) => <Comment comment={item} />}
+                keyExtractor={item => item._id}
+              />
             </View>
           </ScrollView>
         </View>
