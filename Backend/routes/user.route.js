@@ -18,6 +18,7 @@ router.route('/delete/:id').delete(UserController.delete);
 //router.route('/upload/avatar/:userId').post(upload.single('avatar'),UserController.updateAvatar);
 router.route('/upload/avatar/:userId').put(UserController.updateAvatar);
 router.route('/login').post(UserController.login);
+router.route('/login/app').post(UserController.loginApp);
 router.route('/savedpost/:id').get(UserController.getSavedPost);
 router.route('/push-token/:id').put(UserController.pushToken);
 router.route('/notifications/:id').get(UserController.getNoitificaions);

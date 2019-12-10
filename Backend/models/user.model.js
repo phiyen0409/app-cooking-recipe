@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const UserSchema=new Schema({
     name: String,
     birthday: String,
@@ -12,7 +11,7 @@ const UserSchema=new Schema({
         required: [true, "Không được bỏ trống"],
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
         index: true},
-    // password: {type: String, required: [true, "Không được bỏ trống"], index: true},
+    password: String,
     listPostsCreated: [{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
     listLikesPost:[{type: mongoose.Schema.Types.ObjectId, ref: 'Posts'}],
     listNotes:[{

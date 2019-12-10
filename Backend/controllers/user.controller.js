@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const upload = require("../utils/upload");
 const ImageHelper = require("../utils/ImageHelper");
+var bcrypt = require('bcryptjs');
 const NotificationHelper = require("../utils/NotificationHelper");
 
 module.exports = {
@@ -52,19 +53,25 @@ module.exports = {
     }
   },
   create: async (req, res) => {
+    let email = req.body.email;
+    let user = await User.findOne({ email: email });
+    if(user){
+      return res.status(400).json({
+        message: "Email exist"
+      });
+    }
     let name = req.body.name;
     let birthday = moment(req.body.birthday, "DD/MM/YYYY").format("DD/MM/YYYY");
-    let avatar = req.body.avatar;
+    let avatar = "http://cookingapp.eastasia.cloudapp.azure.com:3000/public/uploads/2ce6c830-1abb-11ea-aa97-ed4afb271ebe.png";
     let phone = req.body.phone;
-    let email = req.body.email;
-    // let password = req.body.password;
-    let user = new User({
+    let password = req.body.password;
+    user = new User({
       name: name,
       birthday: birthday,
       avatar: avatar,
       phone: phone,
-      email: email
-      // password: password
+      email: email,
+      password:  bcrypt.hashSync(password, 8),
     });
     user
       .save()
@@ -147,6 +154,29 @@ module.exports = {
         });
       } else {
         res.json(user);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  loginApp: async (req, res) => {
+    try {
+      let { email } = req.body;
+      let { password } = req.body;
+      console.log(email);
+      user = await User.findOne({ email: email });
+      if (user) {
+        if(bcrypt.compareSync(password, user.password)){
+          res.json(user);
+        }else {
+          res.status(400).json({
+            message: "Password incorrect"
+          });
+        }
+      } else {
+        res.status(400).json({
+          message: "Cannot find user"
+        });
       }
     } catch (err) {
       console.log(err);
