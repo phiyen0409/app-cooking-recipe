@@ -102,8 +102,9 @@ export default class SignupScreen extends React.Component {
     return (
       <KeyboardAwareScrollView
         enableOnAndroid={true}
-        // extraHeight={200}
-        extraScrollHeight={200}
+        extraHeight={100}
+        extraScrollHeight={100}
+        style={{backgroundColor:"#830707"}}
       >
         <View style={styles.container}>
           <View style={styles.logoContainer}>
@@ -223,7 +224,7 @@ export default class SignupScreen extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-      </KeyboardAwareScrollView>
+       </KeyboardAwareScrollView>
     );
   }
 }
@@ -240,14 +241,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20
+    marginTop: 20,
+    marginBottom:10
   },
   logo: {
-    height: 300,
-    width: 300
+    height: 120,
+    width: 120
   },
   inputContainer: {
-    flex: 1,
+    flex: 4,
     flexDirection: "column",
     // justifyContent: "flex-start",
     alignItems: "center"
@@ -257,16 +259,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 25,
     marginVertical: 10,
-    paddingVertical: 12,
+    // paddingBottom: 5,
+    // paddingTop:2,
     paddingHorizontal: 20,
     marginBottom: 10,
-    height: 50
+    //height: 50
   },
   inputText: {
     fontSize: 16,
     fontWeight: "500",
     textAlign: "left",
-    color: "gray"
+    color: "gray",
+    height:40,
+    flexDirection:"column",
+    marginVertical:10
     // backgroundColor: 'gray'
   },
   button: {

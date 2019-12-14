@@ -219,7 +219,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#830707",
     width: "100%",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    paddingTop:20
   },
   logoContainer: {
     flex: 2,
@@ -227,8 +228,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   logo: {
-    height: 400,
-    width: 400
+    height: 250,
+    width: 250
   },
   buttonContainer: {
     flex: 1,
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
     fontWeight: "500"
   },
   inputContainer: {
-    flex: 2,
+    flex: 1.7,
     flexDirection: "column",
     // justifyContent: "flex-start",
     alignItems: "center"
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 25,
     marginVertical: 10,
-    paddingVertical: 12,
+    // paddingVertical: 12,
     paddingHorizontal: 20,
     marginBottom: 10,
     height: 50
@@ -306,7 +307,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     textAlign: "left",
-    color: "gray"
+    color: "gray",
+    height:40,
+    flexDirection:"column",
+    marginVertical:10
     // backgroundColor: 'gray'
   }
 });
