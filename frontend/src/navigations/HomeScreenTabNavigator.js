@@ -31,7 +31,7 @@ const HomeScreenTabNavigator = createBottomTabNavigator(
       header: null,
       screen: TrendingTabStack,
       navigationOptions: {
-        tabBarLabel: "Thịnh hành",
+        tabBarLabel: "Theo dõi",
         tabBarIcon: ({ tintColor }) => (
           <AntDesign name="areachart" size={20} color={tintColor} />
         )

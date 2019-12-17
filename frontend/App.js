@@ -24,7 +24,6 @@ import NavigationService from "./src/navigations/NavigationService";
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    //axios.defaults.baseURL = "https://cookingapp1.herokuapp.com";
 
     axios.defaults.baseURL =
       "http://cookingapp.eastasia.cloudapp.azure.com:3000";

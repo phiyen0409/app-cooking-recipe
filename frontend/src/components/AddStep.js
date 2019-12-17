@@ -8,7 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
-  Platform
+  Platform,
+  Alert
 } from "react-native";
 import { Block } from "galio-framework";
 import theme from "../../constant/theme";
@@ -162,6 +163,12 @@ export default class AddStep extends Component {
         });
       });
   };
+  removeItemImage = id => {
+    let { images } = this.state;
+    images.splice(id, 1);
+    this.setState({ images: images });
+  };
+
   render() {
     //this.updateItem();
     let { images } = this.state;
@@ -211,7 +218,28 @@ export default class AddStep extends Component {
         <View style={styles.viewImage}>
           {images.map((item, key) => {
             return (
-              <Image
+              <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "Thông báo",
+                  "Bạn có muốn xóa ảnh này?",
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        this.removeItemImage(key);
+                      }
+                    },
+                    {
+                      text: "Hủy",
+                      style: "cancel"
+                    }
+                  ],
+                  { cancelable: false }
+                );
+              }}
+              >
+                <Image
                 source={
                   item
                     ? { uri: item }
@@ -220,6 +248,7 @@ export default class AddStep extends Component {
                 style={styles.image}
                 key={key}
               />
+              </TouchableOpacity>
             );
           })}
 

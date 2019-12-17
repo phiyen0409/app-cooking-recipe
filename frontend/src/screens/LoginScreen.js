@@ -32,7 +32,10 @@ class LoginScreen extends React.Component {
       photoUrl: "",
       accessToken: "",
       email: "",
-      password: ""
+      password: "",
+      avatar:"",
+      birthday:"",
+      phone:""
     };
   }
 
@@ -60,7 +63,9 @@ class LoginScreen extends React.Component {
               signedIn: true,
               name: user.name,
               email: user.email,
-              avatar: user.avatar
+              avatar: user.avatar,
+              birthday:user.birthday,
+              phone:user.phone
               //accessToken: user.accessToken,
             });
 
@@ -124,7 +129,9 @@ class LoginScreen extends React.Component {
           signedIn: true,
           name: user.name,
           email: user.email,
-          avatar: user.avatar
+          avatar: user.avatar,
+          birthday:user.birthday,
+          phone:user.phone
         })
 
         AsyncStorage.setItem("@auth", JSON.stringify(this.state)).then(
@@ -157,8 +164,8 @@ class LoginScreen extends React.Component {
               name="email"
               label="email"
               validators={["required", "isEmail"]}
-              errorMessages={["Email is required", "Email invalid"]}
-              placeholder="Your email"
+              errorMessages={["Chưa nhập email", "Email không đúng"]}
+              placeholder="Email"
               type="text"
               keyboardType="email-address"
               value={email}
@@ -171,9 +178,9 @@ class LoginScreen extends React.Component {
               name="password"
               label="text"
               secureTextEntry
-              placeholder="Password"
+              placeholder="Mật khẩu"
               validators={["required"]}
-              errorMessages={["Password is required"]}
+              errorMessages={["Chưa nhập mật khẩu"]}
               type="text"
               value={password}
               onChange={this.handlePassword}

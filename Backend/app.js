@@ -8,7 +8,6 @@ const app=express();
 
 const host = process.env.HOST;
 const port = process.env.PORT || 3000;
-// const port=3000;
 
 const serveIndex = require('serve-index');
 
@@ -43,15 +42,12 @@ const post=require('./models/post.model');
 //     console.log('Server listening on port '+host+":"+port);
 // });
 
-var server = app.listen(3000, function () {
+var server = app.listen(3000, host, function () {
     var host = server.address().address
     var port = server.address().port
     console.log("Ung dung Node.js dang hoat dong tai dia chi: http://%s:%s", host, port)
 });
-// var server = app.listen(3000, function () {
-//     var port = server.address().port
-//     console.log("Ung dung Node.js dang hoat dong tai dia chi: http://%s:%s", port)
-// });
+
 app.use('/user', userRoutes);
 app.use('/post', postRoutes);
 app.use('/file', fileRoutes);

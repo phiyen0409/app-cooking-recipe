@@ -76,7 +76,16 @@ export default class SignupScreen extends React.Component {
       }
     })
       .then(res => {
-        Alert.alert(res.data.message);
+        Alert.alert("Đăng kí thành công");
+        this.setState({
+          email: "",
+      name: "",
+      phone: "",
+      birthday: "",
+      password: "",
+      repeatPassword: ""
+        })
+        this.signIn();
       })
       .catch(error => {
         Alert.alert(error.response.data.message);
@@ -121,8 +130,8 @@ export default class SignupScreen extends React.Component {
                 name="email"
                 label="email"
                 validators={["required", "isEmail"]}
-                errorMessages={["Email is required", "Email invalid"]}
-                placeholder="Your email"
+                errorMessages={["Chưa nhập email", "Email không đúng"]}
+                placeholder="Email"
                 type="text"
                 keyboardType="email-address"
                 value={email}
@@ -136,8 +145,8 @@ export default class SignupScreen extends React.Component {
                 name="name"
                 label="name"
                 validators={["required"]}
-                errorMessages={["Name is required"]}
-                placeholder="Your name"
+                errorMessages={["Tên không được để trống"]}
+                placeholder="Tên tài khoản"
                 type="text"
                 value={name}
                 onChangeText={this.handleNameChange}
@@ -150,8 +159,8 @@ export default class SignupScreen extends React.Component {
                 name="phone"
                 label="phone"
                 validators={["isNumber"]}
-                errorMessages={["Phone invalid"]}
-                placeholder="Your phone"
+                errorMessages={["Số điện thoại không đúng"]}
+                placeholder="Số điện thoại"
                 type="text"
                 keyboardType="phone-pad"
                 value={phone}
@@ -164,7 +173,7 @@ export default class SignupScreen extends React.Component {
                 style={styles.inputText}
                 name="birthday"
                 label="birthday"
-                placeholder="Your birthday"
+                placeholder="Ngày sinh"
                 type="text"
                 value={birthday}
                 onChangeText={this.handleBirthdayChange}
@@ -177,9 +186,9 @@ export default class SignupScreen extends React.Component {
                 name="password"
                 label="text"
                 secureTextEntry
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 validators={["required"]}
-                errorMessages={["Password is required"]}
+                errorMessages={["Chưa nhập mật khẩu"]}
                 type="text"
                 value={password}
                 onChange={this.handlePassword}
@@ -189,14 +198,14 @@ export default class SignupScreen extends React.Component {
             <View style={styles.input}>
               <TextValidator
                 style={styles.inputText}
-                name="repeatPassword"
+                name="password"
                 label="text"
                 secureTextEntry
-                placeholder="Password confirm"
+                placeholder="Nhập lại password"
                 validators={["isPasswordMatch", "required"]}
                 errorMessages={[
-                  "Password mismatch",
-                  "Password confirm is required"
+                  "Mật khẩu không khớp",
+                  "Chưa nhập mật khẩu"
                 ]}
                 type="text"
                 value={repeatPassword}

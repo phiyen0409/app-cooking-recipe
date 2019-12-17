@@ -48,7 +48,9 @@ export default class PersonalTab extends React.Component {
       if (value !== null) {
         // We have data!!
         let user = JSON.parse(value);
-        this.setState({ user: user });
+        this.setState({ user: user,
+          birthday:user.birthday,
+          phone:user.phone });
         console.log(user);
       }
     } catch (error) {
@@ -77,7 +79,6 @@ export default class PersonalTab extends React.Component {
     if (this.props.navigation.getParam("authorProfile") === true &&userId!=author) {
       authorProf = true;
     }
-    console.log("profile"+authorProf)
     this.state = {
       authorProf: authorProf,
       user: {},
@@ -101,7 +102,6 @@ export default class PersonalTab extends React.Component {
   }
   getDataAsync = async () => {
     let id=this.state.authorProf?this.props.navigation.getParam("author"):this.state.user.idUser;
-    console.log("id get data: "+id);
     axios
       .get("/user/profile/" +id )
       .then(result => {
